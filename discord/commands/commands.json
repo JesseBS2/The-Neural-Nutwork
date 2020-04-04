@@ -1,0 +1,26 @@
+{
+  "math": {
+    "math": "Do a math problem",
+    "algebra": "Do a math problem",
+    "root": "Get the root of a number",
+    "evaluate": "Do a math problem with a variable, and assign that variable",
+    "eval": "Do a math problem with a variable, and assign that variable",
+    "notate": "Convert a number into scientific notation",
+    "area": "Get the area of a 2D shape",
+    "volume": "Get the volume of a 3D shape",
+    "solve": "Solve a math problem with an un-named variable."
+  },
+  "other": {
+    "snowflake": "Get your personal snowflake ID",
+    "echo": "Repeat a message with style",
+    "Echo": "Display a message with style",
+    "poll": "Create a Poll",
+    "vote": "Vote on a created poll",
+    "config": "Configure the bot for your server"
+  },
+  "mod": {
+    "kick": "Kick a member from the server",
+    "ban": "Ban a member from the server",
+    "clear": "Clear an amount of messages"
+  }
+}

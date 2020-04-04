@@ -1,0 +1,14 @@
+{
+  "funny": "configuration.json rhymes!",
+  "000000000000000": {
+    "name": "Example Server",
+    "prefix": "$",
+    "config": {
+      "autorole": "disabled",
+      "automath": "enabled",
+      "echos": "enabled",
+      "embeds": "enabled",
+      "leveling": "enabled"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Nutwork",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "algebra.js": "^0.2.6",
+    "discord.js": "^11.5.1",
+    "tmi.js": "^1.5.0"
+  }
+}
