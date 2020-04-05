@@ -22,5 +22,11 @@
     "kick": "Kick a member from the server",
     "ban": "Ban a member from the server",
     "clear": "Clear an amount of messages"
+  },
+  "periodic": {
+    "periodic": "Get information about an element on the PToE",
+    "periodictable": "alt",
+    "pt": "alt",
+    "fuze": "NOT A WORKING COMMAND YET"
   }
 }

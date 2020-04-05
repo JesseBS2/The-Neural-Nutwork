@@ -27,7 +27,7 @@
   "math": {
     "desc": "Returns the answer to an equation.",
     "format": "math <number>",
-    "alias": "algebra"
+    "alias": ["algebra"]
   },
   "notate": {
     "desc": "Converts a into scientific notation.",
@@ -61,7 +61,7 @@
   "root": {
     "desc": "By default, returns the square root of a selected.",
     "format": "root <number> (index)",
-    "alias": "√<number> (index)"
+    "alias": ["√<number> (index)"]
   },
   "solve": {
     "desc": "Returns the value for a variable in an equation",
@@ -77,5 +77,10 @@
     "desc": "Votes for an item on the current poll",
     "format": "vote <thing>",
     "alias": "none"
+  },
+  "perodic": {
+    "desc": "Get information on the Periodic Table of Elements",
+    "format": "periodic <name/id>",
+    "alias": ["periodictable","pt"]
   }
 }

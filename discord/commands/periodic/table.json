@@ -1,0 +1,16 @@
+{
+  "1": {
+    "name": "Hydrogen",
+    "abr": "H",
+    "weight": "1.008",
+    "elec": "1",
+    "disc": "6969"
+  },
+  "2": {
+    "name": "Helium",
+    "abr": "He",
+    "weight": "4.0026",
+    "elec": "2",
+    "disc": "6969"
+  }
+}
