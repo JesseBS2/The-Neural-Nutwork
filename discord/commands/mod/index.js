@@ -40,8 +40,51 @@ module.exports = function(){
     }
     
   }else if($cmnd === "kick"){
+    if($author.hasPermission("KICK_MEMBERS") === false){
+      $channel.send("You do not have the necessary permissions for that");
+      return;
+    }else if(me.hasPermission("KICK_MEMBERS") === false){
+      $channel.send("I do not have the necessary permissions for that");
+      return;
+    }
+
+    let toKick = global.discord.message.msg.mentions.members.first();
+    try{
+      toKick.kick();
+      $channel.send("Kicked "+toKick+" from the server!");
+    }catch(err){
+      global.discord.log(err);
+      $channel.send("This user can not be kicked!");
+    }
 
   }else if($cmnd === "ban"){
+    var toBan = global.discord.message.msg.mentions.users.first();
+       
+    var time = Number(words[2]) || 7; //custom days or 1 week
+    var desc = global.discord.message.msg.content.split(words[0]+" "+words[1]+" "+words[2]+" ")[1] || "Reason not specified.";
+
+
+    if(time > 7){
+      $channel.send("A player can't be banned for more than a week.");
+      return;
+    }
+
+    try{   
+      if(!toBan || toBan == undefined){
+        $channel.send("There is no member in this server with that tag.");
+        return;
+      }else{
+        global.discord.message.msg.guild.ban(toBan,{
+          days: time,
+          reason: desc
+        });
+        $channel.send("Successfully banned "+toBan);
+      }
+
+    }catch(err){
+      global.discord.log(err);
+      $channel.send("This user can not be banned!");
+    }
 
   }
 }

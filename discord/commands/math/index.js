@@ -114,6 +114,7 @@ module.exports = function(ee){
 
     return;
   }else if($cmnd === "volume"){
+    if(!words[1]){$channel.send("Volume is the amount of space that an object takes up"); return;}
     if(words[1] == "cube" || words[1] == "cuboid"){
       if(!words[2]){$channel.send("You're forgetting the height parameter!"); return;}
       if(!words[3]){$channel.send("You're forgetting the width parameter!"); return;}

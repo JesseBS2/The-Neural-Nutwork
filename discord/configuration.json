@@ -9,6 +9,9 @@
       "echos": "enabled",
       "embeds": "enabled",
       "leveling": "enabled"
+    },
+    "channels": {
+      "NOTE": "Channels are not added by default. They are added as needed."
     }
   }
 }

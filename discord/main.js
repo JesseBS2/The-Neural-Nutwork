@@ -21,6 +21,14 @@ bot.on("ready", () => {
         "echos": "enabled",
         "embeds": "enabled",
         "leveling": "enabled"
+      },
+      "categories": {
+        "math": "enabled",
+        "mod": "enabled",
+        "other": "enabled"
+      },
+      "channels": {
+        
       }
     }
 
@@ -50,6 +58,10 @@ bot.on("message", recievedmessage => {
   global.discord.message.tag = recievedmessage.author.username.toString() + "#" + recievedmessage.author.discriminator.toString(); // the person that sent the message as USERNAME#0000
   global.discord.bot = {};
   global.discord.bot.me = recievedmessage.guild.me;
+
+  if( recievedmessage.channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
+    Configs[recievedmessage.guild.id]["channels"][recievedmessage.channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
+  }
 
   let $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
   let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
@@ -111,6 +123,9 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "math": "enabled",
       "mod": "enabled",
       "other": "enabled"
+    },
+    "channels": {
+      
     }
   }
 
