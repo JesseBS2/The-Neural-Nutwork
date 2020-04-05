@@ -9,7 +9,7 @@ module.exports = function(){
   let table = require("./table.json");
 
   if($cmnd === "periodic" || $cmnd === "periodictable" || $cmnd === "pt"){
-    if(!words[1]){$channel.send(Embed("eWF5IGJhc2U2NCBpcyBmdW4hIQ==",require("./periodic-table.jpg"))[1]); return;}
+    if(!words[1]){$channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/1sdQUsd.jpg"]}); return;}
 
     let element = false;
     
