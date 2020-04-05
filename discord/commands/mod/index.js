@@ -3,7 +3,7 @@ var Embed = global.discord.functions.CustomEmbed;
 
 module.exports = function(){
 
-  global.discord.debug("DISCORD: Ran /commands/mod/index.js");
+  global.discord.log("DISCORD: Ran /commands/mod/index.js");
 
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;

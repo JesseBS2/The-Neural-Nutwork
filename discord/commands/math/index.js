@@ -3,7 +3,7 @@ var Embed = global.discord.functions.CustomEmbed; // makes calling it easier
 var SolveEquation = global.SolveEquation; // also easier
 
 module.exports = function(ee){
-  global.discord.debug("DISCORD: Ran /commands/math/index.js");
+  global.discord.log("DISCORD: Ran /commands/math/index.js");
   
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;

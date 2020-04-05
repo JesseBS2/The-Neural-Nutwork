@@ -28,5 +28,10 @@
     "periodictable": "alt",
     "pt": "alt",
     "fuze": "NOT A WORKING COMMAND YET"
+  },
+  "fun": {
+    "F": "pay respects",
+    "f": "alt",
+    "respect": "alt"
   }
 }

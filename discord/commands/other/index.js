@@ -4,7 +4,7 @@ var SolveEquation = global.SolveEquation;
 
 module.exports = function(){
 
-  global.discord.debug("DISCORD: Ran /commands/other/index.js");
+  global.discord.log("DISCORD: Ran /commands/other/index.js");
 
   let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
   let message = global.discord.message.msg;

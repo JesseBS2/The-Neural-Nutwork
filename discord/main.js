@@ -78,6 +78,8 @@ bot.on("message", recievedmessage => {
     require("./commands/other/index.js")();
   }else if($cmnd in _commands["periodic"]){
     require("./commands/periodic/index.js")();
+  }else if($cmnd in _commands["fun"]){
+    require("./commands/fun/index.js")();
   }else{
    
     let words = global.discord.message.words;

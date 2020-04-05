@@ -6,7 +6,7 @@ let $pre = Message.prefix;
 
 module.exports = function(){
 
-  global.discord.debug("DISCORD: Ran /commands/help/help.js");
+  global.discord.log("DISCORD: Ran /commands/help/help.js");
 
   if(!words[1]){$channel.send("You're forgetting part of that Command!");}
     let $json = require("./help.json");
