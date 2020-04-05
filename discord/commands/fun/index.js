@@ -14,6 +14,7 @@ module.exports = function(){
     $channel.send("Press F to pay respects for \""+thing+"\"");
 
     let respecters = [];
+    let count = 0;
 
     const isAVote = msg => msg.content;
     let ReSPECt = $channel.createMessageCollector(isAVote, {time: 15000});  // 15 second window
@@ -21,10 +22,11 @@ module.exports = function(){
     Configs["channels"][$channel.id]["activepoll"] = true;
 
     ReSPECt.on("collect",recievedMSG => { // collection, A.K.A message getter
-      if( respecters.includes(recievedMSG.author) ){  // if the sender's ID has already been sent
+      if( respecters.includes(recievedMSG.author.toString()) ){  // if the sender's ID has already been sent
       }else{
-        if(recievedMSG == "F" || recievedMSG.content.startsWith("F ") || recievedMSG.content.startsWith("f ")){ // is the first word in votes?
-          respecters += recievedMSG.author;
+        if(recievedMSG.content.toLowerCase() === "f" || recievedMSG.content.startsWith("F ") || recievedMSG.content.startsWith("f ")){ // is the first word in votes?
+          respecters += recievedMSG.author.toString();
+          count++;
           $channel.send("**"+recievedMSG.member.displayName+"** paid their respects");
           recievedMSG.delete();
         }
@@ -33,7 +35,7 @@ module.exports = function(){
 
 
       ReSPECt.on("end",collection => {  // finish the 15s timer
-        $channel.send( respecters.length +" people paid their respects for "+thing );
+        $channel.send( count +" people paid their respects for "+thing );
         Configs["channels"][$channel.id]["activepoll"] = false; // undo the lock
       });
 
