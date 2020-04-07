@@ -20,6 +20,7 @@ bot.on("ready", () => {
       "config": {
         "autorole": "disabled",
         "automath": "enabled",
+        "autoperiodic": "enabled",
         "echos": "enabled",
         "embeds": "enabled",
         "leveling": "enabled"
@@ -120,7 +121,7 @@ bot.on("message", recievedmessage => {
       }
     }
 
-    for( let j = 1; j < Object.keys(Periodic).length; j++ ){
+    for( let j = 1; j < Object.keys(Periodic).length+1; j++ ){
       if(words[0].toLowerCase() === Periodic[j]["name"].toLowerCase() ){
         type = "periodic";
         other.value = j;
@@ -149,6 +150,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
     "config": {
       "autorole": "disabled",
       "automath": "enabled",
+      "autoperiodic": "enabled",
       "echos": "enabled",
       "embeds": "enabled",
       "leveling": "enabled"

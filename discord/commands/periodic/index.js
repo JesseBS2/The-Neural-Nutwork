@@ -13,7 +13,7 @@ module.exports = function(){
 
     let element = false;
     
-    for(var elems = 1; elems < Object.keys(table).length; elems++){
+    for(var elems = 1; elems < Object.keys(table).length+1; elems++){
       //global.discord.debug("Loop #"+elems);
       if(words[1].toLowerCase() == table[elems]["name"].toLowerCase() || words[1].toLowerCase() == table[elems]["abr"].toLowerCase() || words[1] === (elems).toString()){
         //global.discord.debug("YES IT IS")
