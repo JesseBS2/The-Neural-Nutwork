@@ -3,14 +3,888 @@
     "name": "Hydrogen",
     "abr": "H",
     "weight": "1.008",
-    "elec": "1",
-    "disc": "6969"
+    "disc": "1766",
+    "by": "Henry Cavendish"
   },
   "2": {
     "name": "Helium",
     "abr": "He",
     "weight": "4.0026",
-    "elec": "2",
-    "disc": "6969"
+    "disc": "1868",
+    "by": "Jules Janssen"
+  },
+  "3": {
+    "name": "Lithium",
+    "abr": "Li",
+    "weight": "6.941",
+    "disc": "1817",
+    "by": "Johan Arfwedson"
+  },
+  "4": {
+    "name": "Beryllium",
+    "abr": "Be",
+    "weight": "9.0122",
+    "disc": "1798",
+    "by": "Louis Vauquelin"
+  },
+  "5": {
+    "name": "Boron",
+    "abr": "B",
+    "weight": "10.811",
+    "disc": "1808",
+    "by": "Jospeh Gay-Lussac"
+  },
+  "6": {
+    "name": "Carbon",
+    "abr": "C",
+    "weight": "12.011",
+    "disc": "1789",
+    "by": "Antoine Lavoisier"
+  },
+  "7": {
+    "name": "Nitrogen",
+    "abr": "N",
+    "weight": "14.007",
+    "disc": "1772",
+    "by": "Daniel Rutherford"
+  },
+  "8": {
+    "name": "Oxygen",
+    "abr": "O",
+    "weight": "15.999",
+    "disc": "1772",
+    "by": "Carl Sheele"
+  },
+  "9": {
+    "name": "Flourine",
+    "abr": "F",
+    "weight": "18.998",
+    "disc": "",
+    "by": ""
+  },
+  "10": {
+    "name": "Neon",
+    "abr": "Ne",
+    "weight": "20.180",
+    "disc": "",
+    "by": ""
+  },
+  "11": {
+    "name": "Sodium",
+    "abr": "Na",
+    "weight": "22.990",
+    "disc": "",
+    "by": ""
+  },
+  "12": {
+    "name": "Magnesium",
+    "abr": "Mg",
+    "weight": "24.305",
+    "disc": "",
+    "by": ""
+  },
+  "13": {
+    "name": "Aluminum",
+    "abr": "Al",
+    "weight": "26.982",
+    "disc": "",
+    "by": ""
+  },
+  "14": {
+    "name": "Silicon",
+    "abr": "Si",
+    "weight": "28.086",
+    "disc": "",
+    "by": ""
+  },
+  "15": {
+    "name": "Phosphorus",
+    "abr": "P",
+    "weight": "32.066",
+    "disc": "",
+    "by": ""
+  },
+  "16": {
+    "name": "Sulfur",
+    "abr": "S",
+    "weight": "32.006",
+    "disc": "",
+    "by": ""
+  },
+  "17": {
+    "name": "Chlorine",
+    "abr": "Ch",
+    "weight": "35.453",
+    "disc": "",
+    "by": ""
+  },
+  "18": {
+    "name": "Argon",
+    "abr": "Ar",
+    "weight": "39.948",
+    "disc": "",
+    "by": ""
+  },
+  "19": {
+    "name": "Potassium",
+    "abr": "K",
+    "weight": "39.098",
+    "disc": "",
+    "by": ""
+  },
+  "20": {
+    "name": "Calcium",
+    "abr": "Ca",
+    "weight": "",
+    "disc": "",
+    "by": ""
+  },
+  "21": {
+    "name": "Scandium",
+    "abr": "Sc",
+    "weight": "44.956",
+    "disc": "",
+    "by": ""
+  },
+  "22": {
+    "name": "Titanium",
+    "abr": "Ti",
+    "weight": "47.880",
+    "disc": "",
+    "by": ""
+  },
+  "23": {
+    "name": "Vanadium",
+    "abr": "V",
+    "weight": "50.942",
+    "disc": "",
+    "by": ""
+  },
+  "24": {
+    "name": "Chromium",
+    "abr": "Cr",
+    "weight": "51.996",
+    "disc": "",
+    "by": ""
+  },
+  "25": {
+    "name": "Manganese",
+    "abr": "Mn",
+    "weight": "54.938",
+    "disc": "",
+    "by": ""
+  },
+  "26": {
+    "name": "Iron",
+    "abr": "Fe",
+    "weight": "55.845",
+    "disc": "",
+    "by": ""
+  },
+  "27": {
+    "name": "Cobalt",
+    "abr": "Co",
+    "weight": "58.933",
+    "disc": "",
+    "by": ""
+  },
+  "28": {
+    "name": "Nickel",
+    "abr": "Ni",
+    "weight": "58.693",
+    "disc": "",
+    "by": ""
+  },
+  "29": {
+    "name": "Copper",
+    "abr": "Cu",
+    "weight": "63.546",
+    "disc": "",
+    "by": ""
+  },
+  "30": {
+    "name": "Zinc",
+    "abr": "Zn",
+    "weight": "65.380",
+    "disc": "",
+    "by": ""
+  },
+  "31": {
+    "name": "Gallium",
+    "abr": "Ga",
+    "weight": "69.723",
+    "disc": "",
+    "by": ""
+  },
+  "32": {
+    "name": "Germanium",
+    "abr": "Ge",
+    "weight": "72.631",
+    "disc": "",
+    "by": ""
+  },
+  "33": {
+    "name": "Arsenic",
+    "abr": "As",
+    "weight": "74.922",
+    "disc": "",
+    "by": ""
+  },
+  "34": {
+    "name": "Selenium",
+    "abr": "Se",
+    "weight": "78.971",
+    "disc": "",
+    "by": ""
+  },
+  "35": {
+    "name": "Bromine",
+    "abr": "Br",
+    "weight": "79.904",
+    "disc": "",
+    "by": ""
+  },
+  "36": {
+    "name": "Krypton",
+    "abr": "Kr",
+    "weight": "84.798",
+    "disc": "",
+    "by": ""
+  },
+  "37": {
+    "name": "Rubidium",
+    "abr": "Rb",
+    "weight": "84.468",
+    "disc": "",
+    "by": ""
+  },
+  "38": {
+    "name": "Stronium",
+    "abr": "Sr",
+    "weight": "87.620",
+    "disc": "",
+    "by": ""
+  },
+  "39": {
+    "name": "Yttrium",
+    "abr": "Y",
+    "weight": "88.906",
+    "disc": "",
+    "by": ""
+  },
+  "40": {
+    "name": "Zirconium",
+    "abr": "Zr",
+    "weight": "91.224",
+    "disc": "",
+    "by": ""
+  },
+  "41": {
+    "name": "Niboium",
+    "abr": "Nb",
+    "weight": "92.906",
+    "disc": "",
+    "by": ""
+  },
+  "42": {
+    "name": "Molybdenum",
+    "abr": "Mo",
+    "weight": "95.950",
+    "disc": "",
+    "by": ""
+  },
+  "43": {
+    "name": "Technetium",
+    "abr": "Tc",
+    "weight": "98.907",
+    "disc": "",
+    "by": ""
+  },
+  "44": {
+    "name": "Ruthenium",
+    "abr": "Ru",
+    "weight": "101.070",
+    "disc": "",
+    "by": ""
+  },
+  "45": {
+    "name": "Rhodium",
+    "abr": "Rh",
+    "weight": "102.906",
+    "disc": "",
+    "by": ""
+  },
+  "46": {
+    "name": "Palladium",
+    "abr": "Pd",
+    "weight": "106.420",
+    "disc": "",
+    "by": ""
+  },
+  "47": {
+    "name": "Silver",
+    "abr": "Ag",
+    "weight": "107.868",
+    "disc": "",
+    "by": ""
+  },
+  "48": {
+    "name": "Cadmium",
+    "abr": "Cd",
+    "weight": "112.414",
+    "disc": "",
+    "by": ""
+  },
+  "49": {
+    "name": "Indium",
+    "abr": "In",
+    "weight": "114.818",
+    "disc": "",
+    "by": ""
+  },
+  "50": {
+    "name": "Tin",
+    "abr": "Sn",
+    "weight": "118.711",
+    "disc": "",
+    "by": ""
+  },
+  "51": {
+    "name": "Antimony",
+    "abr": "Sb",
+    "weight": "121.760",
+    "disc": "",
+    "by": ""
+  },
+  "52": {
+    "name": "Tellurium",
+    "abr": "Te",
+    "weight": "127.600",
+    "disc": "",
+    "by": ""
+  },
+  "53": {
+    "name": "Iodine",
+    "abr": "I",
+    "weight": "126.904",
+    "disc": "",
+    "by": ""
+  },
+  "54": {
+    "name": "Xenon",
+    "abr": "Xe",
+    "weight": "131.249",
+    "disc": "",
+    "by": ""
+  },
+  "55": {
+    "name": "Cesium",
+    "abr": "Cs",
+    "weight": "132.905",
+    "disc": "",
+    "by": ""
+  },
+  "56": {
+    "name": "Barium",
+    "abr": "Ba",
+    "weight": "137.328",
+    "disc": "",
+    "by": ""
+  },
+  "57": {
+    "name": "Lanthanum",
+    "abr": "La",
+    "weight": "138.905",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "58": {
+    "name": "Cerium",
+    "abr": "Ce",
+    "weight": "140.116",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "59": {
+    "name": "Parseodymium",
+    "abr": "Pr",
+    "weight": "140.908",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "60": {
+    "name": "Neodymium",
+    "abr": "Nd",
+    "weight": "144.243",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "61": {
+    "name": "Promethium",
+    "abr": "Pm",
+    "weight": "144.913",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "62": {
+    "name": "Samarium",
+    "abr": "Sm",
+    "weight": "150.360",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "63": {
+    "name": "Europium",
+    "abr": "Eu",
+    "weight": "151.964",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "64": {
+    "name": "Gadolinlium",
+    "abr": "Gd",
+    "weight": "157.250",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "65": {
+    "name": "Terbium",
+    "abr": "Tb",
+    "weight": "158.925",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "66": {
+    "name": "Dysproium",
+    "abr": "Dy",
+    "weight": "162.500",
+    "type": "Lanthanide",
+    "disc": "",
+    "by": ""
+  },
+  "67": {
+    "name": "Holmium",
+    "abr": "Ho",
+    "weight": "164.930",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "68": {
+    "name": "Erbium",
+    "abr": "Er",
+    "weight": "167.259",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "69": {
+    "name": "Thulium",
+    "abr": "Tm",
+    "weight": "168.934",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "70": {
+    "name": "Ytterbium",
+    "abr": "Yb",
+    "weight": "173.055",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "71": {
+    "name": "Lutetium",
+    "abr": "Lu",
+    "weight": "174.967",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "72": {
+    "name": "Hafnium",
+    "abr": "Hf",
+    "weight": "178.490",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "73": {
+    "name": "Tantalum",
+    "abr": "Ta",
+    "weight": "180.948",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "74": {
+    "name": "Tungsten",
+    "abr": "W",
+    "weight": "183.840",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "75": {
+    "name": "Rhenium",
+    "abr": "Re",
+    "weight": "186.207",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "76": {
+    "name": "Osmium",
+    "abr": "Os",
+    "weight": "190.23",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "77": {
+    "name": "Iridium",
+    "abr": "Ir",
+    "weight": "192.217",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "78": {
+    "name": "Platinum",
+    "abr": "Pt",
+    "weight": "195.085",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "79": {
+    "name": "Gold",
+    "abr": "Au",
+    "weight": "196.967",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "80": {
+    "name": "Mercury",
+    "abr": "Hg",
+    "weight": "200.592",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "81": {
+    "name": "Thallium",
+    "abr": "Tl",
+    "weight": "204.383",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "82": {
+    "name": "Lead",
+    "abr": "Pb",
+    "weight": "207.200",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "83": {
+    "name": "Bismuth",
+    "abr": "Bi",
+    "weight": "208.980",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "84": {
+    "name": "Polonium",
+    "abr": "Po",
+    "weight": "[208.982]",
+    "type": "Metalloid",
+    "disc": "",
+    "by": ""
+  },
+  "85": {
+    "name": "Astatine",
+    "abr": "At",
+    "weight": "209.897",
+    "type": "Halogen",
+    "disc": "",
+    "by": ""
+  },
+  "86": {
+    "name": "Radon",
+    "abr": "Rn",
+    "weight": "222.018",
+    "type": "Noble Gas",
+    "disc": "",
+    "by": ""
+  },
+  "87": {
+    "name": "Francium",
+    "abr": "Fr",
+    "weight": "223.020",
+    "type": "Alkali Metal",
+    "disc": "",
+    "by": ""
+  },
+  "88": {
+    "name": "Radium",
+    "abr": "Ra",
+    "weight": "226.025",
+    "type": "",
+    "disc": "",
+    "by": ""
+  },
+  "89": {
+    "name": "Actinium",
+    "abr": "Ac",
+    "weight": "227.028",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "90": {
+    "name": "Thornium",
+    "abr": "Th",
+    "weight": "232.038",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "91": {
+    "name": "Protactinium",
+    "abr": "Pa",
+    "weight": "231.036",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "92": {
+    "name": "Uranium",
+    "abr": "U",
+    "weight": "238.029",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "93": {
+    "name": "Neptunium",
+    "abr": "Np",
+    "weight": "237.084",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "94": {
+    "name": "Plutonium",
+    "abr": "Pu",
+    "weight": "244.064",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "95": {
+    "name": "Americium",
+    "abr": "Am",
+    "weight": "243.061",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "96": {
+    "name": "Curium",
+    "abr": "Cm",
+    "weight": "247.070",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "97": {
+    "name": "Berkelium",
+    "abr": "Bk",
+    "weight": "247.070",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "98": {
+    "name": "Californium",
+    "abr": "Cf",
+    "weight": "251.080",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "99": {
+    "name": "Einsteinium",
+    "abr": "Es",
+    "weight": "[254]",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "100": {
+    "name": "Fermium",
+    "abr": "Fm",
+    "weight": "257.095",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "101": {
+    "name": "Mendelevium",
+    "abr": "Md",
+    "weight": "258.100",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "102": {
+    "name": "Nobelium",
+    "abr": "No",
+    "weight": "259.101",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "103": {
+    "name": "Lawrencium",
+    "abr": "Lr",
+    "weight": "[262]",
+    "type": "Actinide",
+    "disc": "",
+    "by": ""
+  },
+  "104": {
+    "name": "Rutherfordium",
+    "abr": "Rf",
+    "weight": "[261]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "105": {
+    "name": "Dubnium",
+    "abr": "Db",
+    "weight": "[262]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "106": {
+    "name": "Seaborgium",
+    "abr": "Sg",
+    "weight": "[266]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "107": {
+    "name": "Bohrium",
+    "abr": "Bh",
+    "weight": "[264]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "108": {
+    "name": "Hassium",
+    "abr": "Hs",
+    "weight": "[269]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "109": {
+    "name": "Meitnerium",
+    "abr": "Mt",
+    "weight": "[268]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "110": {
+    "name": "Darmstadtium",
+    "abr": "Ds",
+    "weight": "[269]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "111": {
+    "name": "Roentgenium",
+    "abr": "Rg",
+    "weight": "[272]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "112": {
+    "name": "Copernicium",
+    "abr": "Cn",
+    "weight": "[277]",
+    "type": "Transition Metal",
+    "disc": "",
+    "by": ""
+  },
+  "113": {
+    "name": "Ununtrium",
+    "abr": "Uut",
+    "weight": "Unknwon",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "114": {
+    "name": "Flerovium",
+    "abr": "Fl",
+    "weight": "[289]",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "115": {
+    "name": "Ununpentium",
+    "abr": "Uup",
+    "weight": "Unknown",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "116": {
+    "name": "Livermorium",
+    "abr": "Lv",
+    "weight": "[298]",
+    "type": "Basic Metal",
+    "disc": "",
+    "by": ""
+  },
+  "117": {
+    "name": "Ununseptium",
+    "abr": "Uus",
+    "weight": "Unknown",
+    "type": "Halogen",
+    "disc": "",
+    "by": ""
+  },
+  "118": {
+    "name": "Ununoctium",
+    "abr": "Uuo",
+    "weight": "Unknown",
+    "type": "Noble Gas",
+    "disc": "",
+    "by": ""
   }
 }

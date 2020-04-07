@@ -72,11 +72,11 @@ global.twitch = { // global variables for twitch bot
 
 /* these log to the console, with the colors for the designated app */
 global.discord.debug = function(msg){
-  console.log("\x1b[36m"+"DISCORD DEBUG: "+msg,"\x1b[0m");  // logs to console with colors and stuff
+  console.log("\x1b[36m"+"DISCORD "+"\x1b[33m"+"DEBUG: \x1b[36m"+msg,"\x1b[0m");  // logs to console with colors and stuff
 }
 
 global.twitch.debug = function(msg){
-  console.log("\x1b[35m"+"TWITCH DEBUG: "+msg,"\x1b[0m");  // logs to console with twitch's color
+  console.log("\x1b[35m"+"TWITCH "+"\x1b[33m"+"DEBUG: \x1b[35m"+msg,"\x1b[0m");  // logs to console with twitch's color
 }
 
 /* these are the same as the global debugs, but without the DEBUG at the beginning */

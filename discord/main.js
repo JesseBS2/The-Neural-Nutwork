@@ -1,6 +1,8 @@
 const Discord = require("discord.js");  // discord client
 const bot = new Discord.Client(); // bot
+
 const Configs = require("./configuration.json");
+const Periodic = require("./commands/periodic/table.json");
 
 var DiscordBot_SecretToken = "NjYxMjQ5Nzg2MzUwOTI3ODky.Xgoq5A.wXl8wyauDNjUoinAK1SyN69snrk"; // login token assigned
 
@@ -34,7 +36,7 @@ bot.on("ready", () => {
 
   });
 
-  console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds);
+  console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers");
 
   bot.user.setActivity("$help | "+global.discord.guilds+" servers");
 });
@@ -86,26 +88,54 @@ bot.on("message", recievedmessage => {
     let AllowedSymbols = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/","÷","x","^"];
     
     let math = "";
-    
+    let type = null
+    let other = {
+      value: null
+    }
+
     for( let j = 0; j < words.length; j++ ){  // loop through all words
+      let flag = false;
       if(words[j].length > 1){  // incases of 4+4
         for(let x  = 0; x < words[j].length; x++){  // loop through the length of the selected word that is longer than 1
           if(AllowedSymbols.includes(words[j][x])){ // if it is allowed then allow it
+            type = "math";
             math += words[j][x];
           }else{
-            return;
+            type = null;
+            flag = true;  // the flag is used to break both loops
+            break;
           }
         }
+
+        if(flag === true){  // if one word is wrong, they all should be. So don't run it.
+          type = null;
+          break;
+        }
       }else if( AllowedSymbols.includes(words[j])  ){ // detects a(let's say...) 5 in "5 + 6"
+        type = "math";
         math += words[j];
       }else{
-        return;
+        type = null;
+        break;
       }
     }
 
-    math = math.replace(/÷/gi, "/").replace(/x/gi,"*").replace(/{/gi,"(").replace(/\[/gi,"(").replace(/]/gi,")").replace(/}/gi,")").replace(" ",""); // replace all the incorrect items'
-    require("./commands/math/index.js")(math);  // evaluate
+    for( let j = 1; j < Object.keys(Periodic).length; j++ ){
+      if(words[0].toLowerCase() === Periodic[j]["name"].toLowerCase() ){
+        type = "periodic";
+        other.value = j;
+      }
+    }
 
+    if(type === null){return;}else if(type === "math"){
+      math = math.replace(/÷/gi, "/").replace(/x/gi,"*").replace(/{/gi,"(").replace(/\[/gi,"(").replace(/]/gi,")").replace(/}/gi,")").replace(" ",""); // replace all the incorrect items'
+      require("./commands/math/index.js")(math);  // evaluate
+    }else if(type === "periodic"){
+      global.discord.log("Ran a PToE in main.js");
+      let element = global.discord.functions.CustomEmbed(Periodic[other.value]["name"]+" - #"+other.value,"Symbol: "+Periodic[other.value]["abr"]+"\nAtomic Weight: "+Periodic[other.value]["weight"])[0].field("Discovery",Periodic[other.value]["disc"]+" by "+Periodic[other.value]["by"])[1];
+      recievedmessage.channel.send(element);
+      return;
+    }
   }
 
 });

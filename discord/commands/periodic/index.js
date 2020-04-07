@@ -9,15 +9,15 @@ module.exports = function(){
   let table = require("./table.json");
 
   if($cmnd === "periodic" || $cmnd === "periodictable" || $cmnd === "pt"){
-    if(!words[1]){$channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/1sdQUsd.jpg"]}); return;}
+    if(!words[1]){$channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/rzoOEEY.jpg"]}); return;}
 
     let element = false;
     
-    for(var elems = 0; elems < Object.keys(table).length; elems++){
+    for(var elems = 1; elems < Object.keys(table).length; elems++){
       //global.discord.debug("Loop #"+elems);
-      if(words[1].toLowerCase() == table[elems+1]["name"].toLowerCase() || words[1].toLowerCase() == table[elems+1]["abr"].toLowerCase() || words[1] === (elems+1).toString()){
+      if(words[1].toLowerCase() == table[elems]["name"].toLowerCase() || words[1].toLowerCase() == table[elems]["abr"].toLowerCase() || words[1] === (elems).toString()){
         //global.discord.debug("YES IT IS")
-        element = Embed(table[elems+1]["name"],"Symbol: "+table[elems+1]["abr"]+"\nAtomic Weight: "+table[elems+1]["weight"]+"\nElectrons per Shell: "+table[elems+1]["elec"])[1];
+        element = Embed(table[elems]["name"]+" - #"+elems,"Symbol: "+table[elems]["abr"]+"\nAtomic Weight: "+table[elems]["weight"])[0].field("Discovery",table[elems]["disc"]+" by "+table[elems]["by"])[1];
         break;
       }
     }

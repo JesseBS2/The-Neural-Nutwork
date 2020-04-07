@@ -8,7 +8,8 @@
     "notate": "Convert a number into scientific notation",
     "area": "Get the area of a 2D shape",
     "volume": "Get the volume of a 3D shape",
-    "solve": "Solve a math problem with an un-named variable."
+    "solve": "Solve a math problem with an un-named variable.",
+    "convert": "Convert one value into another"
   },
   "other": {
     "snowflake": "Get your personal snowflake ID",

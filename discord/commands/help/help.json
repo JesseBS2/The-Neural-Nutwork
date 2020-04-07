@@ -80,7 +80,12 @@
   },
   "perodic": {
     "desc": "Get information on the Periodic Table of Elements",
-    "format": "periodic <name/id>",
+    "format": "periodic <name/id/symbol>",
     "alias": ["periodictable","pt"]
+  },
+  "respect": {
+    "desc": "Pay respects to an event",
+    "format": "respect <thing>",
+    "alias": ["F"]
   }
 }

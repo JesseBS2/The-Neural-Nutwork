@@ -2,6 +2,7 @@ const algebra = require("algebra.js");
 var Embed = global.discord.functions.CustomEmbed; // makes calling it easier
 var SolveEquation = global.SolveEquation; // also easier
 
+
 module.exports = function(ee){
   global.discord.log("DISCORD: Ran /commands/math/index.js");
   
@@ -9,9 +10,9 @@ module.exports = function(ee){
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
 
-  if(ee){
-    if(SolveEquation(ee) === false){$channel.send("Something went wrong!");return;};
-    $channel.send( "> "+SolveEquation(ee) );
+  if(ee){ // should only occur when called in main.js
+    if(SolveEquation(ee) === false){$channel.send("Something went wrong!"); return;}
+    $channel.send( "> "+ Number(SolveEquation(ee)) ); 
     return;
   }
 
@@ -25,10 +26,10 @@ module.exports = function(ee){
       }
     }
 
-    toEquation = toEquation.replace(/÷/gi,"/").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(" ","");
+    toEquation = toEquation.replace(/÷/g,"÷").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(/ /g,"");
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
-      let n = SolveEquation(toEquation);
+      let n = SolveEquation( toEquation );
       $channel.send( Embed("Algebra",toEquation)[0].field("Result",n)[1] );
     }
     return;
@@ -115,16 +116,76 @@ module.exports = function(ee){
     return;
   }else if($cmnd === "volume"){
     if(!words[1]){$channel.send("Volume is the amount of space that an object takes up"); return;}
+    /* Going to need: Cube, Pyramid, Sphere, Cylinder, Cone */
     if(words[1] == "cube" || words[1] == "cuboid"){
       if(!words[2]){$channel.send("You're forgetting the height parameter!"); return;}
       if(!words[3]){$channel.send("You're forgetting the width parameter!"); return;}
       if(!words[4]){$channel.send("You're forgetting the depth parameter!"); return;}
 
       let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
-      let x = Embed("Area of a square","Height: "+words[2]+" Width: "+words[3]," Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
-      $channel.send(x)
+      let x = Embed("Volume of a square","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
+      $channel.send(x);
+      return;
+    }else if(words[1] == "pyramid" || words[1] == "tetrahedron"){
+      if(!words[2]){$channel.send("You're forgetting the height parameter!"); return;}
+      if(!words[3]){$channel.send("You're forgetting the width parameter!"); return;}
+      if(!words[4]){$channel.send("You're forgetting the depth parameter!"); return;}
+      
+      let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
+      math = math/3;
+      let x = Embed("Volume of a tetrahedron","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","(Width * Height * Depth) ÷ 3")[0].field("Result",math+"³")[1];
+      $channel.send(x);
+      return;
+
+    }else if(words[1] == "cylinder"){
+      if(!words[2]){$channel.send("You're forgetting the radius parameter!"); return;}
+      if(!words[3]){$channel.send("You're forgetting the height parameter!"); return;}
+      
+      let math = ( 3.14159 * (Number(words[2])**2) ) * Number(words[3]);
+      
+      let x = Embed("Volume of a cylinder","Radius: "+words[2]+" Height: "+words[3])[0].field("Formula","[π * (Raidus^2) ] * Height")[0].field("Result",math+"³")[1];
+      $channel.send(x);
+      return;
+
+    }else if(words[1] == "sphere"){
+      if(!words[2]){$channel.send("You're forgetting the radius!"); return;}
+      
+      let math = (4/3)*3.14159*(Number(words[2])**3);
+
+      let x = Embed("Volume of a sphere","Radius: "+words[2])[0].field("Formula","(4/3) * π * (Raidus^3)")[0].field("Result",math+"³")[1];
+      $channel.send(x);
       return;
     }
+
+  }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
+    if(!words[1]){$channel.send("Convert a value A into a value B"); return;}
+    
+    let A = words[1].toLowerCase();
+    let B = words[2].toLowerCase();
+
+    let metric = {
+      um: 0.001,
+      mm: 0.01,
+      cm: 0.1,
+      m: 1,
+      km: 1000
+    }
+
+    let conversion;
+
+    if(A.replace(/[0-9]/g, "") in metric && B in metric && A != B){
+      conversion = Embed("Convert "+A+" to "+B,"1 "+B+" is "+(metric[B.replace(/\D/g,"")]/metric[A])+" "+A)[0].field("Result", (A.replace(/\D/g,"") * metric[B] ).toString() + B)[1];
+    }
+
+    $channel.send(conversion);
+    return;
+
+  }else if($cmnd === "solve"){
+    // solve 5+x=10 x
+    //  5+x=10
+    //  x=5
+    //  algebra.js has some way to do this
+    return;
   }
 
 }
