@@ -8,8 +8,9 @@ module.exports = function(){
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
-  let $author = global.discord.message.msg.member;
+  let $author = global.discord.message.msg.member;  // used for checking permissions
   let me = global.discord.bot.me;
+  let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
 
   if($cmnd === "clear"){
     if($author.hasPermission("MANAGE_MESSAGES") === false){
@@ -58,6 +59,13 @@ module.exports = function(){
     }
 
   }else if($cmnd === "ban"){
+    if($author.hasPermission("BAN_MEMBERS") === false){
+      $channel.send("You do not have the necessary permissions for that");
+      return;
+    }else if(me.hasPermission("BAN_MEMBERS") === false){
+      $channel.send("I do not have the necessary permissions for that");
+      return;
+    }
     var toBan = global.discord.message.msg.mentions.users.first();
        
     var time = Number(words[2]) || 7; //custom days or 1 week
@@ -84,6 +92,98 @@ module.exports = function(){
     }catch(err){
       global.discord.log(err);
       $channel.send("This user can not be banned!");
+    }
+
+  }else if($cmnd === "config"){ // for modifiying ../../configuration.json > guild.id > configs
+    if($author.hasPermission("ADMINISTRATOR") === false){
+      $channel.send("Only people with the administrator permission can use this command.");
+      return;
+    }
+
+    if(!words[1]){
+      let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("echo - "+Configs["config"]["echos"],"Mimic what a member said, in a flashy way.\n(enable/disable)")[0].field("leveling - "+Configs["config"]["leveling"],"Members talk in the server and gain levels!\n(enable/disable)")[0].field("Fun Commands - "+Configs["categories"]["fun"],"Purely cosmetic, and just fun-to-use commands.\n(enable/disable)")[0].field("PToE Commands - "+Configs["categories"]["periodic-table"],"Periodic Table of Elements, and all commands under this category.\n(enable/disable)")[1];
+      $channel.send(displayconfigures);
+      return;
+    }
+    
+    let categories = Configs["categories"];
+    let configurations = Configs["config"];
+
+    if(words[1].toLowerCase() in categories){
+      if(!words[2]){return;}  // embed with a display of the options
+
+      if(words[2] == "enable"){
+        try{
+          categories[words[1]] = "enabled"; // enable
+          $channel.send(words[1]+" is now enabled");  // annouce
+          global.discord.log(words[1]+" commands on server <#"+global.discord.message.msg.guild.id+"> are now enabled");  // log
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to enable "+words[1]+" commands server <#"+global.discord.message.msg.guild.id+">\n"+err); // the thing attempted to change, along with server ID and error
+        }
+      }else if(words[2] == "disable"){
+        try{
+          categories[words[1]] = "disabled";
+          $channel.send(words[1]+" is now disabled");
+          global.discord.log(words[1]+" commands on server <#"+global.discord.message.msg.guild.id+"> are now disabled");
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to disable "+words[1]+" commands on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+        }
+      }
+
+    }else if(words[1] === "autorole"){  // special case for auto role, as it has more than two states
+      if(me.hasPermission("MANAGE_ROLES") === false){
+        $channel.send("I do not have the necessary permissions for that");
+        return;        
+      }
+      if(!words[2]){$channel.send("automatic role is currently: "+configurations["autorole"]["type"]); return;}  // in case of lack of setting
+      
+      if(words[2] === "disable"){
+        try{
+          configurations["autorole"]["type"] = "disabled";
+          configurations["autorole"]["id"] = null;
+          $channel.send("autorole is now disabled");
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to set autorole to disabled on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+        }
+      }else if(words[2].startsWith("<@&")){
+        try{
+          configurations["autorole"]["type"] = words[2];
+          configurations["autorole"]["id"] = global.discord.message.msg.mentions.roles.first().id; // get the role mentioned(will return snowflake)
+          $channel.send("Set automatic role to: "+words[2]);
+          global.discord.log("Autorole on server <#"+global.discord.message.msg.guild.id+"> is now "+words[2]);
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to assign "+words[2]+" as automatic role in server <#"+global.discord.message.msg.guild.id+">\n"+err);
+        }
+      }
+
+      return;
+    }else if(words[1].toLowerCase() in configurations){ // all cases where the value is either 'enabled' or 'disabled'
+      if(!words[2]){$channel.send(words[1]+" is currently: "+configurations[words[1]]); return;}
+
+
+      if(words[2] == "enable"){
+        try{
+          configurations[words[1]] = "enabled"; // enable
+          $channel.send(words[1]+" is now enabled");  // annouce
+          global.discord.log(words[1]+" on server <#"+global.discord.message.msg.guild.id+"> is now enabled");  // log
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to set "+words[1]+" to enabled on server <#"+global.discord.message.msg.guild.id+">\n"+err); // the thing attempted to change, along with server ID and error
+        }
+      }else if(words[2] == "disable"){
+        try{
+          configurations[words[1]] = "disabled";
+          $channel.send(words[1]+" is now disabled");
+          global.discord.log(words[1]+" on server <#"+global.discord.message.msg.guild.id+"> is now disabled");
+        }catch(err){
+          $channel.send("Something went wrong!");
+          global.discord.debug("Failed to set "+words[1]+" to disabled on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+        }
+      }
     }
 
   }

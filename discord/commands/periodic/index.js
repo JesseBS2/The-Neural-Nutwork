@@ -1,6 +1,7 @@
 const Embed = global.discord.functions.CustomEmbed;
 
 module.exports = function(){
+  
   global.discord.log("Ran /commands/periodic/index.js");
 
   let words = global.discord.message.words;

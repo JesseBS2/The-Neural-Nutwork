@@ -14,15 +14,13 @@
   "other": {
     "snowflake": "Get your personal snowflake ID",
     "echo": "Repeat a message with style",
-    "Echo": "Display a message with style",
-    "poll": "Create a Poll",
-    "vote": "Vote on a created poll",
-    "config": "Configure the bot for your server"
+    "Echo": "Display a message with style"
   },
   "mod": {
     "kick": "Kick a member from the server",
     "ban": "Ban a member from the server",
-    "clear": "Clear an amount of messages"
+    "clear": "Clear an amount of messages",
+    "config": "Configure the bot for your server"
   },
   "periodic": {
     "periodic": "Get information about an element on the PToE",
@@ -31,6 +29,8 @@
     "fuze": "NOT A WORKING COMMAND YET"
   },
   "fun": {
+    "poll": "Create a poll",
+    "vote": "Vote on a created poll",
     "F": "pay respects",
     "f": "alt",
     "respect": "alt"

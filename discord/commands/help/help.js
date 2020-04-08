@@ -1,10 +1,9 @@
-const Message = global.discord.message;
-let $channel = Message.channel;
-let words = Message.words;
-let $pre = Message.prefix;
-
-
 module.exports = function(){
+
+  const Message = global.discord.message;
+  let $channel = Message.channel;
+  let words = Message.words;
+  let $pre = Message.prefix;
 
   global.discord.log("DISCORD: Ran /commands/help/help.js");
 
