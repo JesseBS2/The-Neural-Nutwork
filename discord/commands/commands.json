@@ -1,4 +1,8 @@
-{
+{ 
+  "help": {
+    "help": "Help with commands",
+    "commands": "NOT A WORKING COMMAND YET"
+  },
   "math": {
     "math": "Do a math problem",
     "algebra": "Do a math problem",

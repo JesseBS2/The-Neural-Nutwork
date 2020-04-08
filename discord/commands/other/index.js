@@ -6,7 +6,10 @@ module.exports = function(){
 
   global.discord.log("DISCORD: Ran /commands/other/index.js");
 
-  let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+  let Configs;
+  if($channel.type != "dm"){
+    let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+  }
   let message = global.discord.message.msg;
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
@@ -16,22 +19,7 @@ module.exports = function(){
   let $pre = global.discord.message.prefix;
 
 
-  if($cmnd === "config"){ // a server's custom settings
-    // configurable settings: prefix, automath, autorole, embeds, echoes
-
-    if(words[1] === "prefix"){
-      if(!words[2]){$channel.send("The prefix for Nutwork commands is currently "+Configs["prefix"]);return;}
-      if(words[2].length > 3){$channel.send("A prefix can not be longer than 3 characters");return;}
-      else{
-        //global.writeJSON("./../../configuration.json",JSON.stringify(message.guild.id["prefix"] = ""));
-        Configs["prefix"] = words[2];
-        $channel.send( Embed("New Prefix","The Nutwork has a new prefix for commands, "+words[2])[0].field("New Usage","Use the new prefix in place of the old one, example:\n"+words[2]+"echo Hello World")[1] );
-      }
-    }else if(words[1] === "automath"){
-      if(!words[2]){$channel.send("Automathically doing math is currently "+Configs["config"]["automath"])}
-    }
-
-  }else if($cmnd === "snowflake"){
+  if($cmnd === "snowflake"){
     try{
       $author.send("Your account's snowflake is:\n"+$author.id.toString());
     }catch(err){

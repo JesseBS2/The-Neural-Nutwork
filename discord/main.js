@@ -1,5 +1,5 @@
-const Discord = require("discord.js");  // discord client
-const bot = new Discord.Client(); // bot
+const Discord = require("discord.js");  // discord library
+const bot = new Discord.Client(); // create a client and name it bot
 
 const Configs = require("./configuration.json");
 const Periodic = require("./commands/periodic/table.json");
@@ -53,13 +53,45 @@ const _commands = require("./commands/commands.json"); // all of the bot's comma
 
 bot.on("message", recievedmessage => {
   global.discord.message = null;
+  let words = recievedmessage.content.split(" ");
+  let $channel = recievedmessage.channel; // before this wasn't defined and it was so ugly
 
   if(recievedmessage.author === bot.user || recievedmessage.author.bot){return;}  // check if message sender is self or a bot
+  if(recievedmessage.channel.type == "dm"){  // dm's have some restrictions. Since I'm doing this late, I can't quite weave it in pretty
+    global.discord.message = {};
+    global.discord.message.msg = recievedmessage;
+    global.discord.message.message = recievedmessage.content; 
+    global.discord.message.words = recievedmessage.content.split(" ");  
+    global.discord.message.prefix = "$"; // will always be a $, too much trouble to save each users preffered prefix
+    global.discord.message.channel = recievedmessage.channel;
+    global.discord.message.author = recievedmessage.author;
+    global.discord.message.tag = recievedmessage.author.username.toString() + "#" + recievedmessage.author.discriminator.toString(); // the person that sent the message as USERNAME#0000
+    global.discord.message.command = recievedmessage.content.split(" ")[0].split("$")[1];
+
+    if(words[0] in require("./commands/help/help.json")){ // if it is a command, even though a prefix isn't present.
+      global.discord.message.command = recievedmessage.content.split(" ")[0]; // override the way the command was made before.
+    }
+
+    global.discord.log("\x1b[42m"+"DM﹁");
+
+    if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
+      require("./commands/math/index.js")();
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["periodic"] || words[0] in _commands["periodic"]){
+      require("./commands/periodic/index.js")();
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["other"] || words[0] in _commands["other"]){
+      require("./commands/other/index.js")();
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["help"] || words[0] in _commands["help"]){
+      require("./commands/other/index.js")();
+    }else if(words[0].startsWith("$")){
+      $channel.send("Sorry, this command is either only avaliable in servers; or doesn't exist.")
+    }
+    return;
+  }
 
   global.discord.message = {};
   global.discord.message.msg = recievedmessage; // the message and all it's functions 
   global.discord.message.message = recievedmessage.content; // the string
-  global.discord.message.words = recievedmessage.content.split(" ");  // an array of each message
+  global.discord.message.words = recievedmessage.content.split(" ");  // an array of each word
   global.discord.message.prefix = Configs[recievedmessage.guild.id].prefix; // the prefix for the server whom called it
   global.discord.message.channel = recievedmessage.channel; // the channel the message was sent
   global.discord.message.author = recievedmessage.author; // the person that sent the message
@@ -67,34 +99,32 @@ bot.on("message", recievedmessage => {
   global.discord.bot = {};
   global.discord.bot.me = recievedmessage.guild.me;
 
-  let $channel = recievedmessage.channel; // before this wasn't defined and it was so ugly
-  let serverID = recievedmessage.guild.id;
 
-  if( $channel.id in Configs[serverID]["channels"]){}else{
-    Configs[serverID]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
+  if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
+    Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
   }
 
-  let $cmnd = recievedmessage.content.split(" ")[0].split(Configs[serverID].prefix)[1]; // remove the prefix an then return the first word. So only the command.
+  let $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
   let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
 
   global.discord.message.command = $cmnd;
 
-  if($cmnd === "help"){
+  if($cmnd in _commands["help"]){
     require("./commands/help/help.js")();
   }else if($cmnd in _commands["math"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
-    if(Configs[serverID]["categories"]["math"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["math"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/math/index.js")();
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
     require("./commands/mod/index.js")();
   }else if($cmnd in _commands["other"]){
-    if(Configs[serverID]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")();
   }else if($cmnd in _commands["periodic"]){
-    if(Configs[serverID]["categories"]["periodic-table"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["periodic-table"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/periodic/index.js")();
   }else if($cmnd in _commands["fun"]){
-    if(Configs[serverID]["categories"]["fun"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}    
+    if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}    
     require("./commands/fun/index.js")();
   }else{
    
@@ -141,12 +171,10 @@ bot.on("message", recievedmessage => {
       }
     }
 
-    if(type === null){return;}else if(type === "math" && Configs[serverID]["automath"] == "enabled"){
+    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled"){
 
-      math = math.replace(/÷/gi, "/").replace(/x/gi,"*").replace(/{/gi,"(").replace(/\[/gi,"(").replace(/]/gi,")").replace(/}/gi,")").replace(" ",""); // replace all the incorrect items'
       require("./commands/math/index.js")(math);  // evaluate
-
-    }else if(type === "periodic" && Configs[serverID]["autoperiodic"] == "enabled"){
+    }else if(type === "periodic" && Configs[recievedmessage.guild.id]["config"]["autoperiodic"] == "enabled"){
 
       global.discord.log("Ran a PToE in main.js");
       let element = global.discord.functions.CustomEmbed(Periodic[other.value]["name"]+" - #"+other.value,"Symbol: "+Periodic[other.value]["abr"]+"\nAtomic Weight: "+Periodic[other.value]["weight"])[0].field("Discovery",Periodic[other.value]["disc"]+" by "+Periodic[other.value]["by"])[1];
@@ -160,7 +188,7 @@ bot.on("message", recievedmessage => {
 
 bot.on("guildMemberAdd", member => {
   if(member.guild.me.hasPermission("MANAGE_ROLES") === false && member.guild.me.hasPermission("ADMINISTRATOR") === false){return;}  // can't do it so nevermind
-  if(Configs[member.guild.id]["config"]["autorole"]["type"] !== "disabled"){  // if autorole is set and the bot can assign roles
+  if(Configs[member.guild.id]["config"]["autorole"]["type"] !== "disabled"){  // if autorole is set
     member.addRole(Configs[member.guild.id]["config"]["autorole"]["id"]);
     global.discord.debug("Gave "+member.id+" the auto-role "+Configs[member.guild.id]["config"]["autorole"]["id"]+" in server <#"+member.guild.id+">")
   }

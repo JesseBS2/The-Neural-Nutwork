@@ -3,7 +3,7 @@ var Embed = global.discord.functions.CustomEmbed;
 
 module.exports = function(){
 
-  global.discord.log("DISCORD: Ran /commands/mod/index.js");
+  global.discord.log("Ran /commands/mod/index.js");
 
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
@@ -104,6 +104,19 @@ module.exports = function(){
       let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("echo - "+Configs["config"]["echos"],"Mimic what a member said, in a flashy way.\n(enable/disable)")[0].field("leveling - "+Configs["config"]["leveling"],"Members talk in the server and gain levels!\n(enable/disable)")[0].field("Fun Commands - "+Configs["categories"]["fun"],"Purely cosmetic, and just fun-to-use commands.\n(enable/disable)")[0].field("PToE Commands - "+Configs["categories"]["periodic-table"],"Periodic Table of Elements, and all commands under this category.\n(enable/disable)")[1];
       $channel.send(displayconfigures);
       return;
+    }
+
+    if(words[1] == "prefix" && words[2] && words[2].length >= 1){
+      if($author.hasPermission("ADMINISTRATOR") === false){$channel.send("You do not have the necessary permissions for that!"); return;}
+      if(words[2].length > 3){$channel.send("A prefix can not be longer than 3 characters."); return;}
+      if(words[2].toLowerCase() === global.discord.message.prefix){
+        $channel.send("That prefix is the same as the old prefix!");
+        return;
+      }else{
+        Configs["prefix"] = words[2].toLowerCase();
+        $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"])[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
+        return;
+      }
     }
     
     let categories = Configs["categories"];

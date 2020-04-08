@@ -4,7 +4,7 @@ var SolveEquation = global.SolveEquation; // also easier
 
 
 module.exports = function(ee){
-  global.discord.log("DISCORD: Ran /commands/math/index.js");
+  global.discord.log("Ran /commands/math/index.js");
   
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
@@ -123,7 +123,7 @@ module.exports = function(ee){
       if(!words[4]){$channel.send("You're forgetting the depth parameter!"); return;}
 
       let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
-      let x = Embed("Volume of a square","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
+      let x = Embed("Volume of a cube","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
       $channel.send(x);
       return;
     }else if(words[1] == "pyramid" || words[1] == "tetrahedron"){
@@ -162,19 +162,59 @@ module.exports = function(ee){
     
     let A = words[1].toLowerCase();
     let B = words[2].toLowerCase();
+    let AL = A.replace(/[0-9]/g,"");  // A without all the numbers
+    let AN = A.replace(/\D/g,""); // A without all the letters
 
-    let metric = {
-      um: 0.001,
-      mm: 0.01,
-      cm: 0.1,
-      m: 1,
-      km: 1000
+    let metricDist = {
+      // metric distance, based around meter
+      um: 0.000001, //micrometer
+      mm: 0.001, //millimeter
+      cm: 0.01, //centimeter
+      dm: 0.1, //decimeter
+      m: 1, //meter
+      dkm: 10, //dekameter
+      hm: 100, //hectometer
+      km: 1000, //kilometer
     }
+    let metricMeas = {
+      // metric measurements, based around gram
+      ug: 0.000001,
+      mg: 0.001, //milligram
+      cg: 0.01, //centigram
+      dg: 0.1,
+      g: 1, //gram
+      dkg: 10,
+      hg: 100,
+      kg: 1000
+    }
+    let usDist = {
+      // U.S. Customary Distances, based around inches
+      cm: 2.54,
+      "in.": 1, // in quotes because `in` is already an operator
+      ft: 12,
+      yd: 36, 
+      mi: 63360
+    }
+    let usMeas = {
+      // U.S Customary Measurements, based around cups
+      tsp: 1/48,
+      tbsp: 0.0625,
+      oz: 0.125,
+      cup: 1,
+      pt: 2,
+      qt: 4,
+      gal: 16
+    }
+
 
     let conversion;
 
-    if(A.replace(/[0-9]/g, "") in metric && B in metric && A != B){
-      conversion = Embed("Convert "+A+" to "+B,"1 "+B+" is "+(metric[B.replace(/\D/g,"")]/metric[A])+" "+A)[0].field("Result", (A.replace(/\D/g,"") * metric[B] ).toString() + B)[1];
+    if(AL in metricDist && B in metricDist && AL != B){
+      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(metricDist[B]/metricDist[AL])+""+AL)[0].field("Result", (AN * ( metricDist[AL] / metricDist[B] ) ).toString() + B)[1];
+    }else if(AL in usDist && B in usDist && AL != B){
+      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(usDist[B]/usDist[AL])+""+AL)[0].field("Result", (AN * ( usDist[AL] / usDist[B] ) ).toString() + B)[1];
+    }else if(AL in usDist && B in metricDist){
+      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(metricDist[B]/2.54/usDist[AL])+""+AL)[0].field("Result", (AN * ( usDist[AL] / 2.54 ) / metricDist[B] ).toString() + B)[1];
     }
 
     $channel.send(conversion);
