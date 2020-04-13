@@ -53,6 +53,16 @@ global.discord = {  // global variables for discord bot
         return [self,embed];
       }
 
+      self.footer = function(message){
+        embed = embed.setFooter(message);
+        return [self,embed];
+      }
+
+      self.useTimestamp = function(){
+        embed = embed.setTimestamp();
+        return [self,embed];
+      }
+
       return [self,embed];
     },
     

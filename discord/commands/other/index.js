@@ -30,12 +30,12 @@ module.exports = function(){
     return;
 
   }else if($cmnd === "echo"){ // lowercase e copies the message and makes the embed
-    var echoed = Embed("",global.discord.message.message.split($pre+"echo ")[1])[1];  // split the users message by the prefix on the server, followed by the command and a space. everything after it.
+    var echoed = Embed("",global.discord.message.message.split($pre+"echo ")[1])[0].useTimestamp()[1];  // split the users message by the prefix on the server, followed by the command and a space. everything after it.
     $channel.send( echoed );
     return;
 
   }else if($cmnd === "Echo"){ // capital E cuts the message and makes the embed
-    var echoed = Embed(global.discord.message.tag+" says...",global.discord.message.message.split($pre+"Echo ")[1])[1];
+    var echoed = Embed(global.discord.message.tag+" says...",global.discord.message.message.split($pre+"Echo ")[1])[0].useTimestamp()[1];
     global.discord.message.msg.delete();
     $channel.send( echoed );
     return;

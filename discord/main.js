@@ -17,7 +17,7 @@ bot.on("ready", () => {
   });
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers");
-  bot.user.setActivity("$help | "+global.discord.guilds+" servers");
+  bot.user.setActivity("$commands | "+global.discord.guilds+" servers");
 
 
   global.discord.functions.saveJSON = function(srcJSON){
@@ -101,7 +101,7 @@ bot.on("message", async recievedmessage => {
     }else if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
       if(words[0] in _commands["math"]){global.discord.message.command = words[0]}
       require("./commands/math/index.js")();
-    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["periodic"] || words[0] in _commands["periodic"]){
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["ptoe"] || words[0] in _commands["ptoe"]){
       require("./commands/periodic/index.js")();
     }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["help"] || words[0] in _commands["help"]){
       require("./commands/help/index.js")();
@@ -156,7 +156,8 @@ bot.on("message", async recievedmessage => {
       if(words[1].startsWith("<@!") && words[1].endsWith(">") && words[1].startsWith("<@&") === false){  // <@& is a role, don't want that.
         global.discord.adminVars.catchXveno.enabled = true;
         global.discord.adminVars.catchXveno.userId = words[1].replace("<@!","").replace(">","");
-        $channel.send("Tattletale Protocol is now on");
+        recievedmessage.delete();
+        //$channel.send("Tattletale Protocol is now on");
         global.discord.debug("Tattletale Protocol is now on");
       }else if(words[1] == "false"){
         global.discord.adminVars.catchXveno.enabled = false;
@@ -177,11 +178,10 @@ bot.on("message", async recievedmessage => {
         //let recievedmessage.attachments.get(recievedmessage.attachments.firstKey()).proxyURL;
         $channel.send(img.proxyURL);
       });
-      $channel.send("<@!"+recievedmessage.author.id+">"+" was selected for the tattletale protocol, so their attachment was duplicated in case of deletion.\n")
+      $channel.send("<@!"+recievedmessage.author.id+">"+" was selected for the tattletale protocol, so their attachment(s) (was/were) duplicated in case of deletion.\n")
       global.discord.debug("Tattled on "+recievedmessage.author.id);
     }
   }
-
 
 
 
@@ -214,9 +214,9 @@ bot.on("message", async recievedmessage => {
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")();
-  }else if($cmnd in _commands["periodic"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["periodic-table"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
-    require("./commands/periodic/index.js")();
+  }else if($cmnd in _commands["ptoe"]){
+    if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    require("./commands/ptoe/index.js")();
   }else if($cmnd in _commands["fun"]){
     if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}    
     require("./commands/fun/index.js")();
@@ -224,7 +224,7 @@ bot.on("message", async recievedmessage => {
    
     let words = global.discord.message.words;
     let AllowedSymbols = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/","÷","x","^","\\"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
-    
+
     let math = "";
     let type = null
     let other = {
@@ -302,14 +302,13 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "automath": "enabled",
       "autoperiodic": "enabled",
       "echos": "enabled",
-      "embeds": "enabled",
-      "leveling": "enabled"
+      "embeds": "enabled"
     },
     "categories": {
       "math": "enabled",
       "mod": "enabled",
       "other": "enabled",
-      "periodic-table": "enabled",
+      "ptoe": "enabled",
       "fun": "enabled"
     },
     "channels": {

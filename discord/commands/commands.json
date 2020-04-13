@@ -1,14 +1,14 @@
 { 
   "help": {
     "help": "Help with commands",
-    "commands": "NOT A WORKING COMMAND YET"
+    "commands": "Shows what commands are avaliable"
   },
   "math": {
     "math": "Do a math problem",
-    "algebra": "Do a math problem",
+    "algebra": "",
     "root": "Get the root of a number",
-    "evaluate": "Do a math problem with a variable, and assign that variable",
     "eval": "Do a math problem with a variable, and assign that variable",
+    "evaluate": "",
     "notate": "Convert a number into scientific notation",
     "area": "Get the area of a 2D shape",
     "volume": "Get the volume of a 3D shape",
@@ -27,17 +27,16 @@
     "clear": "Clear an amount of messages",
     "config": "Configure the bot for your server"
   },
-  "periodic": {
-    "periodic": "Get information about an element on the PToE",
-    "periodictable": "alt",
-    "pt": "alt",
-    "fuze": "NOT A WORKING COMMAND YET"
+  "ptoe": {
+    "pt": "Get information about an element on the PToE",
+    "periodic": "",
+    "periodictable": ""
   },
   "fun": {
     "poll": "Create a poll",
     "vote": "Vote on a created poll",
-    "F": "pay respects",
-    "f": "alt",
-    "respect": "alt"
+    "respect": "Pay respects",
+    "f":  "",
+    "F": ""
   }
 }
