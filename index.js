@@ -18,6 +18,7 @@ global.SolveEquation = function(msg){
     // so in a lot of places, there will still be .replace commands before or in a SolveEquation();
     msg = msg.replace(/\\/g,"")  // remove back slashes(which help ignore \* \*)
         .replace(/x/g,"*")
+        .replace(/\*\*/g,"^")
         .replace(/÷/gi, "/")
         .replace(/\[/g,"(") // the following four are commonly used in math, but algebra.js doesn't accept them.
         .replace(/\]/g,")")
@@ -36,27 +37,31 @@ global.discord = {  // global variables for discord bot
   online: false,
   functions: {
     CustomEmbed: function(title,description,color){
-      if(title === "eWF5IGJhc2U2NCBpcyBmdW4hIQ=="){title = ""}
-      color = color || "#00ABFF";
+      if(title === ""){title = " "}
       let self = {};
-      const embed = new Discord.RichEmbed().setColor(color).setTitle(title).setDescription(description).setTimestamp();
+      color = color || "#00ABFF"
+      var embed = new Discord.RichEmbed().setColor(color).setTitle(title).setDescription(description);
             
       self.useImage = function(img){
         img = img || "https://i.imgur.com/zfusTWU.png";
-        return [self,embed.setThumbnail(img)];
+        embed = embed.setThumbnail(img);
+        return [self,embed];
       }
+
       self.field = function(title2,text){
-        return [self,embed.addField(title2,text)];
+        embed = embed.addField(title2,text);
+        return [self,embed];
       }
 
       return [self,embed];
     },
+    
     DisabledEmbed: function(title,description){
       var self = {};
       var msg; 
       title = title || "<title></title>";
       description = description || "<body></body>";
-      if(title === "eWF5IGJhc2U2NCBpcyBmdW4hIQ=="){ // just in case it's necessary
+      if(title === " "){ // just in case it's necessary
         msg = description;
       }else{
         msg = "**"+title+"**\n"+description;

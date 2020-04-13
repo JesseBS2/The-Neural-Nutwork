@@ -7,9 +7,7 @@ module.exports = function(){
   global.discord.log("DISCORD: Ran /commands/other/index.js");
 
   let Configs;
-  if($channel.type != "dm"){
-    let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
-  }
+  
   let message = global.discord.message.msg;
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
@@ -18,6 +16,9 @@ module.exports = function(){
   let $member = global.discord.message.msg.member;
   let $pre = global.discord.message.prefix;
 
+  if($channel.type != "dm"){
+    let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+  }
 
   if($cmnd === "snowflake"){
     try{
@@ -29,7 +30,7 @@ module.exports = function(){
     return;
 
   }else if($cmnd === "echo"){ // lowercase e copies the message and makes the embed
-    var echoed = Embed("eWF5IGJhc2U2NCBpcyBmdW4hIQ==",global.discord.message.message.split($pre+"echo ")[1])[1];  // split the users message by the prefix on the server, followed by the command and a space. everything after it.
+    var echoed = Embed("",global.discord.message.message.split($pre+"echo ")[1])[1];  // split the users message by the prefix on the server, followed by the command and a space. everything after it.
     $channel.send( echoed );
     return;
 

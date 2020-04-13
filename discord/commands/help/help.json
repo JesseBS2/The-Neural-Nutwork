@@ -87,5 +87,10 @@
     "desc": "Pay respects to an event",
     "format": "respect <thing>",
     "alias": ["F"]
+  },
+  "simplify": {
+    "desc": "Simplify an equation",
+    "format": "simplify <math equation>",
+    "alias": ["simp"]
   }
 }

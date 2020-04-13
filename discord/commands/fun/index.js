@@ -95,5 +95,14 @@ module.exports = function(){
       });
 
     return;
+  
+  }else if($cmnd === "roll"){
+    let dice = ["4","6","10","15","20"];
+    if(!words[1] || dice.includes(words[1]) === false){$channel.send("You can roll a 4, 6, 10, 15 and 20 sided die")}
+
+    if(words[1]){
+      
+    }
+    
   }
 }

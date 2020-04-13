@@ -13,7 +13,8 @@
     "area": "Get the area of a 2D shape",
     "volume": "Get the volume of a 3D shape",
     "solve": "Solve a math problem with an un-named variable.",
-    "convert": "Convert one value into another"
+    "convert": "Convert one value into another",
+    "simplify": "Converts an Algebraic equation into a simple equation"
   },
   "other": {
     "snowflake": "Get your personal snowflake ID",

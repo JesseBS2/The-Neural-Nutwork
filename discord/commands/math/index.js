@@ -9,6 +9,8 @@ module.exports = function(ee){
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
+  let $pre = global.discord.message.prefix;
+  let message = global.discord.message.message;
 
   if(ee){ // should only occur when called in main.js
     if(SolveEquation(ee) === false){$channel.send("Something went wrong!"); return;}
@@ -104,7 +106,7 @@ module.exports = function(ee){
       let r = Number(words[2])
       let math = 3.14159 * ( r**2 );
       
-      let x = Embed("Area of a square","Radius: "+words[2])[0].field("Formula","Pi * (Radius^2)")[0].field("Result",math+"²")[1];
+      let x = Embed("Area of a square","Radius: "+words[2])[0][0].field("Formula","Pi * (Radius^2)")[0].field("Result",math+"²")[1];
       $channel.send(x)
       return;
         
@@ -124,6 +126,7 @@ module.exports = function(ee){
 
       let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
       let x = Embed("Volume of a cube","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
+      
       $channel.send(x);
       return;
     }else if(words[1] == "pyramid" || words[1] == "tetrahedron"){
@@ -210,22 +213,47 @@ module.exports = function(ee){
     let conversion;
 
     if(AL in metricDist && B in metricDist && AL != B){
-      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(metricDist[B]/metricDist[AL])+""+AL)[0].field("Result", (AN * ( metricDist[AL] / metricDist[B] ) ).toString() + B)[1];
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(metricDist[B]/metricDist[AL])+""+B)[0].field("Result", (AN * ( metricDist[AL] / metricDist[B] ) ).toString() + B)[1];
     }else if(AL in usDist && B in usDist && AL != B){
-      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(usDist[B]/usDist[AL])+""+AL)[0].field("Result", (AN * ( usDist[AL] / usDist[B] ) ).toString() + B)[1];
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(usDist[B]/usDist[AL])+""+B)[0].field("Result", (AN * ( usDist[AL] / usDist[B] ) ).toString() + B)[1];
     }else if(AL in usDist && B in metricDist){
-      conversion = Embed("Convert "+A+" to "+B,"1"+B+" is "+(metricDist[B]/2.54/usDist[AL])+""+AL)[0].field("Result", (AN * ( usDist[AL] / 2.54 ) / metricDist[B] ).toString() + B)[1];
+      let calc = AN * ( ( usDist[AL] * 2.54 / metricDist[B]) / 100);
+      //calc = calc.toFixed(4); // shortens the decimals to 4 places
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc + B)[1];
+    }else if(AL in metricDist && B in usDist){
+      let calc = AN * ( ( metricDist[AL] / 0.01 ) / 2.54 ) / usDist[B];
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc + B)[1];
+    
+    }else if(AL in metricMeas && B in metricMeas && AL != B){
+      let calc = ( metricMeas[AL] / metricMeas[B] ) * AN; // bruh I'm soo jealous of the metirc system! It's so easy!
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc+B)[1];
+    }else if(AL in usMeas && B in usMeas && AL != B){
+      let calc = ( usMeas[AL] / usMeas[B] ) * AN;
+      conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc+B)[1];
+    
+    }else{
+      $channel.send("Something went wrong!");
+      $channel.send("Did you spell the abbreviations right?");
+      return;
     }
 
     $channel.send(conversion);
     return;
 
-  }else if($cmnd === "solve"){
-    // solve 5+x=10 x
-    //  5+x=10
-    //  x=5
-    //  algebra.js has some way to do this
+  }else if($cmnd === "simplify" || $cmnd === "simp"){
+    let equation = message.split($pre+$cmnd+" ")[1];
+    let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
+    let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
+    $channel.send(Embed("Simplify",equation)[0].field("",SimpedEquation)[1]);
     return;
+  
+  }else if($cmnd === "solve"){
+    if(!words[2]){$channel.send("You're forgetting part of that Command!"); return;}
+      let expr = algebra.parse(words[1]);
+      let x = expr.solveFor(words[2]);
+
+      $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
+      return;
   }
 
 }

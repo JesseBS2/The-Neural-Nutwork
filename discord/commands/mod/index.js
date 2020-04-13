@@ -9,6 +9,7 @@ module.exports = function(){
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
   let $author = global.discord.message.msg.member;  // used for checking permissions
+  let $guild = global.discord.message.guild;
   let me = global.discord.bot.me;
   let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
 
@@ -50,6 +51,10 @@ module.exports = function(){
     }
 
     let toKick = global.discord.message.msg.mentions.members.first();
+    if(toKick === global.discord.bot.user.id){
+      $channel.send("I'll get you! And your little dog too!");
+      $guild.leave();
+    }
     try{
       toKick.kick();
       $channel.send("Kicked "+toKick+" from the server!");
@@ -114,6 +119,7 @@ module.exports = function(){
         return;
       }else{
         Configs["prefix"] = words[2].toLowerCase();
+        global.discord.functions.saveJSON();
         $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"])[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
         return;
       }
@@ -145,6 +151,9 @@ module.exports = function(){
         }
       }
 
+      global.discord.functions.saveJSON();
+      return;
+
     }else if(words[1] === "autorole"){  // special case for auto role, as it has more than two states
       if(me.hasPermission("MANAGE_ROLES") === false){
         $channel.send("I do not have the necessary permissions for that");
@@ -173,7 +182,9 @@ module.exports = function(){
         }
       }
 
+      global.discord.functions.saveJSON();
       return;
+
     }else if(words[1].toLowerCase() in configurations){ // all cases where the value is either 'enabled' or 'disabled'
       if(!words[2]){$channel.send(words[1]+" is currently: "+configurations[words[1]]); return;}
 
@@ -197,7 +208,9 @@ module.exports = function(){
           global.discord.debug("Failed to set "+words[1]+" to disabled on server <#"+global.discord.message.msg.guild.id+">\n"+err);
         }
       }
-    }
 
+      global.discord.functions.saveJSON();
+      return;
+    }
   }
 }

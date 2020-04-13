@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "algebra.js": "^0.2.6",
+    "commands": "0.0.7",
+    "discord": "^0.8.2",
     "discord.js": "^11.5.1",
     "tmi.js": "^1.5.0"
   }
