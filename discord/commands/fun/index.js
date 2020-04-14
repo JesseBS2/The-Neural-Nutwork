@@ -101,6 +101,9 @@ module.exports = function(){
     //let streak = false;
     flipper();
     
+  }else if($cmnd === "flips"){
+    $channel.send("That command is only available after using the `flip` command.");
+    return;
   }
 
   function flipper(send){
@@ -122,6 +125,7 @@ module.exports = function(){
       GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
         if( recievedMSG.author !== $author ){}else{  // only the original flipper can keep the streak
           if(recievedMSG.content.split(" ")[0] !== $pre+"flips"){
+            isStreak = false;
             GetIt.stop();
           }
           let newCoin = Math.round(Math.random()*1);
@@ -149,7 +153,5 @@ module.exports = function(){
         
       });
 
-
-      //GetIt.on("end",collection => {isStreak = false;}); // set streak to be false again
   }
 }
