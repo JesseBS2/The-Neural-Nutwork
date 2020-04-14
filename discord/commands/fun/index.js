@@ -98,6 +98,7 @@ module.exports = function(){
   
   }else if($cmnd === "flip"){
     
+    //let streak = false;
     flipper();
     
   }
@@ -108,43 +109,47 @@ module.exports = function(){
     let coin = Math.round(Math.random()*1);
     if(isStreak === false){
       if(coin === 0){
-        $channel.send("It landed on tails!\n"+(math*100)+"%");
+        $channel.send("> It landed on tails!\n> "+(math*100)+"%");
       }else if(coin === 1){
-        $channel.send("It landed on heads!\n"+(math*100)+"%");
+        $channel.send("> It landed on heads!\n> "+(math*100)+"%");
       }
-      isStreak = true;
-      flipper(false);
-    }else if(isStreak === true){
+    }
 
-      const isAVote = newMsg => newMsg.content.startsWith($pre+"flip");
+      const isAVote = newMsg => newMsg.content.split(" ")[0].startsWith($pre+"flips");
       let GetIt = $channel.createMessageCollector(isAVote); 
+      isStreak = true;
       
       GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
         if( recievedMSG.author !== $author ){}else{  // only the original flipper can keep the streak
+          if(recievedMSG.content.split(" ")[0] !== $pre+"flips"){
+            GetIt.stop();
+          }
           let newCoin = Math.round(Math.random()*1);
           if(newCoin === coin && newCoin === 0){
             math = math*0.5;
-            $channel.send("It landed on tails!\n"+(math*100)+"%");
+            $channel.send("> It landed on tails!\n> "+(math*100)+"%");
             isStreak = true;
           }else if(newCoin === coin && newCoin === 1){
             math = math*0.5;
-            $channel.send("It landed on heads!\n"+(math*100)+"%");
+            $channel.send("> It landed on heads!\n> "+(math*100)+"%");
             isStreak = true;
           }else if(newCoin === 1){
             math = 0.5; // clear the streak
-            $channel.send("It landed on heads!\n"+(math*100)+"%");
+            $channel.send("**Streak Broken**\n> It landed on heads!\n> "+(math*100)+"%");
             // don't call because streak is over
             isStreak = false; // set to false because streak is over
+            GetIt.stop();
           }else if(newCoin === 0){
             math = 0.5;
-            $channel.send("It landed on tails!\n"+(math*100)+"%");
+            $channel.send("**Streak Broken**\n> It landed on tails!\n> "+(math*100)+"%");
             isStreak = false;
+            GetIt.stop();
           }
         }
+        
       });
 
 
       //GetIt.on("end",collection => {isStreak = false;}); // set streak to be false again
-    }
   }
 }
