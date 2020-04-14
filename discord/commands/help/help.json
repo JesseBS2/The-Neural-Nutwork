@@ -11,7 +11,7 @@
   },
   "Echo": {
     "desc": "Recreates your message as an Rich Embed and deletes your original message.",
-    "format": "Echo <any text> (color)",
+    "format": "Echo <any text>",
     "alias": ["none"]
   },
   "prefix": {
@@ -83,5 +83,10 @@
     "desc": "Simplify an equation",
     "format": "simplify <math equation>",
     "alias": ["simp"]
+  },
+  "flip": {
+    "desc": "Flip a coin",
+    "format": "flip",
+    "alias": ["none"]
   }
 }

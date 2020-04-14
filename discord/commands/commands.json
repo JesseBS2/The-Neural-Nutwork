@@ -37,6 +37,7 @@
     "vote": "Vote on a created poll",
     "respect": "Pay respects",
     "f":  "",
-    "F": ""
+    "F": "",
+    "flip": "Flip a coin"
   }
 }

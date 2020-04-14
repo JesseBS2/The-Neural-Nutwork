@@ -96,13 +96,55 @@ module.exports = function(){
 
     return;
   
-  }else if($cmnd === "roll"){
-    let dice = ["4","6","10","15","20"];
-    if(!words[1] || dice.includes(words[1]) === false){$channel.send("You can roll a 4, 6, 10, 15 and 20 sided die")}
-
-    if(words[1]){
-      
-    }
+  }else if($cmnd === "flip"){
     
+    flipper();
+    
+  }
+
+  function flipper(send){
+    let isStreak = false;
+    let math = 0.5;
+    let coin = Math.round(Math.random()*1);
+    if(isStreak === false){
+      if(coin === 0){
+        $channel.send("It landed on tails!\n"+(math*100)+"%");
+      }else if(coin === 1){
+        $channel.send("It landed on heads!\n"+(math*100)+"%");
+      }
+      isStreak = true;
+      flipper(false);
+    }else if(isStreak === true){
+
+      const isAVote = newMsg => newMsg.content.startsWith($pre+"flip");
+      let GetIt = $channel.createMessageCollector(isAVote); 
+      
+      GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
+        if( recievedMSG.author !== $author ){}else{  // only the original flipper can keep the streak
+          let newCoin = Math.round(Math.random()*1);
+          if(newCoin === coin && newCoin === 0){
+            math = math*0.5;
+            $channel.send("It landed on tails!\n"+(math*100)+"%");
+            isStreak = true;
+          }else if(newCoin === coin && newCoin === 1){
+            math = math*0.5;
+            $channel.send("It landed on heads!\n"+(math*100)+"%");
+            isStreak = true;
+          }else if(newCoin === 1){
+            math = 0.5; // clear the streak
+            $channel.send("It landed on heads!\n"+(math*100)+"%");
+            // don't call because streak is over
+            isStreak = false; // set to false because streak is over
+          }else if(newCoin === 0){
+            math = 0.5;
+            $channel.send("It landed on tails!\n"+(math*100)+"%");
+            isStreak = false;
+          }
+        }
+      });
+
+
+      //GetIt.on("end",collection => {isStreak = false;}); // set streak to be false again
+    }
   }
 }
