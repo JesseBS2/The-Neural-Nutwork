@@ -41,12 +41,12 @@ module.exports = function(){
 
     /* the echo and Echo commands need special cases, as they are case sensitve*/
     if(words[1] === "echo"){
-      helpText = CustomEmbed("Command: "+$pre+"echo","Recreates your message as an Rich Embed.",)[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (option commands)")[1];
+      helpText = CustomEmbed("Command: "+$pre+"echo","Recreates your message as an Rich Embed.",)[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (optional parameters)")[1];
     }else if(words[1] === "Echo"){
-      helpText = CustomEmbed("Command: "+$pre+"Echo","Recreates your message as an Rich Embed and deletes your original message.")[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (option commands)")[1];
+      helpText = CustomEmbed("Command: "+$pre+"Echo","Recreates your message as an Rich Embed and deletes your original message.")[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (optional parameters)")[1];
     }else if(words[1].toLowerCase() in $json){
       //helpText = $json[words[1].toLowerCase()]["desc"];
-      helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),$json[words[1].toLowerCase()]["desc"])[0].field("Usage",$pre+$json[words[1].toLowerCase()]["format"])[0].field("Aliases",$json[words[1].toLowerCase()]["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (option commands)")[1];
+      helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),$json[words[1].toLowerCase()]["desc"])[0].field("Usage",$pre+$json[words[1].toLowerCase()]["format"])[0].field("Aliases",$json[words[1].toLowerCase()]["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (optional parameters)")[1];
     }
 
     $channel.send(helpText);

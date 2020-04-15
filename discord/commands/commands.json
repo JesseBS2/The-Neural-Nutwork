@@ -14,7 +14,8 @@
     "volume": "Get the volume of a 3D shape",
     "solve": "Solve a math problem with an un-named variable.",
     "convert": "Convert one value into another",
-    "simplify": "Converts an Algebraic equation into a simple equation"
+    "simplify": "Converts an Algebraic equation into a simple equation",
+    "simp": ""
   },
   "other": {
     "snowflake": "Get your personal snowflake ID",
@@ -31,9 +32,9 @@
     "config": "Configure the bot for your server"
   },
   "ptoe": {
-    "pt": "Get information about an element on the PToE",
-    "periodic": "",
-    "periodictable": ""
+    "periodic": "Get information about an element on the PToE",
+    "periodictable": "",
+    "pt": ""
   },
   "fun": {
     "poll": "Create a poll",

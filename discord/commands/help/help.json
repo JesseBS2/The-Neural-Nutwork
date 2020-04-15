@@ -69,10 +69,10 @@
     "format": "vote <thing>",
     "alias": ["none"]
   },
-  "pt": {
+  "periodic": {
     "desc": "Get information on the Periodic Table of Elements",
-    "format": "periodic <name/id/symbol>",
-    "alias": ["periodictable","periodic"]
+    "format": "periodic (name/id/symbol)",
+    "alias": ["periodictable","pt"]
   },
   "respect": {
     "desc": "Pay respects to an event",

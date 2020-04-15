@@ -50,7 +50,7 @@ module.exports = function(){
     return;
     
   }else if($cmnd === "poll"){
-    if($member.hasPermission("MANAGE_CHANNELS") === false){ // check if user is allowed to do that. Why is it the MANAGE_CHANNELS permission? I do NOT know.
+    if($member.hasPermission("MANAGE_MESSAGES") === false){ // check if user is allowed to do that. Why is it the MANAGE_MESSAGES permission? ...I do NOT know.
       $channel.send("You do not have the necessary permissions for that!");
       return;
     }
@@ -69,20 +69,20 @@ module.exports = function(){
         Votes[words[n].toLowerCase()] = 0; // lowercase only... makes it easier.
         voteFor += words[n]+"\n";
       }
-
-      $channel.send( Embed("Hey Everyone! There's a new poll!",voteFor)[0].field("How to vote?","Use "+$pre+"vote <thing you want to vote for>")[1]); // annoucement! announcement!
+      let PollHeaders = ["Hey Everyone! There's a new poll!","Vote-y McVoterson","Would you like to vote?","It's time to settle this...","I want a fair trial gentlemen.","August 18th, 1920","I love democracy"]; // add some variatey
+      $channel.send( Embed(PollHeaders[Math.round(Math.random()*PollHeaders.length)],voteFor)[0].field("How to vote?","Use "+$pre+"vote <thing you want to vote for>")[1]); // annoucement! announcement!
 
       const isAVote = newMsg => newMsg.content.startsWith($pre+"vote"); // what to look for when getting commands
       let GetIt = $channel.createMessageCollector(isAVote, {time: 30000});  // 30 seconds to vote
 
       GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
-        if( Voters.includes(recievedMSG.author) ){  // if the sender's ID has already been sent
+        if( Voters.includes(recievedMSG.author.toString()) ){  // if the sender's ID has already been sent
           $channel.send("You already voted for this Poll!");
         }else{
           if(recievedMSG.content.split(" ")[1].toLowerCase() in Votes){ // is the first word in votes?
             Votes[recievedMSG.content.split(" ")[1].toLowerCase()] += 1;  // lowercase
             $channel.send("Vote Added!");
-            Voters += recievedMSG.author; // add them to an array so they can't vote again
+            Voters.push(recievedMSG.author.toString()); // add them to an array so they can't vote again
           }else{
             $channel.send("'"+recievedMSG.content.split(" ")[1]+"' is not an option!"); // if you try to vote for failure when it's not someting you can vote for... heh.
           }
@@ -91,7 +91,12 @@ module.exports = function(){
 
 
       GetIt.on("end",collection => {  // the collection(message getter) finishes it's 30s timer
-        $channel.send( Embed("Final Results for the Poll:", Object.entries(Votes))[1] ); // if I were able to sort an array of arrays based on one of the values in that sub-array I would... but I can't so no
+        let Entries = Object.entries(Votes);
+        let toReturn = "";
+        Entries.forEach(e => {
+          toReturn += e[0]+": "+(e[1]/Voters.length)*100+"%\n";
+        });
+        $channel.send( Embed("Final Results for the Poll:", toReturn)[0].footer(Voters.length+" people voted")[1] ); // if I were able to sort an array of arrays based on one of the values in that sub-array I would... but I can't so no
         Configs["channels"][$channel.id]["activepoll"] = false; // allows for more polls!
       });
 
