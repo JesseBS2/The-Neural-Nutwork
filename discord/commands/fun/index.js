@@ -14,7 +14,8 @@ module.exports = function(){
   let $author = global.discord.message.author;
   let $member = global.discord.message.msg.member;
   let $pre = global.discord.message.prefix;
-  
+  let CoinFlippingStreak = false; // used in flip and flips commands, so that flips doesn't show unless necessary.
+
   
   if($cmnd === "respect" || $cmnd == "F"){
     if(Configs["channels"][$channel.id]["activepoll"] === true){$channel.send("Can not do that right now"); return;}
@@ -97,20 +98,15 @@ module.exports = function(){
     return;
   
   }else if($cmnd === "flip"){
-    
-    //let streak = false;
     flipper();
-    
-  }else if($cmnd === "flips"){
-    $channel.send("That command is only available after using the `flip` command.");
+    CoinFlippingStreak = true;
     return;
   }
 
   function flipper(send){
-    let isStreak = false;
     let math = 0.5;
-    let coin = Math.round(Math.random()*1);
-    if(isStreak === false){
+    let coin = Math.round(Math.random(0)*1);
+    if(CoinFlippingStreak === false){
       if(coin === 0){
         $channel.send("> It landed on tails!\n> "+(math*100)+"%");
       }else if(coin === 1){
@@ -118,40 +114,57 @@ module.exports = function(){
       }
     }
 
-      const isAVote = newMsg => newMsg.content.split(" ")[0].startsWith($pre+"flips");
-      let GetIt = $channel.createMessageCollector(isAVote); 
-      isStreak = true;
-      
-      GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
-        if( recievedMSG.author !== $author ){}else{  // only the original flipper can keep the streak
-          if(recievedMSG.content.split(" ")[0] !== $pre+"flips"){
-            isStreak = false;
-            GetIt.stop();
-          }
-          let newCoin = Math.round(Math.random()*1);
-          if(newCoin === coin && newCoin === 0){
-            math = math*0.5;
-            $channel.send("> It landed on tails!\n> "+(math*100)+"%");
-            isStreak = true;
-          }else if(newCoin === coin && newCoin === 1){
-            math = math*0.5;
-            $channel.send("> It landed on heads!\n> "+(math*100)+"%");
-            isStreak = true;
-          }else if(newCoin === 1){
-            math = 0.5; // clear the streak
-            $channel.send("**Streak Broken**\n> It landed on heads!\n> "+(math*100)+"%");
-            // don't call because streak is over
-            isStreak = false; // set to false because streak is over
-            GetIt.stop();
-          }else if(newCoin === 0){
-            math = 0.5;
-            $channel.send("**Streak Broken**\n> It landed on tails!\n> "+(math*100)+"%");
-            isStreak = false;
-            GetIt.stop();
-          }
+    const CheckForFlips = async newMsg => {
+      if(newMsg.content.split(" ")[0].startsWith($pre+"flips")){
+        return newMsg;
+      }else if(newMsg.author === $author){
+        CoinFlippingStreak = false;
+        return false;
+      }
+    }
+
+
+    let GetIt = $channel.createMessageCollector(CheckForFlips); 
+    CoinFlippingStreak = true;
+
+    GetIt.on("collect",async recievedMSG => { // collection, A.K.A message getter
+      if(recievedMSG.author !== $author){ // only the original flipper can keep the streak
+      }else if(recievedMSG.author == $author && CoinFlippingStreak === false){
+        let quickNotif = await $channel.send("**Streak Broken**");
+        setTimeout(() => {
+          quickNotif.delete();
+        },1800);
+        math = 0.5;
+        CoinFlippingStreak = false;
+        GetIt.stop();
+        return;
+      }else{  
+        let newCoin = Math.round(Math.random(0)*1);
+        //global.discord.debug(newCoin);
+
+        if(newCoin === coin && newCoin === 0){
+          math = math*0.5;
+          $channel.send("> It landed on tails!\n> "+(math*100)+"%");
+          CoinFlippingStreak = true;
+        }else if(newCoin === coin && newCoin === 1){
+          math = math*0.5;
+          $channel.send("> It landed on heads!\n> "+(math*100)+"%");
+          CoinFlippingStreak = true;
+        }else if(newCoin === 1){
+          math = 0.5; // clear the streak
+          $channel.send("**Streak Broken**\n> It landed on heads!\n> "+(math*100)+"%");
+          // don't call because streak is over
+          CoinFlippingStreak = false; // set to false because streak is over
+          GetIt.stop();
+        }else if(newCoin === 0){
+          math = 0.5;
+          $channel.send("**Streak Broken**\n> It landed on tails!\n> "+(math*100)+"%");
+          CoinFlippingStreak = false;
+          GetIt.stop();
         }
+      }
         
-      });
+    });
 
   }
 }

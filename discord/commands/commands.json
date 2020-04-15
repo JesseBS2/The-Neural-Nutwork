@@ -19,11 +19,14 @@
   "other": {
     "snowflake": "Get your personal snowflake ID",
     "echo": "Repeat a message with style",
-    "Echo": "Display a message with style"
+    "Echo": "Display a message with style",
+    "random": "Sends a random number into the channel",
+    "rand": ""
   },
   "mod": {
     "kick": "Kick a member from the server",
     "ban": "Ban a member from the server",
+    "unban": "unbans a member from your server",
     "clear": "Clear an amount of messages",
     "config": "Configure the bot for your server"
   },

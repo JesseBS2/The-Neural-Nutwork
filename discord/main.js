@@ -16,7 +16,7 @@ bot.on("ready", () => {
     global.discord.guilds += 1;
   });
 
-  console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers");
+  console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
   bot.user.setActivity("$commands | "+global.discord.guilds+" servers");
 
 
@@ -35,7 +35,8 @@ global.discord.adminVars = {
   catchXveno: {
     enabled: false,
     userId: ""
-  }
+  },
+  logDMS: false
 }
 global.discord.admins = ["596938492752166922"];
 
@@ -94,7 +95,6 @@ bot.on("message", async recievedmessage => {
       global.discord.message.command = recievedmessage.content.split(" ")[0]; // override the way the command was made before.
     }
 
-    global.discord.log("\x1b[42m"+"DM﹁");
 
     if(words[0] === "$inv" || words[0] === "$invite"){
       $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
@@ -107,6 +107,8 @@ bot.on("message", async recievedmessage => {
       require("./commands/help/index.js")();
     }else if(words[0].startsWith("$")){
       $channel.send("Sorry, this command is either only avaliable in servers; or doesn't exist.")
+    }else if(global.discord.adminVars.logDMS === true){
+      console.log(global.discord.message.tag+": "+recievedmessage.content);
     }
     return;
   }
@@ -165,6 +167,15 @@ bot.on("message", async recievedmessage => {
         $channel.send("Tattletale Protocol is now off");
         global.discord.debug("Tattletale Protocol is now off");
       }
+    
+    }else if(words[0] === "$&log-dm"){
+      if(global.discord.adminVars.logDMS === false){
+        global.discord.adminVars.logDMS = true;
+        $channel.send("The console will now show DMs.");
+      }else if(global.discord.adminVars.logDMS === true){
+        global.discord.adminVars.logDMS = false;
+        $channel.send("The console will no longer show DMs.");
+      }
     }
   }
 
@@ -203,6 +214,8 @@ bot.on("message", async recievedmessage => {
 
     pingedMessage.edit(FancyPongMessage);
 
+  }else if(words[0] === "$inv" || words[0] === "$invite"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a section
+    $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
   }else if($cmnd in _commands["help"]){
     require("./commands/help/help.js")();
   }else if($cmnd in _commands["math"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
@@ -216,7 +229,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/other/index.js")();
   }else if($cmnd in _commands["ptoe"]){
     if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
-    require("./commands/ptoe/index.js")();
+    require("./commands/periodic/index.js")();
   }else if($cmnd in _commands["fun"]){
     if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}    
     require("./commands/fun/index.js")();
@@ -290,7 +303,7 @@ bot.on("guildMemberAdd", member => {
 
 
 bot.on("guildCreate", guild => {  // bot is added to a new server
-
+  global.discord.log("\x1b[42m"+"Joined "+guild.name);
   Configs[guild.id] = {
     "name": guild.name,
     "prefix": "$",

@@ -244,7 +244,7 @@ module.exports = function(ee){
     let equation = message.split($pre+$cmnd+" ")[1];
     let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
     let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
-    $channel.send(Embed("Simplify",equation)[0].field("",SimpedEquation)[1]);
+    $channel.send(Embed("Simplify",equation)[0].field("Result",SimpedEquation)[1]);
     return;
   
   }else if($cmnd === "solve"){

@@ -1,5 +1,5 @@
 /*
-* NodeJS 10.16.0
+* NodeJS 12.16.0
 * Discord.js 11.5.1
 */
 
@@ -50,6 +50,11 @@ global.discord = {  // global variables for discord bot
 
       self.field = function(title2,text){
         embed = embed.addField(title2,text);
+        return [self,embed];
+      }
+
+      self.setPicture = function(src){
+        embed = embed.attachFile(src);
         return [self,embed];
       }
 

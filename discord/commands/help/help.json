@@ -88,5 +88,10 @@
     "desc": "Flip a coin",
     "format": "flip",
     "alias": ["none"]
+  },
+  "unban": {
+    "desc": "Unbans a mentioned user from your server",
+    "format": "unban <user>",
+    "alias": ["none"]
   }
 }

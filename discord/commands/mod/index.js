@@ -5,6 +5,7 @@ module.exports = function(){
 
   global.discord.log("Ran /commands/mod/index.js");
 
+  let $message = global.discord.message.msg;
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
@@ -98,6 +99,35 @@ module.exports = function(){
       global.discord.log(err);
       $channel.send("This user can not be banned!");
     }
+
+  }else if($cmnd === "unban"){
+    if($author.hasPermission("BAN_MEMBERS") === false){
+      $channel.send("You do not have the necessary permissions for that");
+      return;
+    }else if(me.hasPermission("BAN_MEMBERS") === false){
+      $channel.send("I do not have the necessary permissions for that");
+      return;
+    }
+
+    if(!words[1]){$channel.send("You're forgetting part of that command!");return;}
+    
+    let unbanned = true; 
+    $message.guild.fetchBans().then(bans => { // get active bans for the server
+      bans.forEach(user => {  // loop through bans
+        if(words[1] === user.username+"#"+user.tag || words[1].replace("<@!","").replace(">","") === user.id){  // if mentioned or just typed a username
+          $message.guild.unban(user);
+          unbanned = true;
+          global.discord.debug("Unbanned "+user.username+"#"+user.tag);
+          user.send("You have been unbanned from "+$message.guild.name);  // message unbanned user
+        }
+      });
+    if(unbanned === false){
+      $channel.send("I could not find an active ban for that user");
+    }else{
+      $channel.send("User has been unbanned");
+    }
+    });
+  
 
   }else if($cmnd === "config"){ // for modifiying ../../configuration.json > guild.id > configs
     if($author.hasPermission("ADMINISTRATOR") === false){
