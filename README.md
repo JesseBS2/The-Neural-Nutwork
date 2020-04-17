@@ -1,8 +1,7 @@
 # The Neural Nutwork
 
-Packages:
-
-`discord.js v11.5.1`
+Packages:<br>
+`discord.js v11.5.1`<br>
 `algebra.js v0.2.6`
 
 This is a bot I decided to create to assist in math, it is my biggest passion project by far and I have been working on it ever since December 2019.
