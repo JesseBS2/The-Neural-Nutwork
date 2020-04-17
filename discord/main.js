@@ -56,7 +56,7 @@ bot.on("message", async recievedmessage => {
         "autoperiodic": "enabled",
         "echos": "enabled",
         "embeds": "enabled",
-        "leveling": "enabled"
+        "nickname": "enabled"
       },
       "categories": {
         "math": "enabled",
@@ -107,8 +107,9 @@ bot.on("message", async recievedmessage => {
       require("./commands/help/index.js")();
     }else if(words[0].startsWith("$")){
       $channel.send("Sorry, this command is either only avaliable in servers; or doesn't exist.")
+      global.discord.log("\x1b[32m"+"DM from "+global.discord.message.tag+":\n"+recievedmessage.content);    
     }else if(global.discord.adminVars.logDMS === true){
-      console.log(global.discord.message.tag+": "+recievedmessage.content);
+      global.discord.log("\x1b[32m"+"DM from "+global.discord.message.tag+":\n"+recievedmessage.content);
     }
     return;
   }
@@ -168,13 +169,21 @@ bot.on("message", async recievedmessage => {
         global.discord.debug("Tattletale Protocol is now off");
       }
     
-    }else if(words[0] === "$&log-dm"){
+    }else if(words[0] === "$&log-dms"){
       if(global.discord.adminVars.logDMS === false){
         global.discord.adminVars.logDMS = true;
-        $channel.send("The console will now show DMs.");
+        let ex = await $channel.send("The console will now show DMs.");
+        setTimeout(() => {
+          ex.delete();
+          recievedmessage.delete();
+        },700);
       }else if(global.discord.adminVars.logDMS === true){
         global.discord.adminVars.logDMS = false;
-        $channel.send("The console will no longer show DMs.");
+        let ex = await $channel.send("The console will no longer show DMs.");
+        setTimeout(() => {
+          ex.delete();
+          recievedmessage.delete();
+        },700);
       }
     }
   }
@@ -214,7 +223,7 @@ bot.on("message", async recievedmessage => {
 
     pingedMessage.edit(FancyPongMessage);
 
-  }else if(words[0] === "$inv" || words[0] === "$invite"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a section
+  }else if(words[0] === "$inv" || words[0] === "$invite"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
     $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
   }else if($cmnd in _commands["help"]){
     require("./commands/help/help.js")();
@@ -223,7 +232,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/math/index.js")();
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
-    require("./commands/mod/index.js")();
+    require("./commands/mod/index.js")(Discord);
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")();
@@ -235,7 +244,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/fun/index.js")();
   }else{
    
-    let words = global.discord.message.words;
+    let words = recievedmessage.content.split(" ");
     let AllowedSymbols = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/","÷","x","^","\\"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
 
     let math = "";
@@ -315,7 +324,8 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "automath": "enabled",
       "autoperiodic": "enabled",
       "echos": "enabled",
-      "embeds": "enabled"
+      "embeds": "enabled",
+      "nickname": "enabled"
     },
     "categories": {
       "math": "enabled",

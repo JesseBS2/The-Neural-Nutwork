@@ -2,22 +2,24 @@ var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
 
-module.exports = function(){
+module.exports = function(client){
 
   global.discord.log("DISCORD: Ran /commands/other/index.js");
 
   let Configs;
   
   let message = global.discord.message.msg;
+  let msg = global.discord.message.message;
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
   let $author = global.discord.message.author;
   let $member = global.discord.message.msg.member;
   let $pre = global.discord.message.prefix;
+  let me = global.discord.bot.me;
 
   if($channel.type != "dm"){
-    let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+    Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
   }
 
   if($cmnd === "snowflake"){
@@ -36,7 +38,7 @@ module.exports = function(){
 
   }else if($cmnd === "Echo"){ // capital E cuts the message and makes the embed
     var echoed = Embed(global.discord.message.tag+" says...",global.discord.message.message.split($pre+"Echo ")[1])[0].useTimestamp()[1];
-    global.discord.message.msg.delete();
+    message.delete();
     $channel.send( echoed );
     return;
 
@@ -49,6 +51,19 @@ module.exports = function(){
     if(First && !Second && First > 1){$channel.send(Math.round(Math.random()*First)); return;}  // only first is present and is greater than 1
     if(First && Second && Math.ceil(Second)-Math.floor(First) <= 1){$channel.send(Math.random()*(Math.ceil(Second) - Math.floor(First))+Math.floor(First)); return;}
     if(First && Second){$channel.send(Math.round(Math.random()*(Second-First)+First)); return;}
+  
+  }else if($cmnd === "today" || $cmnd === "time" || $cmnd === "date"){
+    let months = ["JAN","FEB","MAR","APR","MAY","JUN","JULY","AUG","SEP","OCT","NOV","DEC"];
+    let rightnow = new Date();
+    
+    let displayTime = rightnow.getHours()+":"+rightnow.getMinutes()+":"+rightnow.getSeconds();
+    let displayDate = rightnow.getDate()+" / "+months[rightnow.getMonth()]+" / "+rightnow.getFullYear();
+
+
+    $channel.send(
+      Embed("Today's Date & Time",displayDate+"\n"+displayTime)[1]
+    );
+
   }
 
 }

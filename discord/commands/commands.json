@@ -22,7 +22,10 @@
     "echo": "Repeat a message with style",
     "Echo": "Display a message with style",
     "random": "Sends a random number into the channel",
-    "rand": ""
+    "rand": "",
+    "today": "Get the current date/time",
+    "time": "",
+    "date": ""
   },
   "mod": {
     "kick": "Kick a member from the server",

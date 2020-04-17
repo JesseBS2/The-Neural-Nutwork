@@ -1,4 +1,4 @@
-module.exports = function(){
+module.exports = async function(){
 
   const Message = global.discord.message;
   let $channel = Message.channel;
@@ -47,9 +47,12 @@ module.exports = function(){
     }else if(words[1].toLowerCase() in $json){
       //helpText = $json[words[1].toLowerCase()]["desc"];
       helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),$json[words[1].toLowerCase()]["desc"])[0].field("Usage",$pre+$json[words[1].toLowerCase()]["format"])[0].field("Aliases",$json[words[1].toLowerCase()]["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (optional parameters)")[1];
+    }else{
+      let e = await $channel.send("That's not a command I recognize!\n(Note: if it's an alias for another command I can't display that)\n(Note: My programmer is stupid and doesn't think ahead)");
+      setTimeout(() => {
+        e.edit("That's not a command I recognize!\n(Note: if it's an alias for another command I can't display that)");
+      },1500);
     }
-
-    $channel.send(helpText);
   }
 
 }

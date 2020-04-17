@@ -1,5 +1,5 @@
 /*
-* NodeJS 12.16.0
+* NodeJS 12.16.1
 * Discord.js 11.5.1
 */
 
@@ -17,14 +17,15 @@ global.SolveEquation = function(msg){
     // For some reason I never thought to have the .replace inside the function
     // so in a lot of places, there will still be .replace commands before or in a SolveEquation();
     msg = msg.replace(/\\/g,"")  // remove back slashes(which help ignore \* \*)
-        .replace(/x/g,"*")
-        .replace(/\*\*/g,"^")
-        .replace(/÷/gi, "/")
-        .replace(/\[/g,"(") // the following four are commonly used in math, but algebra.js doesn't accept them.
-        .replace(/\]/g,")")
-        .replace(/\{/g,"(")
-        .replace(/\}/g,")") 
-        .replace(/ /g,"");  // make it one message
+      .replace(/x/g,"*")
+      .replace(/\*\*/g,"^")
+      .replace(/÷/gi, "/")
+      .replace(/\[/g,"(") // the following four are commonly used in math, but algebra.js doesn't accept them.
+      .replace(/\]/g,")")
+      .replace(/\{/g,"(")
+      .replace(/\}/g,")") 
+      .replace(/ /g,"");  // make it one message
+    
     return algebra.parse(msg);
   }catch(err){
     console.log("Given error while trying to solve a global.SolveEquation():  "+err)
@@ -93,7 +94,8 @@ global.discord = {  // global variables for discord bot
 
         return [self,msg];
     }
-  }
+  },
+  totalPolls: 0
 }
   
 global.twitch = { // global variables for twitch bot
