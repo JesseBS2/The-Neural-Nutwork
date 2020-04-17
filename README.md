@@ -1,6 +1,7 @@
 # The Neural Nutwork
 
 Packages:
+
 `discord.js v11.5.1`
 `algebra.js v0.2.6`
 
