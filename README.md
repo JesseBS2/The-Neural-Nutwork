@@ -5,7 +5,7 @@ Packages:<br/>
 `algebra.js v0.2.6`
 
 This is a bot I decided to create to assist in math, it is my biggest passion project by far and I have been working on it ever since December 2019.
-While the bot is good at my original vision(doing math), I am hoping to expand it into a wider variatey of education; Chemistry, Biology being at the top of my list.
+While the bot is good at my original vision(doing math), I am hoping to expand it into a wider variatey of education; Chemistry & Biology being at the top of my list.
 At the current moment, there is nothing Neural about "The Neural Nutwork", the name is just a play on the title "Neural Network". But I hope to soon add in a learning capability via `brain.js`.
 
 Where did the name "Nutwork" come from?
