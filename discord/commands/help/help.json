@@ -93,10 +93,5 @@
     "desc": "Unbans a mentioned user from your server",
     "format": "unban <user>",
     "alias": ["none"]
-  },
-  "today": {
-    "desc": "Get's the current date and time.",
-    "format": "today",
-    "alias": ["date","time"]
   }
 }

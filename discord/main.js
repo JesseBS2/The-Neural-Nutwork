@@ -142,7 +142,7 @@ bot.on("message", async recievedmessage => {
       bot.user.setStatus("dnd");  // just a quick visual for me.
       let today = new Date();
       let a_weight = await bot.channels.get("698667928454955029").send("Generating Crash Report...");
-      let report = global.discord.functions.CustomEmbed("Crash Report","A crash was requested by "+recievedmessage.author.username+"\nThe bot has crashed and the json has been saved.","#ff0000").field("Information","Time: "+today.getHours()+":"+today.getMinutes()+"."+today.getSeconds()+"\nDate: "+today.getDate()+" of "+today.getMonth()+", "+today.getFullYear()+"\nServer: "+recievedmessage.guild.name+"\nServer ID: "+recievedmessage.guild.id);
+      let report = global.discord.functions.CustomEmbed("Crash Report","A crash was requested by "+recievedmessage.author.username+"\nThe bot has crashed and the json has been saved.","#ff0000")[0].field("Information","Time: "+today.getHours()+":"+today.getMinutes()+"."+today.getSeconds()+"\nDate: "+today.getDate()+" of "+today.getMonth()+", "+today.getFullYear()+"\nServer: "+recievedmessage.guild.name+"\nServer ID: "+recievedmessage.guild.id)[1];
       bot.channels.get("698667928454955029").send(report);
       a_weight.delete();
       

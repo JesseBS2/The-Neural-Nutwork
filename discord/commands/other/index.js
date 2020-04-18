@@ -42,18 +42,6 @@ module.exports = function(client){
     $channel.send( echoed );
     return;
 
-  }else if($cmnd === "today" || $cmnd === "time" || $cmnd === "date"){
-    let months = ["JAN","FEB","MAR","APR","MAY","JUN","JULY","AUG","SEP","OCT","NOV","DEC"];
-    let rightnow = new Date();
-    
-    let displayTime = rightnow.getHours()+":"+rightnow.getMinutes()+":"+rightnow.getSeconds();
-    let displayDate = rightnow.getDate()+" / "+months[rightnow.getMonth()]+" / "+rightnow.getFullYear();
-
-
-    $channel.send(
-      Embed("Today's Date & Time",displayDate+"\n"+displayTime)[1]
-    );
-
   }
 
 }
