@@ -5,7 +5,7 @@
     "weight": "1.008",
     "type": "Nonmetal",
     "state": "Gas",
-    "disc": "1766 AC",
+    "disc": "1766 AD",
     "by": "Henry Cavendish"
   },
   "2": {
@@ -14,7 +14,7 @@
     "weight": "4.0026",
     "type": "Noble Gas",
     "state": "Gas",
-    "disc": "1868 AC",
+    "disc": "1868 AD",
     "by": "Jules Janssen"
   },
   "3": {
@@ -23,7 +23,7 @@
     "weight": "6.941",
     "type": "Alkali Metal",
     "state": "Solid",
-    "disc": "1817 AC",
+    "disc": "1817 AD",
     "by": "Johan Arfwedson"
   },
   "4": {
@@ -32,7 +32,7 @@
     "weight": "9.0122",
     "type": "Alkaline Earth",
     "state": "Solid",
-    "disc": "1798 AC",
+    "disc": "1798 AD",
     "by": "Louis Vauquelin"
   },
   "5": {
@@ -41,7 +41,7 @@
     "weight": "10.811",
     "type": "Metalloid",
     "state": "Solid",
-    "disc": "1808 AC",
+    "disc": "1808 AD",
     "by": "Jospeh Gay-Lussac"
   },
   "6": {
@@ -50,7 +50,7 @@
     "weight": "12.011",
     "type": "Nonmetal",
     "state": "Solid",
-    "disc": "1789 AC",
+    "disc": "1789 AD",
     "by": "Antoine Lavoisier"
   },
   "7": {
@@ -59,7 +59,7 @@
     "weight": "14.007",
     "type": "Nonmetal",
     "state": "Gas",
-    "disc": "1772 AC",
+    "disc": "1772 AD",
     "by": "Daniel Rutherford"
   },
   "8": {
@@ -68,7 +68,7 @@
     "weight": "15.999",
     "type": "Nonmetal",
     "state": "Gas",
-    "disc": "1772 AC",
+    "disc": "1772 AD",
     "by": "Carl Sheele"
   },
   "9": {
@@ -77,7 +77,7 @@
     "weight": "18.998",
     "type": "Halogen",
     "state": "Gas",
-    "disc": "1886 AC",
+    "disc": "1886 AD",
     "by": "Henri Moissan"
   },
   "10": {
@@ -86,7 +86,7 @@
     "weight": "20.180",
     "type": "Actinide",
     "state": "Gas",
-    "disc": "1898 AC",
+    "disc": "1898 AD",
     "by": "William Ramsay"
   },
   "11": {
@@ -95,7 +95,7 @@
     "weight": "22.990",
     "type": "Alkali Metal",
     "state": "Solid",
-    "disc": "1807 AC",
+    "disc": "1807 AD",
     "by": "Humphry Davy"
   },
   "12": {
@@ -104,7 +104,7 @@
     "weight": "24.305",
     "type": "Alkaline Earth",
     "state": "Solid",
-    "disc": "1755 AC",
+    "disc": "1755 AD",
     "by": "Joseph Black"
   },
   "13": {
@@ -113,7 +113,7 @@
     "weight": "26.982",
     "type": "Basic Metal",
     "state": "Solid",
-    "disc": "1825 AC",
+    "disc": "1825 AD",
     "by": "Hans Christian Ørsted"
   },
   "14": {
@@ -122,7 +122,7 @@
     "weight": "28.086",
     "type": "Metalloid",
     "state": "Solid",
-    "disc": "1823 AC",
+    "disc": "1823 AD",
     "by": "Antoine Lavoisier"
   },
   "15": {
@@ -131,7 +131,7 @@
     "weight": "32.066",
     "type": "Nonmetal",
     "state": "Solid",
-    "disc": "1669 AC",
+    "disc": "1669 AD",
     "by": "Hennig Brand"
   },
   "16": {
@@ -140,7 +140,7 @@
     "weight": "32.006",
     "type": "Nonmetal",
     "state": "Solid",
-    "disc": "1777 AC",
+    "disc": "1777 AD",
     "by": "Antoine Lavoisier"
   },
   "17": {
@@ -149,7 +149,7 @@
     "weight": "35.453",
     "type": "Halogen",
     "state": "Gas",
-    "disc": "1774 AC",
+    "disc": "1774 AD",
     "by": "Carl Wilhelm Scheele"
   },
   "18": {
@@ -158,7 +158,7 @@
     "weight": "39.948",
     "type": "Noble Gas",
     "state": "Gas",
-    "disc": "1894 AC",
+    "disc": "1894 AD",
     "by": "John William Strutt"
   },
   "19": {
@@ -167,7 +167,7 @@
     "weight": "39.098",
     "type": "Alkali Metal",
     "state": "Solid",
-    "disc": "1807 AC",
+    "disc": "1807 AD",
     "by": "Humphry Davy"
   },
   "20": {
@@ -176,7 +176,7 @@
     "weight": "40.078",
     "type": "Alkaline Earth",
     "state": "Solid",
-    "disc": "1808 AC",
+    "disc": "1808 AD",
     "by": "Humphry Davy"
   },
   "21": {
@@ -185,7 +185,7 @@
     "weight": "44.956",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1879 AC",
+    "disc": "1879 AD",
     "by": "Lars Fredik Nilson"
   },
   "22": {
@@ -194,7 +194,7 @@
     "weight": "47.880",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1791 AC",
+    "disc": "1791 AD",
     "by": "William Gregor"
   },
   "23": {
@@ -203,7 +203,7 @@
     "weight": "50.942",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1801 AC",
+    "disc": "1801 AD",
     "by": "Andrés Manuel del Río"
   },
   "24": {
@@ -212,7 +212,7 @@
     "weight": "51.996",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1797 AC",
+    "disc": "1797 AD",
     "by": "Louis Nicolas Vauquelin"
   },
   "25": {
@@ -221,7 +221,7 @@
     "weight": "54.938",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1774 AC",
+    "disc": "1774 AD",
     "by": "Johan Gottlieb Gahn"
   },
   "26": {
@@ -239,7 +239,7 @@
     "weight": "58.933",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1735 AC",
+    "disc": "1735 AD",
     "by": "Georg Brandt"
   },
   "28": {
@@ -248,7 +248,7 @@
     "weight": "58.693",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1751 AC",
+    "disc": "1751 AD",
     "by": "Axel Fredrik Cronstedt"
   },
   "29": {
@@ -266,7 +266,7 @@
     "weight": "65.380",
     "type": "Transition Metal",
     "state": "Solid",
-    "disc": "1746 AC",
+    "disc": "1746 AD",
     "by": "Andreas Marggraf"
   },
   "31": {
@@ -275,7 +275,7 @@
     "weight": "69.723",
     "type": "Basic Metal",
     "state": "Solid",
-    "disc": "1875 AC",
+    "disc": "1875 AD",
     "by": "Paul-Émile Lecoq de Boisbaudran"
   },
   "32": {
@@ -284,7 +284,7 @@
     "weight": "72.631",
     "type": "Metalloid",
     "state": "Solid",
-    "disc": "1886 AC",
+    "disc": "1886 AD",
     "by": "Clemens Winkler"
   },
   "33": {

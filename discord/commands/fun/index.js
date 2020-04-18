@@ -119,7 +119,19 @@ module.exports = function(){
     flipper();
     CoinFlippingStreak = true;
     return;
+  }else if($cmnd === "random" || $cmnd === "rand"){
+    let First = false, Second = false;  // false by default because ifs check for these
+    if(words[1]) First = Number(words[1].replace(/\D/gi,""));
+    if(words[2]) Second = Number(words[2].replace(/\D/gi,""));
+    
+    if(!First || First <= 1 && !Second){$channel.send(Math.random()); return;} // No first or first is too low; means 0-1
+    if(First && !Second && First > 1){$channel.send(Math.round(Math.random()*First)); return;}  // only first is present and is greater than 1
+    if(First && Second && Math.ceil(Second)-Math.floor(First) <= 1){$channel.send(Math.random()*(Math.ceil(Second) - Math.floor(First))+Math.floor(First)); return;}
+    if(First && Second){$channel.send(Math.round(Math.random()*(Second-First)+First)); return;}
+  
   }
+
+  //
 
   function flipper(send){
     let math = 0.5;

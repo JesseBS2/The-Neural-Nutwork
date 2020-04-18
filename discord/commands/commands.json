@@ -21,8 +21,6 @@
     "snowflake": "Get your personal snowflake ID",
     "echo": "Repeat a message with style",
     "Echo": "Display a message with style",
-    "random": "Sends a random number into the channel",
-    "rand": "",
     "today": "Get the current date/time",
     "time": "",
     "date": ""
@@ -46,6 +44,8 @@
     "f":  "",
     "F": "",
     "flip": "Flip a coin",
-    "flips": ""
+    "flips": "",
+    "random": "Sends a random number into the channel",
+    "rand": ""
   }
 }

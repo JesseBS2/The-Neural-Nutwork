@@ -61,7 +61,7 @@ bot.on("message", async recievedmessage => {
         "math": "enabled",
         "mod": "enabled",
         "other": "enabled",
-        "periodic-table": "enabled",
+        "ptoe": "enabled",
         "fun": "enabled"
       },
       "channels": {
@@ -152,55 +152,9 @@ bot.on("message", async recievedmessage => {
         process.exit();
       },1000);
 
-    }else if(words[0] === "$&tattletale"){
-      if(!words[1]){$channel.send("Tattletale Potocol is: "+global.discord.adminVars.catchXveno.enabled); return;}
-
-      if(words[1].startsWith("<@!") && words[1].endsWith(">") && words[1].startsWith("<@&") === false){  // <@& is a role, don't want that.
-        global.discord.adminVars.catchXveno.enabled = true;
-        global.discord.adminVars.catchXveno.userId = words[1].replace("<@!","").replace(">","");
-        recievedmessage.delete();
-        //$channel.send("Tattletale Protocol is now on");
-        global.discord.debug("Tattletale Protocol is now on");
-      }else if(words[1] == "false"){
-        global.discord.adminVars.catchXveno.enabled = false;
-        global.discord.adminVars.catchXveno.userId = "";
-        $channel.send("Tattletale Protocol is now off");
-        global.discord.debug("Tattletale Protocol is now off");
-      }
-    
-    }else if(words[0] === "$&log-dms"){
-      if(global.discord.adminVars.logDMS === false){
-        global.discord.adminVars.logDMS = true;
-        let ex = await $channel.send("The console will now show DMs.");
-        setTimeout(() => {
-          ex.delete();
-          recievedmessage.delete();
-        },700);
-      }else if(global.discord.adminVars.logDMS === true){
-        global.discord.adminVars.logDMS = false;
-        let ex = await $channel.send("The console will no longer show DMs.");
-        setTimeout(() => {
-          ex.delete();
-          recievedmessage.delete();
-        },700);
-      }
     }
   }
 
-
-
-
-  if(recievedmessage.attachments.size > 0){
-    if(recievedmessage.author.id === global.discord.adminVars.catchXveno.userId && global.discord.adminVars.catchXveno.enabled === true){
-      $channel.send("Tattletale Protocol triggered!\n<@!"+recievedmessage.author.id+">");
-      recievedmessage.attachments.forEach((img) => {
-        //let recievedmessage.attachments.get(recievedmessage.attachments.firstKey()).proxyURL;
-        $channel.send(img.proxyURL);
-      });
-      $channel.send("<@!"+recievedmessage.author.id+">"+" was selected for the tattletale protocol, so their attachment(s) (was/were) duplicated in case of deletion.\n")
-      global.discord.debug("Tattled on "+recievedmessage.author.id);
-    }
-  }
 
 
 
@@ -244,7 +198,8 @@ bot.on("message", async recievedmessage => {
   }else{
    
     let words = recievedmessage.content.split(" ");
-    let AllowedSymbols = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/","÷","x","^","\\"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
+    let AllowedSymbols = ["+","-","*","/","÷","x","^","\\","(",")","[","]","{","}"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
+    let AllowedNumbers = ["0","1","2","3","4","5","6","7","8","9"];
 
     let math = "";
     let type = null
@@ -252,28 +207,23 @@ bot.on("message", async recievedmessage => {
       value: null
     }
 
-    for( let j = 0; j < words.length; j++ ){  // loop through all words
+    let Characters = recievedmessage.content.split("");
+    let including = {number:false,symbols:false};  // it has to be an equation
+      
+    for( let j = 0; j < Characters.length; j++ ){  // loop through all words
       let flag = false;
-      if(words[j].length > 1){  // incases of 4+4
-        for(let x  = 0; x < words[j].length; x++){  // loop through the length of the selected word that is longer than 1
-          if(AllowedSymbols.includes(words[j][x])){ // if it is allowed then allow it
-            type = "math";
-            math += words[j][x];
-          }else{
-            type = null;
-            flag = true;  // the flag is used to break both loops
-            break;
-          }
-        }
-
-        if(flag === true){  // if one word is wrong, they all should be. So don't run it.
-          type = null;
-          break;
-        }
-      }else if( AllowedSymbols.includes(words[j])  ){ // detects a(let's say...) 5 in "5 + 6"
+      if( AllowedSymbols.includes(Characters[j]) || AllowedNumbers.includes(Characters[j]) ){ // if it is allowed then allow it
+        if(AllowedNumbers.includes(Characters[j])){including.number=true}
+        if(AllowedSymbols.includes(Characters[j])){including.symbols=true}
         type = "math";
-        math += words[j];
+        math += Characters[j];
       }else{
+        type = null;
+        flag = true;  // the flag is used to break both loops
+        break;
+      }
+
+      if(flag === true){  // if one word is wrong, they all should be. So don't run it.
         type = null;
         break;
       }
@@ -286,12 +236,14 @@ bot.on("message", async recievedmessage => {
       }
     }
 
-    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled"){
-
+    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled" && including.number === true && including.symbols === true){
+      
+      global.discord.log("Ran a Math command in main.js")
       require("./commands/math/index.js")(math);  // evaluate
+      return;
     }else if(type === "periodic" && Configs[recievedmessage.guild.id]["config"]["autoperiodic"] == "enabled"){
 
-      global.discord.log("Ran a PToE in main.js");
+      global.discord.log("Ran a PToE command in main.js");
       let element = global.discord.functions.CustomEmbed(Periodic[other.value]["name"]+" - #"+other.value,"Symbol: "+Periodic[other.value]["abr"]+"\nAtomic Weight: "+Periodic[other.value]["weight"])[0].field("Discovery",Periodic[other.value]["disc"]+" by "+Periodic[other.value]["by"])[1];
       $channel.send(element);
       return;
