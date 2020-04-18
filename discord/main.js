@@ -5,8 +5,7 @@ const fs = require("fs");
 const Configs = require("./configuration.json");
 const Periodic = require("./commands/periodic/table.json");
 
-var DiscordBot_SecretToken = "NjYxMjQ5Nzg2MzUwOTI3ODky.Xgoq5A.wXl8wyauDNjUoinAK1SyN69snrk"; // login token assigned
-
+bot.login(require("./config.json")["token"]);  // log into discord account
 
 bot.on("ready", () => {
   global.discord.guilds = 0
@@ -348,6 +347,3 @@ bot.on("guildDelete", guild => {  // bot is removed from server
   Configs[guild.id] = null; // clear that server's information.
 
 });
-
-
-bot.login(DiscordBot_SecretToken);
