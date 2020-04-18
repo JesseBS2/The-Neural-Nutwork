@@ -12,7 +12,7 @@ Where did the name "Nutwork" come from?
 Well, take a lonely programmer needing a name for a network, and throw in a couple friends all being nuts, you'll get a Nutwork.
 
 
-The bot is will (hopefully) be accessable on much more than just Discord in it's complete form; Such as Twitch, or a website of it's own.
+The bot will (hopefully) be accessable on much more than just Discord in it's complete form; Twitch being one of my goals.
 Until then, an invite link for the Discord version is here:<br/>
   https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot
 
