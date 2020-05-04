@@ -5,7 +5,7 @@ const fs = require("fs");
 const Configs = require("./configuration.json");
 const Periodic = require("./commands/periodic/table.json");
 
-bot.login(require("./config.json")["token"]);  // log into discord account
+bot.login(fs.readFileSync("discord/token.txt","utf8").toString());  // log into discord account
 
 bot.on("ready", () => {
   global.discord.guilds = 0
@@ -16,7 +16,7 @@ bot.on("ready", () => {
   });
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
-  bot.user.setActivity("$commands | "+global.discord.guilds+" servers");
+  bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
 
 
   global.discord.functions.saveJSON = function(srcJSON){
@@ -30,13 +30,6 @@ bot.on("ready", () => {
 
 
 const _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
-global.discord.adminVars = {
-  catchXveno: {
-    enabled: false,
-    userId: ""
-  },
-  logDMS: false
-}
 global.discord.admins = ["596938492752166922"];
 
 
@@ -62,7 +55,8 @@ bot.on("message", async recievedmessage => {
         "mod": "enabled",
         "other": "enabled",
         "ptoe": "enabled",
-        "fun": "enabled"
+        "fun": "enabled",
+        "meme": "enabled"
       },
       "channels": {
         
@@ -103,13 +97,21 @@ bot.on("message", async recievedmessage => {
     }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["ptoe"] || words[0] in _commands["ptoe"]){
       require("./commands/periodic/index.js")();
     }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["help"] || words[0] in _commands["help"]){
-      require("./commands/help/index.js")();
+      require("./commands/help/help.js")();
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["other"] || words[0] in _commands["other"]){
+      require("./commands/other/index.js")();
+    }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
+    
+      if(recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1]){
+        require("./commands/react/index.js")(true);
+      }else{
+        require("./commands/react/index.js")(false);
+      }
     }else if(words[0].startsWith("$")){
-      $channel.send("Sorry, this command is either only avaliable in servers; or doesn't exist.")
-      global.discord.log("\x1b[32m"+"DM from "+global.discord.message.tag+":\n"+recievedmessage.content);    
-    }else if(global.discord.adminVars.logDMS === true){
-      global.discord.log("\x1b[32m"+"DM from "+global.discord.message.tag+":\n"+recievedmessage.content);
+      $channel.send("Sorry, this command is either only avaliable in servers; or doesn't exist.")    
     }
+
+
     return;
   }
 
@@ -140,11 +142,6 @@ bot.on("message", async recievedmessage => {
     if(recievedmessage.content === "$&crash"){
       console.log("Given a $&crash");
       bot.user.setStatus("dnd");  // just a quick visual for me.
-      let today = new Date();
-      let a_weight = await bot.channels.get("698667928454955029").send("Generating Crash Report...");
-      let report = global.discord.functions.CustomEmbed("Crash Report","A crash was requested by "+recievedmessage.author.username+"\nThe bot has crashed and the json has been saved.","#ff0000")[0].field("Information","Time: "+today.getHours()+":"+today.getMinutes()+"."+today.getSeconds()+"\nDate: "+today.getDate()+" of "+today.getMonth()+", "+today.getFullYear()+"\nServer: "+recievedmessage.guild.name+"\nServer ID: "+recievedmessage.guild.id)[1];
-      bot.channels.get("698667928454955029").send(report);
-      a_weight.delete();
       
       global.discord.functions.saveJSON(require("./configuration.json"));
 
@@ -152,6 +149,25 @@ bot.on("message", async recievedmessage => {
         process.exit();
       },1000);
 
+    }else if(recievedmessage.content.split(" ")[0] === "$&activity"){
+      if(words[1]){
+        bot.user.setActivity(recievedmessage.content.split("$&activity ")[1]);
+        global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
+        $channel.send("Activity has been changed!");
+      }else{
+        bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
+        $channel.send("Activity has been reset!");
+      }
+    }else if(recievedmessage.content.split(" ")[0] === "$&status"){
+      if(words[1]){
+        if(["online","idle","dnd","invisible"].includes(words[1]) === false){$channel.send("That is not a valid status."); return;}
+        bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
+        global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's availablity to "+recievedmessage.content.split("$&status ")[1]);
+        $channel.send("Status has been changed!");
+      }else{
+        bot.user.setStatus("online");
+        $channel.send("Status has been reset!");
+      }
     }
   }
 
@@ -177,7 +193,24 @@ bot.on("message", async recievedmessage => {
     pingedMessage.edit(FancyPongMessage);
 
   }else if(words[0] === "$inv" || words[0] === "$invite"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
+    
+    // Multiple different invites should be available with different permission configurations
+    //  1. Admin, permissions=8
+    //  2. Just educational, permissions=68608
+    //    2.5 Memes too, permissions=125952
+    //  3. Moderator, permissions=268512262
     $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
+
+
+  }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
+    
+    if(Configs[recievedmessage.guild.id]["categories"]["meme"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1]){
+      require("./commands/react/index.js")(true);
+    }else{
+      require("./commands/react/index.js")(false);
+    }
+
   }else if($cmnd in _commands["help"]){
     require("./commands/help/help.js")();
   }else if($cmnd in _commands["math"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
@@ -185,7 +218,10 @@ bot.on("message", async recievedmessage => {
     require("./commands/math/index.js")();
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
-    require("./commands/mod/index.js")(Discord);
+    require("./commands/mod/index.js")(Discord);  // the param is for instances where something like Client.fetch is needed
+  }else if($cmnd in _commands["server"]){
+    // server commands can not be disabled.
+    require("./commands/server/index.js")(Discord);
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")();
@@ -283,14 +319,16 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "mod": "enabled",
       "other": "enabled",
       "ptoe": "enabled",
-      "fun": "enabled"
+      "fun": "enabled",
+      "meme": "enabled"
     },
     "channels": {
       
     }
   }
-
-
+  
+  global.discord.guilds++;
+  bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
 });
 
 

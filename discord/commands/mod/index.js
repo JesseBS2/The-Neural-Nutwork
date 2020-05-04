@@ -1,7 +1,6 @@
 var Embed = global.discord.functions.CustomEmbed;
 
-
-module.exports = function(){
+module.exports = async function(){
 
   global.discord.log("Ran /commands/mod/index.js");
 
@@ -20,12 +19,13 @@ module.exports = function(){
       return;
     }else if(me.hasPermission("MANAGE_MESSAGES") === false){
       $channel.send("I do not have the necessary permissions for that");
+      $channel.send("I need the `Manage Messages` permission to do that");
       return;
     }
-    if(!words[1]){$channel.send("You're missing part of that command!"); return;}
+    if(!words[1]){$channel.send("You're forgetting part of that command!"); return;}
 
     try{ 
-      let amount = Number(words[1]);
+      var amount = Number(words[1]) + 1;
       if(amount >= 100){
         for(let x = 0; x < amount; x++){  // loops!
           if(x%10 === 0){$channel.bulkDelete(10); // if it can be evenly divided by ten then remove that much
@@ -44,11 +44,12 @@ module.exports = function(){
     
   }else if($cmnd === "kick"){
     if($author.hasPermission("KICK_MEMBERS") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
-    }else if(me.hasPermission("KICK_MEMBERS") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      return;
+       $channel.send("You do not have the necessary permissions for that");
+       return;
+     }else if(me.hasPermission("KICK_MEMBERS") === false){
+       $channel.send("I do not have the necessary permissions for that");
+       $channel.send("I need the `Kick Members` permission to do that");
+       return;
     }
 
     let toKick = global.discord.message.msg.mentions.members.first();
@@ -70,6 +71,7 @@ module.exports = function(){
       return;
     }else if(me.hasPermission("BAN_MEMBERS") === false){
       $channel.send("I do not have the necessary permissions for that");
+      $channel.send("I need the `Ban Members` permission to do that");
       return;
     }
     var toBan = global.discord.message.msg.mentions.users.first();
@@ -106,10 +108,11 @@ module.exports = function(){
       return;
     }else if(me.hasPermission("BAN_MEMBERS") === false){
       $channel.send("I do not have the necessary permissions for that");
+      $channel.send("I need the `Ban Members` permission to do that");
       return;
     }
 
-    if(!words[1]){$channel.send("You're forgetting part of that command!");return;}
+    if(!words[1]){$channel.send("You're forgetting part of that command!"); return;}
     
     let unbanned = true; 
     $message.guild.fetchBans().then(bans => { // get active bans for the server
@@ -136,7 +139,7 @@ module.exports = function(){
     }
 
     if(!words[1]){
-      let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("echo - "+Configs["config"]["echos"],"Mimic what a member said, in a flashy way.\n(enable/disable)")[0].field("Fun - "+Configs["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)")[1];
+      let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>","#ff7f00")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("echo - "+Configs["config"]["echos"],"Mimic what a member said, in a flashy way.\n(enable/disable)")[0].field("Fun - "+Configs["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)")[0].field("Meme - "+Configs["categories"]["meme"],"Allows you to create memes or send meme pictures into a channel. \n(enable/disable)")[0].useImage($guild.iconURL)[1];
       $channel.send(displayconfigures);
       return;
     }
@@ -150,7 +153,7 @@ module.exports = function(){
       }else{
         Configs["prefix"] = words[2].toLowerCase();
         global.discord.functions.saveJSON();
-        $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"])[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
+        $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"],"#ff7f00")[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
         return;
       }
     }
@@ -242,5 +245,7 @@ module.exports = function(){
       global.discord.functions.saveJSON();
       return;
     }
+
+
   }
 }

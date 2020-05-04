@@ -20,14 +20,20 @@
   "other": {
     "snowflake": "Get your personal snowflake ID",
     "echo": "Repeat a message with style",
-    "Echo": "Display a message with style"
+    "Echo": "Display a message with style",
+    "self": "Get information about your account",
+    "me": ""
   },
   "mod": {
     "kick": "Kick a member from the server",
     "ban": "Ban a member from the server",
     "unban": "unbans a member from your server",
     "clear": "Clear an amount of messages",
-    "config": "Configure the bot for your server"
+    "config": "Configure the bot for your server",
+    "addrole": "Give a member a role",
+    "takerole": "Take a role from a member",
+    "makerole": "Create a new role",
+    "clearrole": "Remove a role from your server"
   },
   "ptoe": {
     "periodic": "Get information about an element on the PToE",
@@ -44,5 +50,9 @@
     "flips": "",
     "random": "Sends a random number into the channel",
     "rand": ""
+  },
+  "server": {
+    "create": "Create a channel, category or role",
+    "delete": "delete a channel, category or role"
   }
 }

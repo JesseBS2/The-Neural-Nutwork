@@ -55,7 +55,7 @@ global.discord = {  // global variables for discord bot
       }
 
       self.setPicture = function(src){
-        embed = embed.attachFile(src);
+        embed = embed.setImage(src);
         return [self,embed];
       }
 
@@ -124,4 +124,4 @@ global.twitch.log = function(msg){
 console.log("HH  HH  IIIIII\nHH  HH    II\nHHHHHH    II\nHH  HH    II\nHH  HH  IIIIII\n");  // :)
 
 /*  When logging to the console from a Discord File, put "DISCORD:" at the front */
-let $Discord = require("./discord/main.js"); // the discord file
+var $Discord = require("./discord/main.js"); // the discord file

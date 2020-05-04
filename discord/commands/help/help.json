@@ -93,5 +93,25 @@
     "desc": "Unbans a mentioned user from your server",
     "format": "unban <user>",
     "alias": ["none"]
+  },
+  "self": {
+    "desc": "Get information about your discord account",
+    "format": "self",
+    "alias": ["me"]
+  },
+  "invite": {
+    "desc": "Get an invite link to invite the bot to your server",
+    "format": "invite",
+    "alias": ["inv"]
+  },
+  "create": {
+    "desc": "Create a channel, category or role in your server",
+    "format": "create <category/channel/role> <name> (other)",
+    "alias": ["none"]
+  },
+  "delete": {
+    "desc": "Delete a channel, category or role in your server",
+    "format": "delete <category/channel/role>",
+    "alias": ["none"]
   }
 }
