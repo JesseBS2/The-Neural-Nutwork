@@ -218,10 +218,10 @@ bot.on("message", async recievedmessage => {
     require("./commands/math/index.js")();
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
-    require("./commands/mod/index.js")(Discord);  // the param is for instances where something like Client.fetch is needed
+    require("./commands/mod/index.js")();  // the param is for instances where something like Client.fetch is needed
   }else if($cmnd in _commands["server"]){
     // server commands can not be disabled.
-    require("./commands/server/index.js")(Discord);
+    require("./commands/server/index.js")();
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")();

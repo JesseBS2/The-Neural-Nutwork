@@ -113,5 +113,10 @@
     "desc": "Delete a channel, category or role in your server",
     "format": "delete <category/channel/role>",
     "alias": ["none"]
+  },
+  "addrole": {
+    "desc": "Apply a mentioned role to a mentioned member",
+    "format": "addrole <@member> <@role>",
+    "alias": ["ar"]
   }
 }

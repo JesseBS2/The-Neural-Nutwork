@@ -1,7 +1,7 @@
 var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
-module.exports = function(client){
+module.exports = function(){
 
   global.discord.log("Ran /commands/other/index.js");
 
@@ -41,15 +41,17 @@ module.exports = function(client){
     $channel.send( echoed );
     return;
 
-  }else if($cmnd === "me" || $cmnd === "self"){
-    var username = message.author.username;
-    var disc = message.author.discriminator;
-    var status = message.author.presence.status;
-    var snow = message.author.id;
-    var pfp = message.author.displayAvatarURL || message.author.defaultAvatarURL; // avatar or their default.
-    var account_age = message.author.createdAt.toString().split(" ")[1]+" "+message.author.createdAt.toString().split(" ")[2]+" "+message.author.createdAt.toString().split(" ")[3];
-    var accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
-
+  }else if($cmnd === "profile" || $cmnd === "self"){
+    var username,disc,status,snow,pfp,account_age,accStatusColor;
+    
+    username = message.author.username;
+    disc = message.author.discriminator;
+    status = message.author.presence.status;
+    snow = message.author.id;
+    pfp = message.author.displayAvatarURL || message.author.defaultAvatarURL; // avatar or their default.
+    account_age = message.author.createdAt.toString().split(" ")[1]+" "+message.author.createdAt.toString().split(" ")[2]+" "+message.author.createdAt.toString().split(" ")[3];
+    accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
+    
     let display = Embed(" ","Username: "+username+"\n"+"Discriminator: "+disc+"\n"+"Snowflake: "+snow+"\n"+"Status: "+status+"\n"+"User Since: "+account_age,accStatusColor[status])[0].useImage(pfp)[1];
 
     $channel.send(display);

@@ -247,5 +247,68 @@ module.exports = async function(){
     }
 
 
+  }else if($cmnd === "addrole" || $cmnd === "ar"){
+    if($author.hasPermission("MANAGE_ROLES") === false){
+      $channel.send("You do not have the necessary permissions for that");
+      return;
+    }else if(me.hasPermission("MANAGE_ROLES") === false){
+      $channel.send("I do not have the necessary permissions for that");
+      $channel.send("I need the `Manage Roles` permission to do that");
+      return;
+    }
+
+    let member, role;
+    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ $channel.send("You didn't mention a member!"); return; }  // if a member is mentioned, get them
+    if($message.mentions.roles){ role = $message.mentions.roles; }else{ $channel.send("You didn't mention a role!"); return; }  // if a role is mentioned, get it
+    
+    let failFlag = false;
+
+    role.forEach(currentRole => {
+      member.addRole(currentRole).catch(e => {
+        // couldn't apply the current role
+        if(e) failFlag = true;
+      })
+    
+    });
+
+    if(failFlag === true){
+      $channel.send("I couldn't assign one or more of the roles");
+      return;
+    }else{
+      $channel.send("I've assigned the roles");
+      return;
+    }
+  
+  }else if($cmnd === "takerole" || $cmnd === "tr"){
+    if($author.hasPermission("MANAGE_ROLES") === false){
+      $channel.send("You do not have the necessary permissions for that");
+      return;
+    }else if(me.hasPermission("MANAGE_ROLES") === false){
+      $channel.send("I do not have the necessary permissions for that");
+      $channel.send("I need the `Manage Roles` permission to do that");
+      return;
+    }
+
+    let member, role;
+    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ $channel.send("You didn't mention a member!"); return; }  // if a member is mentioned, get them
+    if($message.mentions.roles){ role = $message.mentions.roles; }else{ $channel.send("You didn't mention a role!"); return; }  // if a role is mentioned, get it
+    
+    let failFlag = false;
+
+    role.forEach(currentRole => {
+      member.removeRole(currentRole).catch(e => {
+        // couldn't apply the current role
+        if(e) failFlag = true;
+      })
+    
+    });
+
+    if(failFlag === true){
+      $channel.send("I couldn't take one or more of the roles from that member");
+      return;
+    }else{
+      $channel.send("Roles were removed from the member");
+      return;
+    }
   }
 }

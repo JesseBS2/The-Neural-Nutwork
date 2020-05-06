@@ -21,8 +21,8 @@
     "snowflake": "Get your personal snowflake ID",
     "echo": "Repeat a message with style",
     "Echo": "Display a message with style",
-    "self": "Get information about your account",
-    "me": ""
+    "profile": "Get information about your account",
+    "self": ""
   },
   "mod": {
     "kick": "Kick a member from the server",
@@ -31,9 +31,9 @@
     "clear": "Clear an amount of messages",
     "config": "Configure the bot for your server",
     "addrole": "Give a member a role",
+    "ar": "",
     "takerole": "Take a role from a member",
-    "makerole": "Create a new role",
-    "clearrole": "Remove a role from your server"
+    "tr": ""
   },
   "ptoe": {
     "periodic": "Get information about an element on the PToE",

@@ -1,7 +1,7 @@
 var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
-module.exports = function(Client){
+module.exports = function(){
 
   global.discord.log("Ran /commands/server/index.js");
   
