@@ -40,7 +40,7 @@ global.discord = {  // global variables for discord bot
     CustomEmbed: function(title,description,color){
       if(title === ""){title = " "}
       let self = {};
-      color = color || "#00ABFF"
+      color = color || "#7289d9"
       var embed = new Discord.RichEmbed().setColor(color).setTitle(title).setDescription(description);
             
       self.useImage = function(img){

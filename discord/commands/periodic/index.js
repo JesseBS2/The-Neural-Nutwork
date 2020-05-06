@@ -17,7 +17,7 @@ module.exports = function(){
       //global.discord.debug("Loop #"+elems);
       if(words[1].toLowerCase() == table[elems]["name"].toLowerCase() || words[1].toLowerCase() == table[elems]["abr"].toLowerCase() || words[1] === (elems).toString()){
         //global.discord.debug("YES IT IS")
-        element = Embed(table[elems]["name"]+" - #"+elems,"Symbol: "+table[elems]["abr"]+"\nAtomic Weight: "+table[elems]["weight"],"#35b000")[0].field("Discovery",table[elems]["disc"]+" by "+table[elems]["by"])[1];
+        element = Embed(table[elems]["name"]+" - #"+elems,"Symbol: "+table[elems]["abr"]+"\nAtomic Weight: "+table[elems]["weight"])[0].field("Discovery",table[elems]["disc"]+" by "+table[elems]["by"])[1];
         break;
       }
     }

@@ -36,7 +36,7 @@ module.exports = function(IsFullMeme){
       //  first it takes the message and splits it by the last line, so that only the lines before the last one are retrevied
       //  then it returns everything before that
 
-      $channel.send( Embed("",global.discord.message.message.split(lines[lines.length-1])[0],"#ff69a0")[0].setPicture(MemeToShow)[0].footer(global.discord.message.tag)[1] );
+      $channel.send( Embed("",global.discord.message.message.split(lines[lines.length-1])[0])[0].setPicture(MemeToShow)[0].footer(global.discord.message.tag)[1] );
       global.discord.message.msg.delete();
       return;
     }
