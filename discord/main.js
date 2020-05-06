@@ -136,6 +136,11 @@ bot.on("message", async recievedmessage => {
   let $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
   let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
 
+  if(recievedmessage.content.split(" ")[0] === "<@!"+bot.user.id+">"){
+    $cmnd = recievedmessage.content.split(" ")[1];
+    global.discord.message.words.unshift("S P A C E");  // offset words by one, so all future uses of the words array are still right
+  }
+
   global.discord.message.command = $cmnd;
   
   if(global.discord.admins.includes(recievedmessage.author.id)){
