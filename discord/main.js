@@ -308,6 +308,7 @@ bot.on("message", async recievedmessage => {
       global.discord.log("Ran a Math command in main.js")
       require("./commands/math/index.js")(math);  // evaluate
       return;
+
     }else if(type === "periodic" && Configs[recievedmessage.guild.id]["config"]["autoperiodic"] == "enabled"){
 
       global.discord.log("Ran a PToE command in main.js");

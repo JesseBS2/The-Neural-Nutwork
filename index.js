@@ -27,6 +27,7 @@ global.SolveEquation = function(msg){
       .replace(/\}/g,")") 
       .replace(/ /g,"");  // make it one message
     
+    
     return algebra.parse(msg);
   }catch(err){
     console.log("Given error while trying to solve a global.SolveEquation():  "+err)

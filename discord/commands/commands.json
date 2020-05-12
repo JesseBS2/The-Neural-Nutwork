@@ -15,7 +15,8 @@
     "solve": "Solve a math problem with an un-named variable.",
     "convert": "Convert one value into another",
     "simplify": "Converts an Algebraic equation into a simple equation",
-    "simp": ""
+    "simp": "",
+    "factorial": "Factorialize a number"
   },
   "other": {
     "profile": "Get information about your account",

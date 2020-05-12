@@ -263,6 +263,22 @@ module.exports = async function(ee){
 
       $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
       return;
+  
+  }else if($cmnd === "factorial"){
+    if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
+    
+    function factorialize(num) {
+      var result = num;
+      if(num === 0 || num === 1)return 1; 
+        while (num > 1) { 
+        num--;
+        result *= num;
+      }
+      return result;
+    }
+
+    $channel.send("> "+ factorialize( Number(words[1]) ) ); 
+    return;
   }
 
 }
