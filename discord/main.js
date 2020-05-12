@@ -36,6 +36,7 @@ const _commands = require("./commands/commands.json"); // all of the bot's comma
 global.discord.admins = ["596938492752166922"];
 
 
+
 bot.on("message", async recievedmessage => {
 
   if(recievedmessage.channel.type !== "dm" && recievedmessage.guild.id in Configs === false){

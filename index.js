@@ -1,6 +1,7 @@
 /*
-* NodeJS 12.16.1
-* Discord.js 11.5.1
+* NodeJS        12.16.1
+* Discord.js    11.5.1
+* Algebra.js    0.2.6
 */
 
 const Discord = require("discord.js"); // discord library
