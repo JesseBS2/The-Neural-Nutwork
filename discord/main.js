@@ -7,6 +7,8 @@ const Periodic = require("./commands/periodic/table.json");
 
 bot.login(fs.readFileSync("discord/token.txt","utf8").toString());  // log into discord account
 
+
+
 bot.on("ready", () => {
   global.discord.guilds = 0
   global.discord.online = true; // let the global know that the bot is online
@@ -16,17 +18,18 @@ bot.on("ready", () => {
   });
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
-  bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
-
-
-  global.discord.functions.saveJSON = function(srcJSON){
-    srcJSON = srcJSON || require("./configuration.json");
-    fs.writeFile("./discord/configuration.json", JSON.stringify(srcJSON), (err) => {
-      if(err) throw err;
-    });
-  }
+  bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING"});
 
 });
+
+
+// Writes to the JSON file for discord servers
+global.discord.functions.saveJSON = function(srcJSON){
+  srcJSON = srcJSON || require("./configuration.json");
+  fs.writeFile("./discord/configuration.json", JSON.stringify(srcJSON), (err) => {
+    if(err) throw err;
+  });
+}
 
 
 const _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
@@ -44,8 +47,8 @@ bot.on("message", async recievedmessage => {
           "type": "disabled",
           "id": null
         },
-        "automath": "enabled",
-        "autoperiodic": "enabled",
+        "automath": "disabled",
+        "autoperiodic": "disabled",
         "echos": "enabled",
         "embeds": "enabled",
         "nickname": "enabled"
@@ -64,7 +67,7 @@ bot.on("message", async recievedmessage => {
     }
 
     global.discord.functions.saveJSON();
-    global.discord.log("Assigned the basics to "+recievedmessage.guild.name);
+    global.discord.debug("Assigned the basics to "+recievedmessage.guild.name);
   }
 
   global.discord.message = null;
@@ -128,23 +131,38 @@ bot.on("message", async recievedmessage => {
   global.discord.bot.me = recievedmessage.guild.me;
   global.discord.bot.user = bot.user;
 
+  var $cmnd;
 
   if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
     Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
   }
 
-  let $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
+  if(words[0].startsWith("$") && words[0].length === 1){  // then word 0 is $ which means word 1 is the command
+    $cmnd = recievedmessage.content.split(" ")[1];
+    global.discord.message.words.shift();
+  }else if(words[0].startsWith("$")){
+    $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
+  }
+
   let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
 
+  // when the bot is pinged/mentioned
   if(recievedmessage.content.split(" ")[0] === "<@!"+bot.user.id+">"){  // if the first word is the mentioned bot
+    if(!words[1]){
+      $channel.send("My prefix for this server is: `"+Configs[recievedmessage.guild.id]["prefix"]+"`");
+    }
     $cmnd = recievedmessage.content.split(" ")[1];
     global.discord.message.words.shift();  // offset words by one, so all future uses of the words array are still right
   }
 
+
+
   global.discord.message.command = $cmnd;
   
+
+  /* Commands for the admins(me) to use */
   if(global.discord.admins.includes(recievedmessage.author.id)){
-    if(recievedmessage.content === "$&crash"){
+    if(recievedmessage.content === "$&crash"){  // crash the bot
       console.log("Given a $&crash");
       bot.user.setStatus("dnd");  // just a quick visual for me.
       
@@ -154,7 +172,7 @@ bot.on("message", async recievedmessage => {
         process.exit();
       },1000);
 
-    }else if(recievedmessage.content.split(" ")[0] === "$&activity"){
+    }else if(recievedmessage.content.split(" ")[0] === "$&activity"){ // Playing a game/streaming/listening/watching/custom
       if(words[1]){
         bot.user.setActivity(recievedmessage.content.split("$&activity ")[1]);
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
@@ -163,7 +181,7 @@ bot.on("message", async recievedmessage => {
         bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
         $channel.send("Activity has been reset!");
       }
-    }else if(recievedmessage.content.split(" ")[0] === "$&status"){
+    }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
       if(words[1]){
         if(["online","idle","dnd","invisible"].includes(words[1]) === false){$channel.send("That is not a valid status."); return;}
         bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
@@ -173,8 +191,17 @@ bot.on("message", async recievedmessage => {
         bot.user.setStatus("online");
         $channel.send("Status has been reset!");
       }
+    
+    }else if(recievedmessage.content.split(" ")[0] === "$&forget"){ // Use FS to completely clear `configuration.json`
+      if(words[1] === "server"){
+        fs.writeFile("configuration.json", JSON.stringify("{}"), err => {
+          if(err) throw err;
+        });
+        global.discord.debug("an admin "+recievedmessage.author.username+" erased the bot's memories of servers");
+      }
     }
   }
+
 
 
 
@@ -197,7 +224,7 @@ bot.on("message", async recievedmessage => {
 
     pingedMessage.edit(FancyPongMessage);
 
-  }else if(words[0] === "$inv" || words[0] === "$invite"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
+  }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
     
     // Multiple different invites should be available with different permission configurations
     //  1. Admin, permissions=8
@@ -313,8 +340,8 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
         "type": "disabled",
         "id": null
       },
-      "automath": "enabled",
-      "autoperiodic": "enabled",
+      "automath": "disabled",
+      "autoperiodic": "disabled",
       "echos": "enabled",
       "embeds": "enabled",
       "nickname": "enabled"
@@ -340,5 +367,6 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
 bot.on("guildDelete", guild => {  // bot is removed from server
 
   Configs[guild.id] = null; // clear that server's information.
+  global.discord.functions.saveJSON(Configs);
 
 });
