@@ -71,29 +71,6 @@ global.discord = {  // global variables for discord bot
       }
 
       return [self,embed];
-    },
-    
-    DisabledEmbed: function(title,description){
-      var self = {};
-      var msg; 
-      title = title || "<title></title>";
-      description = description || "<body></body>";
-      if(title === " "){ // just in case it's necessary
-        msg = description;
-      }else{
-        msg = "**"+title+"**\n"+description;
-      }
-
-      self.useImage = function(blank_param){ // simply exists so that if embeds are disabled then it doesn't crash de bot
-        return [self,self]; //returns it no matter what.
-      }
-
-      self.field = function(title2,text){
-        msg += "\n**"+title2+"**\n"+text
-        return [self,msg];
-      }
-
-        return [self,msg];
     }
   },
   totalPolls: 0
@@ -103,22 +80,18 @@ global.twitch = { // global variables for twitch bot
   online: false
 }
 
+
+// https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
+
+
 /* these log to the console, with the colors for the designated app */
 global.discord.debug = function(msg){
   console.log("\x1b[36m"+"DISCORD "+"\x1b[33m"+"DEBUG: \x1b[36m"+msg,"\x1b[0m");  // logs to console with colors and stuff
 }
 
-global.twitch.debug = function(msg){
-  console.log("\x1b[35m"+"TWITCH "+"\x1b[33m"+"DEBUG: \x1b[35m"+msg,"\x1b[0m");  // logs to console with twitch's color
-}
-
 /* these are the same as the global debugs, but without the DEBUG at the beginning */
 global.discord.log = function(msg){
   console.log("\x1b[36m"+"DISCORD: "+msg,"\x1b[0m");
-}
-
-global.twitch.log = function(msg){
-  console.log("\x1b[35m"+"TWITCH: "+msg,"\x1b[0m");
 }
 
 

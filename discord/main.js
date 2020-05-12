@@ -50,8 +50,6 @@ bot.on("message", async recievedmessage => {
         },
         "automath": "disabled",
         "autoperiodic": "disabled",
-        "echos": "enabled",
-        "embeds": "enabled",
         "nickname": "enabled"
       },
       "categories": {
@@ -257,7 +255,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/server/index.js")();
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
-    require("./commands/other/index.js")();
+    require("./commands/other/index.js")(bot);
   }else if($cmnd in _commands["ptoe"]){
     if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
     require("./commands/periodic/index.js")();
@@ -343,8 +341,6 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       },
       "automath": "disabled",
       "autoperiodic": "disabled",
-      "echos": "enabled",
-      "embeds": "enabled",
       "nickname": "enabled"
     },
     "categories": {

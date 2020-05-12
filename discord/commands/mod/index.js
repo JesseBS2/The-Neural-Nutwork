@@ -139,7 +139,7 @@ module.exports = async function(){
     }
 
     if(!words[1]){
-      let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("echo - "+Configs["config"]["echos"],"Mimic what a member said, in a flashy way.\n(enable/disable)")[0].field("Fun - "+Configs["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)")[0].field("Meme - "+Configs["categories"]["meme"],"Allows you to create memes or send meme pictures into a channel. \n(enable/disable)")[0].useImage($guild.iconURL)[1];
+      let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("Autoperiodic - "+Configs["config"]["autoperiodic"],"The bot shows an element without the need of a command.\n(enable/disable)")[0].field("Fun - "+Configs["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)")[0].field("Meme - "+Configs["categories"]["meme"],"Allows you to create memes or send meme pictures into a channel. \n(enable/disable)")[0].useImage($guild.iconURL)[1];
       $channel.send(displayconfigures);
       return;
     }

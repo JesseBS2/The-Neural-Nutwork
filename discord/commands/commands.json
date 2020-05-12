@@ -18,9 +18,6 @@
     "simp": ""
   },
   "other": {
-    "snowflake": "Get your personal snowflake ID",
-    "echo": "Repeat a message with style",
-    "Echo": "Display a message with style",
     "profile": "Get information about your account",
     "self": ""
   },
