@@ -39,34 +39,38 @@ global.discord.admins = ["596938492752166922"];
 
 bot.on("message", async recievedmessage => {
 
-  if(recievedmessage.channel.type !== "dm" && recievedmessage.guild.id in Configs === false){
-    Configs[recievedmessage.guild.id] = {
-      "name": recievedmessage.guild.name,
-      "prefix": "$",
-      "config": {
-        "autorole": {
-          "type": "disabled",
-          "id": null
+  if(recievedmessage.channel.type !== "dm"){
+    if(recievedmessage.guild.id in Configs === false || typeof Configs[recievedmessage.guild.id] !== "object" || Configs[recievedmessage.guild.id] === null){
+
+      Configs[recievedmessage.guild.id] = {
+        "name": recievedmessage.guild.name,
+        "prefix": "$",
+        "config": {
+          "autorole": {
+            "type": "disabled",
+            "id": null
+          },
+          "automath": "disabled",
+          "autoperiodic": "disabled",
+          "nickname": "enabled"
         },
-        "automath": "disabled",
-        "autoperiodic": "disabled",
-        "nickname": "enabled"
-      },
-      "categories": {
-        "math": "enabled",
-        "mod": "enabled",
-        "other": "enabled",
-        "ptoe": "enabled",
-        "fun": "enabled",
-        "meme": "enabled"
-      },
-      "channels": {
-        
+        "categories": {
+          "math": "enabled",
+          "mod": "enabled",
+          "other": "enabled",
+          "ptoe": "enabled",
+          "fun": "enabled",
+          "meme": "enabled"
+        },
+        "channels": {
+          
+        }
       }
+
+      global.discord.functions.saveJSON();
+      global.discord.debug("Assigned the basics to "+recievedmessage.guild.name);
     }
 
-    global.discord.functions.saveJSON();
-    global.discord.debug("Assigned the basics to "+recievedmessage.guild.name);
   }
 
   global.discord.message = null;
@@ -121,7 +125,7 @@ bot.on("message", async recievedmessage => {
   global.discord.message.msg = recievedmessage; // the message and all it's functions 
   global.discord.message.message = recievedmessage.content; // the string
   global.discord.message.words = recievedmessage.content.split(" ");  // an array of each word
-  global.discord.message.prefix = Configs[recievedmessage.guild.id].prefix; // the prefix for the server whom called it
+  global.discord.message.prefix = Configs[recievedmessage.guild.id].prefix || "$"; // the prefix for the server whom called it
   global.discord.message.channel = recievedmessage.channel; // the channel the message was sent
   global.discord.message.author = recievedmessage.author; // the person that sent the message
   global.discord.message.tag = recievedmessage.author.username.toString() + "#" + recievedmessage.author.discriminator.toString(); // the person that sent the message as USERNAME#0000
@@ -359,6 +363,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
   
   global.discord.guilds++;
   bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
+  global.discord.functions.saveJSON();
 });
 
 

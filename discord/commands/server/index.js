@@ -44,37 +44,66 @@ module.exports = function(){
         });
       
       $channel.send("I've created the channel!");
-      global.discord.log("Created a channel '"+words[2]+"' in server "+$server.name);
+      global.discord.log("Created a channel '"+name+"' in server "+$server.name);
     }else if(words[1] === "category"){
       let name = words[2] || "nameless";
 
       $server.createChannel(name,{type: "category", reason: "Category created by "+$author.tag}); // same as create channel but the channel type is a category :O
       $channel.send("I've created the category!");
-      global.discord.log("Created a category '"+words[2]+"' in server ' "+$server.name+" '");
+      global.discord.log("Created a category '"+name+"' in server ' "+$server.name+" '");
+    
+    }else if(words[1] === "role"){
+      let name = words[2] || "nameless-role";
+
+      $server.createRole({name: name, reason: "Role created by "+$author.tag});
+      $channel.send("I've created the role!");
+      global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
+    
+    }else{
+      global.discord.debug("User "+$author.tag+" tried to delete "+words[1])
     }
 
   }else if($cmnd === "delete"){
-    let mention;
+    let mention, type="unknown thing";
     if(words[1].startsWith("<")){
-      mention = message.mentions.channels.first();
+      mention = message.mentions.channels.first() || message.mentions.roles.first();
+      if(mention.type === "text" || mention.type === "voice"){  // voice and texts are channels
+        type = "channel";
+      }else if(mention.type === "category"){  // categories are actually channels with category type
+        type = "category";
+      }else if(mention.type === undefined){ // roles don't have a type
+        type = "role";
+      }
+
       mention.delete()
         .then(function(){
-          $channel.send("Channel was deleted!");
-          global.discord.log("Deleted a channel '"+mention.name+"' in server ' "+$server.name+" '");
+          $channel.send("I've deleted the "+type);
+          global.discord.log("Deleted a " +type+ " '"+mention.name+"' in server '"+$server.name+"'");
         })
         .catch(function(){
-          $channel.send("That is not a channel");
+          if(type === "role"){ $channel.send("I can not delete roles higher than my own"); return;}
+          if(type === "channel"){ $channel.send("I can't seem to delete that channel"); return;}
         });
 
     }else if(words[1].length == 18 && words[1].replace(/\D/gi,"") === words[1]){ // if all letters removed is the same as itself, then it's all numbers(and probably an ID)
-      mention = $server.channels.get(words[1]);
+      mention = $server.channels.get(words[1]) || $server.roles.get(words[1]);
+      if(mention.type === "text" || mention.type === "voice"){
+        type = "channel";
+      }else if(mention.type === "category"){
+        type = "category";
+      }else if(mention.type === undefined){
+        type = "role";
+      }
+
       mention.delete()
         .then(function(){
-          $channel.send("Channel was deleted!");
-          global.discord.log("Deleted a channel '"+mention.name+"' in server ' "+$server.name+" '");
+          $channel.send("I've deleted the "+type);
+          global.discord.log("Deleted a "+type+" '"+mention.name+"' in server '"+$server.name+"'");
         })
         .catch(function(){
-          $channel.send("That is not a channel");
+          if(type === "role"){ $channel.send("I can not delete roles higher than my own"); return;}
+          if(type === "channel"){ $channel.send("I can't seem to delete that channel"); return;}
+          if(type === "category"){ $channel.send("I can't seem to delete that category"); return;}
         });
     }
   }

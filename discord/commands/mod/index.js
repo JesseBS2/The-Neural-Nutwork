@@ -53,17 +53,24 @@ module.exports = async function(){
     }
 
     let toKick = global.discord.message.msg.mentions.members.first();
-    if(toKick === global.discord.bot.user.id){
-      $channel.send("I'll get you! And your little dog too!");
+    if(toKick.id === global.discord.bot.user.id){
+      // DeathMessages ordered like so: Goodbyes, Movie References, Video Game References
+      let DeathMessages = ["Kicked *myself* from the server!","Okay. Peace :wave:","Kicking me? Aww okay, bye :(","'*The Nutwork* has left the *server*'", "You can't fire me! I quit!","I'll get you! And your little dog too!","Hasta la vista baby", "Advancement Made: The End?","Bravo six, Going dark.","Killed by "+$author.tag+"\nYou placed 4th"]
+
+      $channel.send( DeathMessages[Math.round(Math.random()*DeathMessages.length-1)] );  // sends a random goobye into the server
       $guild.leave();
+      return;
     }
-    try{
-      toKick.kick();
-      $channel.send("Kicked "+toKick+" from the server!");
-    }catch(err){
-      global.discord.log(err);
-      $channel.send("This user can not be kicked!");
-    }
+    
+    toKick.kick()
+      .then(() => {
+        $channel.send("Kicked "+toKick+" from the server!");
+        return;
+      })
+      .catch(err => {
+        $channel.send("I can not kick this user!");
+        return;
+      });
 
   }else if($cmnd === "ban"){
     if($author.hasPermission("BAN_MEMBERS") === false){

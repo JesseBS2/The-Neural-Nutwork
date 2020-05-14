@@ -167,6 +167,8 @@ module.exports = async function(ee){
       return;
     }
 
+
+
   }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
     if(!words[1]){$channel.send("Convert a value A into a value B"); return;}
     
@@ -239,8 +241,7 @@ module.exports = async function(ee){
       conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc+B)[1];
     
     }else{
-      $channel.send("Something went wrong!");
-      $channel.send("Did you spell the abbreviations right?");
+      $channel.send("Something went wrong!\nDid you spell the abbreviations right?");
       return;
     }
 
@@ -253,7 +254,7 @@ module.exports = async function(ee){
     let equation = message.split($pre+$cmnd+" ")[1];
     let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
     let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
-    $channel.send(Embed("Simplify",equation)[0].field("Result",SimpedEquation)[1]);
+    $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[1]);
     return;
   
   }else if($cmnd === "solve"){
