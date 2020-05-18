@@ -52,6 +52,96 @@ module.exports = function(Client){
 
     $channel.send(display);
     return;
+  
+  }else if($cmnd === "poll"){
+    if($member.hasPermission("MANAGE_MESSAGES") === false){ // check if user is allowed to do that. Why is it the MANAGE_MESSAGES permission? ...I do NOT know.
+      $channel.send("You do not have the necessary permissions for that!");
+      return;
+    }
+
+    if(Configs["channels"][$channel.id]["activepoll"] === true){$channel.send("There is already a poll in this channel!"); return;}
+      if(!words[1]){$channel.send("You're forgetting part of that Command!"); return;}
+      var PollHeaders = ["Vote-y McVoterson","It's time to settle this...","I want a fair trial, gentlemen.","August 18th, 1920","I love democracy"]; // add some variatey      
+      let selectedHeader = PollHeaders[Math.round(Math.random()*PollHeaders.length)];
+
+      let voteFor = "";
+      var Votes = {};
+      var Voters = [];
+      let options = msg.replace(/\, /g,",").split($pre+"poll ")[1].split(",");  // separate by commas instead
+      
+      if(!options[1]){$channel.send("You need at least two things to vote for!"); return;}
+      if(options[5]){$channel.send("You can only have up to 5 things to vote for!"); return;}
+
+      Configs["channels"][$channel.id]["activepoll"] = true;  // so that another poll can not be made in the same channel
+
+      for(let n = 0; n < options.length; n++){
+        if(n === options.length-1 && words[words.length-1].replace(/\D/g,"") === words[words.length-1] && !words[words.length-1].endsWith(",") ){
+          let crazySplit = options[n].split(" "+options[n].split(" ")[options[n].split(" ").length-1])[0];
+          
+          Votes[crazySplit.toLowerCase()] = 0; 
+          voteFor += crazySplit+"\n";
+
+          break;
+        }else if(n === 0 && options[0].startsWith("\"") && options[0].endsWith("\"")){
+          selectedHeader = options[0].split("\"")[1];
+          
+          continue;
+        }
+        Votes[options[n].toLowerCase()] = 0; // lowercase only makes it easier.
+        voteFor += options[n]+"\n";
+      }
+      
+      $channel.send( Embed(selectedHeader,voteFor)[0].field("How to vote?","Use "+$pre+"vote <thing you want to vote for>")[1]); // annoucement! announcement!
+
+      const isAVote = newMsg => newMsg.content.startsWith($pre+"vote"); // what to look for when getting commands
+      
+      let countdownTimer = 30000; // 30 seconds to vote
+      //global.discord.debug(words[words.length-1])
+      if(words[words.length-1].replace(/\D/g,"") === words[words.length-1] && !words[words.length-1].endsWith(",") ) countdownTimer = Number(words[words.length-1])*1000; // if remove all letters is still itself and the last word wasn't anticipating another variable then it's probably a number & a timer. Multiply by 1000 to convert to seconds
+      //global.discord.debug(countdownTimer)
+
+      let GetIt = $channel.createMessageCollector(isAVote, {time: countdownTimer});
+      global.discord.debug(`Created poll #${global.discord.totalPolls} in ${message.guild.name} | with a ${countdownTimer/1000} second timer`);
+
+     //global.discord.debug("Options: \n"+JSON.stringify(Votes) )
+
+      GetIt.on("collect",recievedMSG => { // collection, A.K.A message getter
+        if( Voters.includes(recievedMSG.author.toString()) ){  // if the sender's ID has already been sent
+          $channel.send("You already voted for this Poll!");
+        }else{
+          if(recievedMSG.content.split($pre+"vote ")[1].toLowerCase() in Votes){ // is everything but the command in votes?
+            Votes[recievedMSG.content.split($pre+"vote ")[1].toLowerCase()] += 1;  // lowercase
+            $channel.send("Vote Added!");
+            Voters.push(recievedMSG.author.toString()); // add them to an array so they can't vote again
+          }else{
+            $channel.send("'"+recievedMSG.content.split($pre+"vote ")[1]+"' is not an option!"); // if you try to vote for failure when it's not someting you can vote for... heh.
+          }
+        }
+      });
+
+      GetIt.on("end",async collection => {  // the collection(message getter) finishes it's 30s timer
+        if(Voters.length <= 0){
+          global.discord.debug("Poll #"+global.discord.totalPolls+" Timed out");
+          Configs["channels"][$channel.id]["activepoll"] = false; // allows for more polls!
+          let oof = await $channel.send("**Poll timed out.** No one voted.");
+          global.discord.totalPolls++;
+          setTimeout(() => {
+            oof.delete();
+          },6969);
+          return;
+        }
+        let Entries = Object.entries(Votes);
+        let toReturn = "";
+        Entries.forEach(e => {
+          toReturn += e[0]+": "+(e[1]/Voters.length)*100+"%\n";
+        });
+        $channel.send( Embed("Final Results for the Poll:", toReturn)[0].footer(Voters.length+" people voted")[1] ); // if I were able to sort an array of arrays based on one of the values in that sub-array I would... but I can't so no
+        global.discord.totalPolls++;
+        Configs["channels"][$channel.id]["activepoll"] = false; // allows for more polls!
+      });
+
+    return;
+  
   }
 
 }

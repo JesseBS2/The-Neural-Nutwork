@@ -20,7 +20,9 @@
   },
   "other": {
     "profile": "Get information about your account",
-    "self": ""
+    "self": "",
+    "poll": "Creates a voteable poll",
+    "vote": "Vote on a poll"
   },
   "mod": {
     "kick": "Kick a member from the server",
@@ -39,8 +41,6 @@
     "pt": ""
   },
   "fun": {
-    "poll": "Create a poll",
-    "vote": "Vote on a created poll",
     "respect": "Pay respects",
     "f":  "",
     "F": "",

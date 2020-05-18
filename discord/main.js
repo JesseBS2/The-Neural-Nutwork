@@ -8,7 +8,6 @@ const Periodic = require("./commands/periodic/table.json");
 bot.login(fs.readFileSync("discord/token.txt","utf8").toString());  // log into discord account
 
 
-
 bot.on("ready", () => {
   global.discord.guilds = 0
   global.discord.online = true; // let the global know that the bot is online
