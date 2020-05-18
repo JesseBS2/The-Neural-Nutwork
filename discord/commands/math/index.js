@@ -28,11 +28,11 @@ module.exports = async function(ee){
       }
     }
 
-    toEquation = toEquation.replace(/÷/g,"÷").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(/ /g,"");
+    toEquation = toEquation.replace(/÷/g,"/").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(/ /g,"");
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
       let n = SolveEquation( toEquation );
-      $channel.send( Embed("Algebra",toEquation)[0].field("Result",n)[1] );
+      $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[1] );
     }
     return;
 
