@@ -59,8 +59,21 @@ module.exports = function(){
       $channel.send("I've created the role!");
       global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
     
+    }else if(words[1] === "webhook"){
+      if(!words[2]){ $channel.send("You're forgetting the name parameter!"); return;}
+
+      $channel.createWebhook(words[2], {
+        avatar: "https://i.imgur.com/zfusTWU.png",
+        reason: "Webhook created with The Nutwork by "+$author.tag
+      }).then(webhook => {
+        $channel.send("I've created the webhook!");
+        global.discord.debug("Created webhook \n"+webhook);
+      }).catch(e => {
+        if(e) throw e;
+      });
+
     }else{
-      global.discord.debug("User "+$author.tag+" tried to delete "+words[1])
+      return;
     }
 
   }else if($cmnd === "delete"){

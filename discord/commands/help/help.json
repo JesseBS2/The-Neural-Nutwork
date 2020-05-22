@@ -114,9 +114,9 @@
     "format": "delete <category/channel/role>",
     "alias": ["none"]
   },
-  "addrole": {
-    "desc": "Apply a mentioned role to a mentioned member",
-    "format": "addrole <@member> <@role>",
-    "alias": ["ar"]
+  "group": {
+    "desc": "Sort a number into it's category",
+    "format": "group <number>",
+    "alias": ["none"]
   }
 }

@@ -16,13 +16,16 @@
     "convert": "Convert one value into another",
     "simplify": "Converts an Algebraic equation into a simple equation",
     "simp": "",
-    "factorial": "Factorialize a number"
+    "factorial": "Factorialize a number",
+    "group": "Figure out what group a number belongs to"
   },
   "other": {
     "profile": "Get information about your account",
     "self": "",
     "poll": "Creates a voteable poll",
-    "vote": "Vote on a poll"
+    "vote": "Vote on a poll",
+    "nickname": "Change your nickname",
+    "nick": ""
   },
   "mod": {
     "kick": "Kick a member from the server",

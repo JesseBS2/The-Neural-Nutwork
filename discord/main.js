@@ -34,6 +34,8 @@ global.discord.functions.saveJSON = function(srcJSON){
 const _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
 global.discord.admins = ["596938492752166922"];
 
+var Activity_Types = ["playing","watching","listening","streaming","custom"];
+
 
 
 bot.on("message", async recievedmessage => {
@@ -95,7 +97,7 @@ bot.on("message", async recievedmessage => {
 
 
     if(words[0] === "$inv" || words[0] === "$invite"){
-      $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
+      return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
     }else if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
       if(words[0] in _commands["math"]){global.discord.message.command = words[0]}
       require("./commands/math/index.js")();
@@ -174,15 +176,22 @@ bot.on("message", async recievedmessage => {
         process.exit();
       },1000);
 
-    }else if(recievedmessage.content.split(" ")[0] === "$&activity"){ // Playing a game/streaming/listening/watching/custom
-      if(words[1]){
-        bot.user.setActivity(recievedmessage.content.split("$&activity ")[1]);
+    }else if(recievedmessage.content.split(" ")[0] === "$&activity"){
+      
+      if(!words[1]){
+        global.discord.debug("an admin "+recievedmessage.author.username+" reset the bot's activity");
+        bot.user.setActivity(global.discord.guilds+" servers",{type:"WATCHING"});
+        return $channel.send("Activity has been reset!");
+      }else if(Activity_Types.includes(words[1].toLowerCase())){
+        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:Activity_Types[Activity_Types.indexOf(words[1].toLowerCase())] });
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
-        $channel.send("Activity has been changed!");
-      }else{
-        bot.user.setActivity("$commands in "+global.discord.guilds+" servers",{type:1});
-        $channel.send("Activity has been reset!");
+        return $channel.send("Activity has been changed!");
+      }else if(words[1]){
+        bot.user.setActivity(recievedmessage.content.split("$&activity ")[1],{type:4});
+        global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
+        return $channel.send("Activity has been changed!");
       }
+
     }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
       if(words[1]){
         if(["online","idle","dnd","invisible"].includes(words[1]) === false){$channel.send("That is not a valid status."); return;}
@@ -205,14 +214,11 @@ bot.on("message", async recievedmessage => {
   }
 
 
-
-
-
   // Commands!
   //  the only reason that the "ping" command is inside main.js and not in /commands/ is because it needs the Client,
   //  all other commands should be found inside /commands/<category>/index.js.
   //  the command is detected by splitting the commands up by category in a json file;
-  //  then it checks the to see if the command is within any of those categorys,
+  //  then it checks the to see if the command is within any of those categories,
   //  if not then see if it is an Algebraic Math Problem or an Element of the Periodic Table,
   //  if niether of those, ignore it.
 
@@ -227,15 +233,8 @@ bot.on("message", async recievedmessage => {
     pingedMessage.edit(FancyPongMessage);
 
   }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
-    
-    // Multiple different invites should be available with different permission configurations
-    //  1. Admin, permissions=8
-    //  2. Just educational, permissions=68608
-    //    2.5 Memes too, permissions=125952
-    //  3. Moderator, permissions=268512262
-    $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot")[1]);
 
-
+    return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
   }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
     
     if(Configs[recievedmessage.guild.id]["categories"]["meme"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
@@ -316,8 +315,7 @@ bot.on("message", async recievedmessage => {
 
       global.discord.log("Ran a PToE command in main.js");
       let element = global.discord.functions.CustomEmbed(Periodic[other.value]["name"]+" - #"+other.value,"Symbol: "+Periodic[other.value]["abr"]+"\nAtomic Weight: "+Periodic[other.value]["weight"])[0].field("Discovery",Periodic[other.value]["disc"]+" by "+Periodic[other.value]["by"])[1];
-      $channel.send(element);
-      return;
+      return $channel.send(element);
     }
 
   }

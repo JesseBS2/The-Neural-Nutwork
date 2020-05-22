@@ -27,7 +27,12 @@ global.SolveEquation = function(msg){
       .replace(/\}/g,")") 
       .replace(/ /g,"");  // make it one message
     
-    return algebra.parse(msg);
+    var toReturn = algebra.parse(msg);
+    // if(toReturn.toString().includes("/")){
+    //   return Number(toReturn.toString().split("/")[0]) / Number(toReturn.toString().split("/")[1]);
+    // }
+
+    return toReturn;
   }catch(err){
     console.log("Given error while trying to solve a global.SolveEquation():  "+err)
     return false;

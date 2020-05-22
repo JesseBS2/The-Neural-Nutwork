@@ -14,6 +14,7 @@ module.exports = function(Client){
   let $cmnd = global.discord.message.command;
   let $author = global.discord.message.author;
   let $member = global.discord.message.msg.member;
+  let $server = global.discord.message.guild;
   let $pre = global.discord.message.prefix;
   let me = global.discord.bot.me;
 
@@ -142,6 +143,40 @@ module.exports = function(Client){
 
     return;
   
+  }else if($cmnd === "nickname" || $cmnd === "nick"){
+    if(!message.mentions.members.first() && $member.hasPermission("CHANGE_NICKNAME") === false || message.mentions.members.first() && $member.hasPermission("MANAGE_NICKNAME") === false){
+      $channel.send("You do not have the necessary permissions for that!");
+      return;
+    }else if(me.hasPermission("MANAGE_NICKNAMES") === false){
+      $channel.send("I do not have the necessary permissions for that!\nI need the `MANAGE_NICKNAMES` permission");
+      return;
+    }
+
+    var toChangeNick = message.mentions.members.first() || message.member;
+    var newNick = "";
+
+    for(let j = 1; j < words.length; j++){
+      if(words[1] === $cmnd){j++}
+      if(words[j].startsWith("<@!") && words[j].endsWith(">") && words[j].length === 22){}else{
+        newNick += words[j];
+        if(j < words.length){newNick+=" ";}
+      }
+    }
+
+    
+    //global.discord.debug(toChangeNick);
+    toChangeNick.setNickname( newNick )
+      .then(e => {
+        global.discord.debug(e);
+        return $channel.send("**Sucessfully nicknamed!**");
+      })
+      .catch(err => {
+        if(err != "DiscordAPIError: Missing Permissions") throw e;
+        return $channel.send("I can not change the nickname of this user!");
+      });
+    
+
+    return;
   }
 
 }

@@ -14,6 +14,7 @@ module.exports = function(){
   let $author = global.discord.message.author;
   let $member = global.discord.message.msg.member;
   let $pre = global.discord.message.prefix;
+  let $server = global.discord.message.guild;
   let CoinFlippingStreak = false; // used in flip and flips commands, so that flips doesn't show unless necessary.
 
   
@@ -65,7 +66,7 @@ module.exports = function(){
   
   }
 
-  //
+  /// functions ///
 
   function flipper(send){
     let math = 0.5;

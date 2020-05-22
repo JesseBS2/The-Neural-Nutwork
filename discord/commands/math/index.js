@@ -280,6 +280,24 @@ module.exports = async function(ee){
 
     $channel.send("> "+ factorialize( Number(words[1]) ) ); 
     return;
+  
+  }else if($cmnd === "group"){
+    var groups = ["counting","whole","integer","real","complex"]
+    if(!words[1]){return $channel.send("You're forgetting part of that command!");}
+
+    var TheNumber = Number(words[1]);
+
+    if(TheNumber <= 0){
+      return $channel.send(Embed("Whole Number","A whole number is any even or odd number, that has no decimal places.")[1]);
+    }else if(Math.round(TheNumber) === TheNumber && TheNumber > 0){
+      return $channel.send(Embed("Counting Number","A counting number is any even or odd number, greater than 0, that has no decimal places")[1]);
+    }else if(TheNumber.toString().includes(".") && Number(TheNumber.toString().split(".")[1]) != 0){
+      return $channel.send(Embed("Integer","An integer is any number that has a finite amount of decimal places")[1]);
+    }else{
+      // return $channel.send(TheNumber+"\nReal");
+      return $channel.send(Embed("Real or Complex","It is at this point that I am un-able to identify the number you've selected.\nReal numbers can be rational or irrational.\nA rational number is any of the previous numbers.\nAn irrational number is a decimal number that has an infinite amount of decimal places.\nA complex number is a number that can be express using the equation `a+bi`, where `a` and `b` are Real numbers and `i` is an \"imaginary number\" or a number that doesn't exist, example:\n`x^2 = -1`")[1]);
+    }
+
   }
 
 }
