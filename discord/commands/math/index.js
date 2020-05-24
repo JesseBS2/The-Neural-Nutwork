@@ -13,13 +13,12 @@ module.exports = async function(ee){
   let message = global.discord.message.message;
 
   if(ee){ // should only occur when called in main.js
-    if(SolveEquation(ee) === false){$channel.send("Something went wrong!"); return;}
-    $channel.send( "> "+ Number(SolveEquation(ee)) ); 
-    return;
+    if(SolveEquation(ee) === false) return $channel.send("Something went wrong!");
+    return $channel.send( "> "+ Number(SolveEquation(ee)) ); 
   }
 
   if($cmnd === "math" || $cmnd === "algebra"){
-    if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
     let toEquation = words[1]; // to be evaluated by algebra.js
 
     if(words.length > 1){
@@ -32,9 +31,8 @@ module.exports = async function(ee){
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
       let n = SolveEquation( toEquation );
-      $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[1] );
+      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[1] );
     }
-    return;
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
     if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
@@ -46,12 +44,10 @@ module.exports = async function(ee){
     let theEndingToTheNumber = randomNonsensicalVariable[Number(num.toString().charAt(num.toString().length-1))-2];  // not the most effeciant way, but aye. It works.
 
     try{
-      $channel.send( Embed("Root","The "+index+""+theEndingToTheNumber+" root of "+num)[0].field("Result",Math.pow(num,1/index))[1] ); // x to power of y, but it's divide first so it's actually root
-      return;
+      return $channel.send( Embed("Root","The "+index+""+theEndingToTheNumber+" root of "+num)[0].field("Result",Math.pow(num,1/index))[1] ); // x to power of y, but it's divide first so it's actually root
     }catch(e){
       console.log(e);
-      $channel.send("Sorry, something went wrong!");
-      return;
+      return $channel.send("Sorry, something went wrong!");
     }
 
   }else if($cmnd === "eval" || $cmnd === "evaluate"){
@@ -85,92 +81,82 @@ module.exports = async function(ee){
     let expr = algebra.parse(words[1]);
     let asEmbed = Embed("Evaluate","Evaluating "+words[1]+" when: "+nameForEveryVariableOccurence)[0].field("Result",expr.eval(obj))[1];
 
-    $channel.send(asEmbed);
-    return;
+    return $channel.send(asEmbed);
 
   }else if($cmnd === "area"){
-    if(!words[1]){$channel.send("Area is the amount of 2D space that a shape takes up"); return;}
+    if(!words[1]) return $channel.send("Area is the amount of 2D space that a shape takes up");
         
     if(words[1] == "square"){
-      if(!words[2]){ $channel.send("You're forgetting the height parameter!"); return;}
-      if(!words[3]){ $channel.send("You're forgetting the width parameter!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the height parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the width parameter!");
 
       let math = Number(words[2]) * Number(words[3]);
       let x = Embed("Area of a square","Height: "+words[2]+" Width: "+words[3])[0].field("Formula","Width * Height")[0].field("Result",math+"²")[1];
-      $channel.send(x)
-      return;
+      return $channel.send(x);
 
     }else if(words[1] == "triangle"){
-      if(!words[3]){ $channel.send("You're forgetting the height parameter!"); return;}
+      if(!words[3]) return $channel.send("You're forgetting the height parameter!");
       let math = Number(words[2]) * Number(words[3]);
       math = math/2;
       let x = Embed("Area of a triangle","Width: "+words[2]+" Height: "+words[3])[0].field("Formula","(Width * Height) ÷ 2")[0].field("Result",math+"²")[1];
-      $channel.send(x)
-      return;
+      return $channel.send(x);
 
     }else if(words[1] == "circle"){
-      if(!words[2]){ $channel.send("You're forgetting the radius parameter!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the radius parameter!");
       let r = Number(words[2])
       let math = 3.14159 * ( r**2 );
       
       let x = Embed("Area of a square","Radius: "+words[2])[0][0].field("Formula","Pi * (Radius^2)")[0].field("Result",math+"²")[1];
-      $channel.send(x)
-      return;
-        
+      return $channel.send(x)
     }else{
-      $channel.send(words[1]+" is not the name of 2D shape!");
-      return;
+      return $channel.send(words[1]+" is not the name of 2D shape!");
     }
 
     return;
   }else if($cmnd === "volume"){
-    if(!words[1]){$channel.send("Volume is the amount of 3D space that an object takes up"); return;}
+    if(!words[1]) return $channel.send("Volume is the amount of 3D space that an object takes up");
     /* Going to need: Cube, Pyramid, Sphere, Cylinder, Cone */
     if(words[1] == "cube" || words[1] == "cuboid"){
-      if(!words[2]){ $channel.send("You're forgetting the height parameter!"); return;}
-      if(!words[3]){ $channel.send("You're forgetting the width parameter!"); return;}
-      if(!words[4]){ $channel.send("You're forgetting the depth parameter!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the height parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the width parameter!");
+      if(!words[4]) return $channel.send("You're forgetting the depth parameter!");
 
       let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
       let x = Embed("Volume of a Cube","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","Width * Height * Depth")[0].field("Result",math+"³")[1];
       
-      $channel.send(x);
-      return;
+      return $channel.send(x);
     }else if(words[1] == "pyramid" || words[1] == "tetrahedron"){
-      if(!words[2]){ $channel.send("You're forgetting the height parameter!"); return;}
-      if(!words[3]){ $channel.send("You're forgetting the width parameter!"); return;}
-      if(!words[4]){ $channel.send("You're forgetting the depth parameter!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the height parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the width parameter!");
+      if(!words[4]) return $channel.send("You're forgetting the depth parameter!");
       
       let math = Number(words[2]) * Number(words[3]) * Number(words[4]);
       math = math/3;
       let x = Embed("Volume of a Tetrahedron","Height: "+words[2]+" Width: "+words[3]+" Depth: "+words[4])[0].field("Formula","(Width * Height * Depth) ÷ 3")[0].field("Result",math+"³")[1];
-      $channel.send(x);
-      return;
+      return $channel.send(x);
 
     }else if(words[1] == "cylinder"){
-      if(!words[2]){ $channel.send("You're forgetting the radius parameter!"); return;}
-      if(!words[3]){ $channel.send("You're forgetting the height parameter!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the radius parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the height parameter!");
       
       let math = ( 3.14159 * (Number(words[2])**2) ) * Number(words[3]);
       
       let x = Embed("Volume of a Cylinder","Radius: "+words[2]+" Height: "+words[3])[0].field("Formula","[π * (Raidus^2) ] * Height")[0].field("Result",math+"³")[1];
-      $channel.send(x);
-      return;
+      return $channel.send(x);
 
     }else if(words[1] == "sphere"){
-      if(!words[2]){ $channel.send("You're forgetting the radius!"); return;}
+      if(!words[2]) return $channel.send("You're forgetting the radius!");
       
       let math = (4/3)*3.14159*(Number(words[2])**3);
 
       let x = Embed("Volume of a Sphere","Radius: "+words[2])[0].field("Formula","(4/3) * π * (Raidus^3)")[0].field("Result",math+"³")[1];
-      $channel.send(x);
-      return;
+      return $channel.send(x);
     }
 
 
 
   }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
-    if(!words[1]){$channel.send("Convert a value A into a value B"); return;}
+    if(!words[1]) return $channel.send("Convert a value A into a value B");
     
     let A = words[1].toLowerCase();
     let B = words[2].toLowerCase();
@@ -241,30 +227,24 @@ module.exports = async function(ee){
       conversion = Embed("Convert "+A+" to "+B,"1"+AL+" is "+(calc/AN)+""+B)[0].field("Result", calc+B)[1];
     
     }else{
-      $channel.send("Something went wrong!\nDid you spell the abbreviations right?");
-      return;
+      return $channel.send("Something went wrong!\nDid you spell the abbreviations right?");
     }
 
-    $channel.send(conversion);
-    return;
-
+    return $channel.send(conversion);
   }else if($cmnd === "simplify" || $cmnd === "simp"){
-    if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
 
     let equation = message.split($pre+$cmnd+" ")[1];
     let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
     let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
-    $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[1]);
-    return;
+    return $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[1]);
   
   }else if($cmnd === "solve"){
-    if(!words[2]){ $channel.send("You're forgetting part of that command!"); return;}
-      let expr = algebra.parse(words[1]);
-      let x = expr.solveFor(words[2]);
+    if(!words[2]) return $channel.send("You're forgetting part of that command!");
+    let expr = algebra.parse(words[1]);
+    let x = expr.solveFor(words[2]);
 
-      $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
-      return;
-  
+    return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
   }else if($cmnd === "factorial"){
     if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
     
@@ -278,12 +258,10 @@ module.exports = async function(ee){
       return result;
     }
 
-    $channel.send("> "+ factorialize( Number(words[1]) ) ); 
-    return;
-  
+    return $channel.send("> "+ factorialize( Number(words[1]) ) ); 
   }else if($cmnd === "group"){
     var groups = ["counting","whole","integer","real","complex"]
-    if(!words[1]){return $channel.send("You're forgetting part of that command!");}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
 
     var TheNumber = Number(words[1]);
 

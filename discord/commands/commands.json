@@ -55,5 +55,8 @@
   "server": {
     "create": "Create a channel, category or role",
     "delete": "delete a channel, category or role"
+  },
+  "programming": {
+    "runscript": "Run a script of NUT-CODE"
   }
 }

@@ -15,14 +15,11 @@ module.exports = async function(){
 
   if($cmnd === "clear"){
     if($author.hasPermission("MANAGE_MESSAGES") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
+      return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("MANAGE_MESSAGES") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Manage Messages` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Messages` permission");
     }
-    if(!words[1]){$channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
 
     try{ 
       var amount = Number(words[1]) + 1;
@@ -44,18 +41,15 @@ module.exports = async function(){
     
   }else if($cmnd === "kick"){
     if($author.hasPermission("KICK_MEMBERS") === false){
-       $channel.send("You do not have the necessary permissions for that");
-       return;
+      return $channel.send("You do not have the necessary permissions for that");
      }else if(me.hasPermission("KICK_MEMBERS") === false){
-       $channel.send("I do not have the necessary permissions for that");
-       $channel.send("I need the `Kick Members` permission to do that");
-       return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Kick Members` permission");
     }
 
     let toKick = global.discord.message.msg.mentions.members.first();
     if(toKick.id === global.discord.bot.user.id){
       // DeathMessages ordered like so: Goodbyes, Movie References, Video Game References
-      let DeathMessages = ["Kicked *myself* from the server!","Okay. Peace :wave:","Kicking me? Aww okay, bye :(","'*The Nutwork* has left the *server*'", "You can't fire me! I quit!","I'll get you! And your little dog too!","Hasta la vista baby", "Advancement Made: The End?","Bravo six, Going dark.","Killed by "+$author.tag+"\nYou placed 4th"]
+      let DeathMessages = ["Kicked *myself* from the server!","Okay. Peace! :wave:","Kicking me? Aww okay, bye :(","'*The Nutwork* has left the *server*'", "You can't fire me! I quit!","I'll get you! And your little dog too!","Hasta la vista baby", "Advancement Made: The End?","Bravo six, Going dark.","Killed by "+$author.tag+"\nYou placed 4th"]
 
       $channel.send( DeathMessages[Math.round(Math.random()*DeathMessages.length-1)] );  // sends a random goobye into the server
       $guild.leave();
@@ -64,22 +58,18 @@ module.exports = async function(){
     
     toKick.kick()
       .then(() => {
-        $channel.send("Kicked "+toKick+" from the server!");
-        return;
+        return $channel.send("Kicked "+toKick.displayName+" from the server!");
       })
       .catch(err => {
-        $channel.send("I can not kick this user!");
-        return;
+        global.discord.log(err);
+        return $channel.send("I can not kick this user!");
       });
 
   }else if($cmnd === "ban"){
     if($author.hasPermission("BAN_MEMBERS") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
+      return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("BAN_MEMBERS") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Ban Members` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Ban Members` permission");
     }
     var toBan = global.discord.message.msg.mentions.users.first();
        
@@ -88,80 +78,67 @@ module.exports = async function(){
 
 
     if(time > 7){
-      $channel.send("A player can't be banned for more than a week.");
-      return;
+      return $channel.send("A player can't be banned for more than a week.");
     }
 
-    try{   
-      if(!toBan || toBan == undefined){
-        $channel.send("There is no member in this server with that tag.");
-        return;
-      }else{
-        global.discord.message.msg.guild.ban(toBan,{
-          days: time,
-          reason: desc
-        });
-        $channel.send("Successfully banned "+toBan);
-      }
-
-    }catch(err){
-      global.discord.log(err);
-      $channel.send("This user can not be banned!");
+    
+    if(!toBan || toBan == undefined){
+      return $channel.send("There is no member in this server with that tag.");
+    }else{
+      global.discord.message.msg.guild.members.ban(toBan,{
+        days: time,
+        reason: desc
+      }).then(e => {
+        return $channel.send("Successfully banned "+toBan);
+      }).catch(err => {
+        global.discord.log(err);
+        return $channel.send("This user can not be banned!");
+      });
     }
 
   }else if($cmnd === "unban"){
     if($author.hasPermission("BAN_MEMBERS") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
+      return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("BAN_MEMBERS") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Ban Members` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Ban Members` permission");
     }
 
-    if(!words[1]){$channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
     
-    let unbanned = true; 
     $message.guild.fetchBans().then(bans => { // get active bans for the server
-      bans.forEach(user => {  // loop through bans
-        if(words[1] === user.username+"#"+user.tag || words[1].replace("<@!","").replace(">","") === user.id){  // if mentioned or just typed a username
-          $message.guild.unban(user);
-          unbanned = true;
-          global.discord.debug("Unbanned "+user.username+"#"+user.tag);
-          user.send("You have been unbanned from "+$message.guild.name);  // message unbanned user
+      bans.forEach(banneduser => {  // loop through bans
+        global.discord.debug(banneduser.user.tag);
+        global.discord.debug(banneduser.user.id)
+        if(words[1] == banneduser.user.tag || $message.mentions.members.first().id === banneduser.user.id){  // if mentioned or just typed a username
+          $message.guild.members.unban(banneduser.user.id);
+          global.discord.debug("Unbanned "+banneduser.user.tag);
+          banneduser.user.send("You have been unbanned from "+$message.guild.name);  // message unbanned user
+          return $channel.send("User has been unbanned");
         }
       });
-    if(unbanned === false){
-      $channel.send("I could not find an active ban for that user");
-    }else{
-      $channel.send("User has been unbanned");
-    }
     });
-  
+
+    return $channel.send("I could not find an active ban for this user");
 
   }else if($cmnd === "config"){ // for modifiying ../../configuration.json > guild.id > configs
     if($author.hasPermission("ADMINISTRATOR") === false){
-      $channel.send("Only people with the administrator permission can use this command.");
-      return;
+      return $channel.send("Only people with the administrator permission can use this command");
     }
 
     if(!words[1]){
       let displayconfigures = Embed("Configurable Settings","Settings that can be changed for this server by the admins.\n"+global.discord.message.prefix+"config <setting> <set>")[0].field("Autorole - "+Configs["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)")[0].field("Automath - "+Configs["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)")[0].field("Autoperiodic - "+Configs["config"]["autoperiodic"],"The bot shows an element without the need of a command.\n(enable/disable)")[0].field("Fun - "+Configs["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)")[0].field("Meme - "+Configs["categories"]["meme"],"Allows you to create memes or send meme pictures into a channel. \n(enable/disable)")[0].useImage($guild.iconURL)[1];
-      $channel.send(displayconfigures);
-      return;
+      return $channel.send(displayconfigures);
     }
 
     if(words[1] == "prefix" && words[2] && words[2].length >= 1){
       if($author.hasPermission("ADMINISTRATOR") === false){$channel.send("You do not have the necessary permissions for that!"); return;}
       if(words[2].length > 3){$channel.send("A prefix can not be longer than 3 characters."); return;}
       if(words[2].toLowerCase() === global.discord.message.prefix){
-        $channel.send("That prefix is the same as the old prefix!");
-        return;
+        return $channel.send("That prefix is the same as the old prefix!");
       }else{
         Configs["prefix"] = words[2].toLowerCase();
         global.discord.functions.saveJSON();
-        $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"])[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
-        return;
+        return $channel.send(Embed("A new prefix has been set!","An admin, "+$author.displayName+" set the server prefix to: "+Configs["prefix"])[0].field("How to use it?","Use the new prefix just like the old one! ex:\n"+Configs["prefix"]+"snowflake")[1]);
       }
     }
     
@@ -174,20 +151,20 @@ module.exports = async function(){
       if(words[2] == "enable"){
         try{
           categories[words[1]] = "enabled"; // enable
-          $channel.send(words[1]+" is now enabled");  // annouce
           global.discord.log(words[1]+" commands on server <#"+global.discord.message.msg.guild.id+"> are now enabled");  // log
+          return $channel.send("`"+words[1]+"` is now enabled");  // annouce
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to enable "+words[1]+" commands server <#"+global.discord.message.msg.guild.id+">\n"+err); // the thing attempted to change, along with server ID and error
+          return $channel.send("Something went wrong!");
         }
       }else if(words[2] == "disable"){
         try{
           categories[words[1]] = "disabled";
-          $channel.send(words[1]+" is now disabled");
           global.discord.log(words[1]+" commands on server <#"+global.discord.message.msg.guild.id+"> are now disabled");
+          return $channel.send("`"+words[1]+"` is now disabled");
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to disable "+words[1]+" commands on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+          return $channel.send("Something went wrong!");
         }
       }
 
@@ -205,20 +182,20 @@ module.exports = async function(){
         try{
           configurations["autorole"]["type"] = "disabled";
           configurations["autorole"]["id"] = null;
-          $channel.send("autorole is now disabled");
+          return $channel.send("`autorole` is now disabled");
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to set autorole to disabled on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+          return $channel.send("Something went wrong!");
         }
       }else if(words[2].startsWith("<@&")){
         try{
           configurations["autorole"]["type"] = words[2];
           configurations["autorole"]["id"] = global.discord.message.msg.mentions.roles.first().id; // get the role mentioned(will return snowflake)
-          $channel.send("Set automatic role to: "+words[2]);
           global.discord.log("Autorole on server <#"+global.discord.message.msg.guild.id+"> is now "+words[2]);
+          return $channel.send("Set automatic role to: "+words[2]);
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to assign "+words[2]+" as automatic role in server <#"+global.discord.message.msg.guild.id+">\n"+err);
+          return $channel.send("Something went wrong!");
         }
       }
 
@@ -226,26 +203,26 @@ module.exports = async function(){
       return;
 
     }else if(words[1].toLowerCase() in configurations){ // all cases where the value is either 'enabled' or 'disabled'
-      if(!words[2]){$channel.send(words[1]+" is currently: "+configurations[words[1]]); return;}
+      if(!words[2])return $channel.send(words[1]+" is currently: "+configurations[words[1]]);
 
 
       if(words[2] == "enable"){
         try{
-          configurations[words[1]] = "enabled"; // enable
-          $channel.send(words[1]+" is now enabled");  // annouce
-          global.discord.log(words[1]+" on server <#"+global.discord.message.msg.guild.id+"> is now enabled");  // log
+          configurations[words[1]] = "enabled";
+          global.discord.log(words[1]+" on server <#"+global.discord.message.msg.guild.id+"> is now enabled");
+          return $channel.send(words[1]+" is now enabled");
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to set "+words[1]+" to enabled on server <#"+global.discord.message.msg.guild.id+">\n"+err); // the thing attempted to change, along with server ID and error
+          return $channel.send("Something went wrong!");
         }
       }else if(words[2] == "disable"){
         try{
           configurations[words[1]] = "disabled";
-          $channel.send(words[1]+" is now disabled");
           global.discord.log(words[1]+" on server <#"+global.discord.message.msg.guild.id+"> is now disabled");
+          return $channel.send(words[1]+" is now disabled");
         }catch(err){
-          $channel.send("Something went wrong!");
           global.discord.debug("Failed to set "+words[1]+" to disabled on server <#"+global.discord.message.msg.guild.id+">\n"+err);
+          return $channel.send("Something went wrong!");
         }
       }
 
@@ -256,54 +233,49 @@ module.exports = async function(){
 
   }else if($cmnd === "addrole" || $cmnd === "ar"){
     if($author.hasPermission("MANAGE_ROLES") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
+      return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("MANAGE_ROLES") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Manage Roles` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Roles` permission to do that");
     }
 
-    let member, role;
-    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ $channel.send("You didn't mention a member!"); return; }  // if a member is mentioned, get them
-    if($message.mentions.roles){ role = $message.mentions.roles; }else{ $channel.send("You didn't mention a role!"); return; }  // if a role is mentioned, get it
+    let member, mentioendRole;
+    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ return $channel.send("You didn't mention a member!");}  // if a member is mentioned, get them
+    if($message.mentions.roles){ mentioendRole = $message.mentions.roles; }else{ return $channel.send("You didn't mention a role!");}  // if a role is mentioned, get it
     
     let failFlag = false;
 
-    role.forEach(currentRole => {
-      member.addRole(currentRole).catch(e => {
-        // couldn't apply the current role
-        if(e) failFlag = true;
-      })
-    
+   mentioendRole.forEach(currentRole => {
+      //global.discord.debug(currentRole);
+      member.roles.add(currentRole).catch(e => {
+        if(e === "DiscordAPIError: Unknown Role"){
+          failFlag = true;
+        }else if(e){
+          throw e;
+        }
+      });
     });
 
     if(failFlag === true){
-      $channel.send("I couldn't assign one or more of the roles");
-      return;
+      return $channel.send("I couldn't assign one or more of the roles");
     }else{
-      $channel.send("I've assigned the roles");
-      return;
+      return $channel.send("I've assigned the roles");
     }
   
   }else if($cmnd === "takerole" || $cmnd === "tr"){
     if($author.hasPermission("MANAGE_ROLES") === false){
-      $channel.send("You do not have the necessary permissions for that");
-      return;
+      return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("MANAGE_ROLES") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Manage Roles` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Roles` permission");
     }
 
-    let member, role;
-    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ $channel.send("You didn't mention a member!"); return; }  // if a member is mentioned, get them
-    if($message.mentions.roles){ role = $message.mentions.roles; }else{ $channel.send("You didn't mention a role!"); return; }  // if a role is mentioned, get it
+    let member, mentioendRole;
+    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ return $channel.send("You didn't mention a member!");}  // if a member is mentioned, get them
+    if($message.mentions.roles){ mentioendRole = $message.mentions.roles; }else{ return $channel.send("You didn't mention a role!");}  // if a role is mentioned, get it
     
     let failFlag = false;
 
-    role.forEach(currentRole => {
-      member.removeRole(currentRole).catch(e => {
+    mentioendRole.forEach(currentRole => {
+      member.roles.remove(currentRole).catch(e => {
         // couldn't apply the current role
         if(e) failFlag = true;
       })
@@ -311,11 +283,9 @@ module.exports = async function(){
     });
 
     if(failFlag === true){
-      $channel.send("I couldn't take one or more of the roles from that member");
-      return;
+      return $channel.send("I couldn't take one or more of the roles from that member");
     }else{
-      $channel.send("Roles were removed from the member");
-      return;
+      return $channel.send("Roles were removed from the member");
     }
   }
 }

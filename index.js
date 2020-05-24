@@ -1,15 +1,14 @@
 /*
 * NodeJS        12.16.1
-* Discord.js    11.5.1
+* Discord.js    12.2.0
 * Algebra.js    0.2.6
 */
 
 const Discord = require("discord.js"); // discord library
 const algebra = require("algebra.js");
 
-/* Why do some people have a problem with global variables? They seem useful */
+
 global.discord = {};  // Global variables for discord
-global.twitch = {}; // Global variables for twitch
 
 // SolveEquation was originally in global.discord but I realize it will also be in twitch bot
 global.SolveEquation = function(msg){
@@ -47,10 +46,10 @@ global.discord = {  // global variables for discord bot
       if(title === ""){title = " "}
       let self = {};
       color = color || "#7289d9"
-      var embed = new Discord.RichEmbed().setColor(color).setTitle(title).setDescription(description);
+      var embed = new Discord.MessageEmbed().setColor(color).setTitle(title).setDescription(description);
             
       self.useImage = function(img){
-        img = img || "https://i.imgur.com/zfusTWU.png";
+        img = img || "https://i.imgur.com/MStPhME.png";
         embed = embed.setThumbnail(img);
         return [self,embed];
       }
@@ -80,10 +79,6 @@ global.discord = {  // global variables for discord bot
   },
   totalPolls: 0
 }
-  
-global.twitch = { // global variables for twitch bot
-  online: false
-}
 
 
 // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
@@ -100,7 +95,7 @@ global.discord.log = function(msg){
 }
 
 
-console.log("HH  HH  IIIIII\nHH  HH    II\nHHHHHH    II\nHH  HH    II\nHH  HH  IIIIII\n");  // :)
+console.log("HH  HH  IIIIII\nHH  HH    II\nHHHHHH    II\nHH  HH    II\nHH  HH  IIIIII\n"); 
 
-/*  When logging to the console from a Discord File, put "DISCORD:" at the front */
+
 var $Discord = require("./discord/main.js"); // the discord file
