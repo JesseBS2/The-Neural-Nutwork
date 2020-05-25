@@ -1,9 +1,5 @@
 {
-  "help": {
-    "desc": "Shows a description and format for a command.\nAnything in <triangle brackets> is a required parameter, anything in (parentheses) is an optional parameter.",
-    "format": "help <command>",
-    "alias": ["none"]
-  },
+  
   "echo": {
     "desc": "Recreates your message as an Rich Embed.",
     "format": "echo <any text> (color)",

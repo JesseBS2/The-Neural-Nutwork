@@ -1,59 +1,187 @@
 { 
   "help": {
-    "help": "Help with commands",
-    "commands": "Shows what commands are avaliable"
+    "help": {
+      "desc": "Shows a description and format for a command.\nAnything in <triangle brackets> is a required parameter, anything in (parentheses) is an optional parameter.",
+      "format": "help <command>",
+      "alias": ["none"]
+    },
+    "commands": {
+      "desc": "Get a list of categories and commands in a category",
+      "format": "commands (category)",
+      "alias": ["none"]
+    }
   },
   "math": {
-    "math": "Do a math problem",
+    "math": {
+      "desc": "Do basic algebra",
+      "format": "math <equation>",
+      "alias": ["algebra"]
+    },
     "algebra": "",
-    "root": "Get the root of a number",
-    "eval": "Do a math problem with a variable, and assign that variable",
-    "evaluate": "",
-    "notate": "Convert a number into scientific notation",
-    "area": "Get the area of a 2D shape",
-    "volume": "Get the volume of a 3D shape",
-    "solve": "Solve a math problem with an un-named variable.",
-    "convert": "Convert one value into another",
-    "simplify": "Converts an Algebraic equation into a simple equation",
+    "root": {
+      "desc": "Get the X root of a number",
+      "format": "root <number> (index)",
+      "alias": ["none"]
+    },
+    "evaluate": {
+      "desc": "Execute a math equation with interchangeable variables",
+      "format": "evalutate <equation> <variable=number>",
+      "alias": ["eval"]
+    },
+    "eval": "",
+    "notate": {
+      "desc": "Convert a very large or very small number into scientific notation",
+      "format": "notate <number>",
+      "alias": ["none"]
+    },
+    "area": {
+      "desc": "Get the area of a 2D geometric shape",
+      "format": "area <shape> <dimension1> <dimension2>",
+      "alias": ["none"]
+    },
+    "volume": {
+      "desc": "Get the volume of a 3D geometric shape",
+      "format": "volume <shape> <dimension1> <dimension2> <dimension3>",
+      "alias": ["none"]
+    },
+    "solve": {
+      "desc": "Takes an algebraic expression and solves for a variable inside the expression",
+      "format": "solve <expression> <variable>",
+      "alias": ["none"]
+    },
+    "convert": {
+      "desc": "Convert a number value from one to another",
+      "format": "convert <value1> <value2>",
+      "alias": ["none"]
+    },
+    "simplify": {
+      "desc": "Converts a complex equation down to a simplified equation",
+      "format": "simplify <equation>",
+      "alias": ["simp"]
+    },
     "simp": "",
-    "factorial": "Factorialize a number",
-    "group": "Figure out what group a number belongs to"
+    "factorial": {
+      "desc": "Factorialize a number",
+      "format": "factorial <number>",
+      "alias": ["none"]
+    },
+    "group": {
+      "desc": "Takes a number and places it into it's respective numerical group",
+      "format": "group <number>",
+      "alias": ["none"]
+    }
   },
   "other": {
-    "profile": "Get information about your account",
-    "self": "",
-    "poll": "Creates a voteable poll",
-    "vote": "Vote on a poll",
-    "nickname": "Change your nickname",
+    "profile": {
+      "desc": "Get information about yours or another person's discord account(only what is permitted by the discord API)",
+      "format": "profile (@user)",
+      "alias": ["none"]
+    },
+    "self": {
+      "desc": "Get information about your own discord account through a DM",
+      "format": "self",
+      "alias": ["none"]
+    },
+    "poll": {
+      "desc": "Create a poll that can be voted on by members of the server, only one poll can be active in a channel at a time.\nEach option is separated by commas",
+      "format": "poll <option>, <option>, (option), (option), (option) (timer)",
+      "alias": ["none"]
+    },
+    "vote": {
+      "desc": "Vote on an active poll in the current channel",
+      "format": "vote <option>",
+      "alias": ["none"]
+    },
+    "nickname": {
+      "desc": "Change your nickname or another member's nickname in the server",
+      "format": "nickname (@user) <nickname>",
+      "alias": ["nick"]
+    },
     "nick": ""
   },
   "mod": {
-    "kick": "Kick a member from the server",
-    "ban": "Ban a member from the server",
-    "unban": "unbans a member from your server",
-    "clear": "Clear an amount of messages",
-    "config": "Configure the bot for your server",
-    "addrole": "Give a member a role",
+    "kick": {
+      "desc": "Kick a member from the server",
+      "format": "kick <@member>",
+      "alias": ["none"]
+    },
+    "ban": {
+      "desc": "Ban a member from the server and clear 7 days of their messages",
+      "format": "ban <@member> (days) (reason)",
+      "alias": ["none"]
+    },
+    "unban": {
+      "desc": "Unban a member with a mention or Username+tag",
+      "format": "unban <@member>",
+      "alias": ["none"]
+    },
+    "clear": {
+      "desc": "Removes a number of messages",
+      "format": "clear <amount>",
+      "alias": ["none"]
+    },
+    "config": {
+      "desc": "Customizeable bot settings for your server",
+      "format": "config (option) (setting)",
+      "alias": ["none"]
+    },
+    "addrole": {
+      "desc": "Give a role or roles to a mentioned member or members",
+      "format": "addrole <@member> <@role>",
+      "alias": ["ar"]
+    },
     "ar": "",
-    "takerole": "Take a role from a member",
+    "takerole": {
+      "desc": "Take a role or roles from a mentioned member or members",
+      "format": "takerole <@member> <@role>",
+      "alias": ["tr"]
+    },
     "tr": ""
   },
   "ptoe": {
-    "periodic": "Get information about an element on the PToE",
+    "periodic": {
+      "desc": "Get information about an element from the Periodic Table of Elements, or PToE for short",
+      "format": "periodic <element name/symbol/number>",
+      "alias": ["periodictable","pt"]
+    },
     "periodictable": "",
     "pt": ""
   },
   "fun": {
-    "respect": "Pay respects",
+    "respect": {
+      "desc": "Pay respects to an event by typing F",
+      "format": "respect <thing>",
+      "alias": ["F"]
+    },
     "f":  "",
     "F": "",
-    "flip": "Flip a coin",
-    "flips": "",
-    "random": "Sends a random number into the channel",
+    "flip": {
+      "desc": "Flips a coin and gives an output of either heads or tails",
+      "format": "flip",
+      "alias": ["none"]
+    },
+    "flips": {
+      "desc": "Creates a coin-flipping streak and the probability of getting that pattern of flips(only useable after one flip command)",
+      "format": "flips",
+      "alias": ["none"]
+    },
+    "random": {
+      "desc": "Sends a random number into the channel",
+      "format": "random (max/min) (max)",
+      "alias": ["rand"]
+    },
     "rand": ""
   },
   "server": {
-    "create": "Create a channel, category or role",
-    "delete": "delete a channel, category or role"
+    "create": {
+      "desc": "Create a role, channel or category. No webhooks yet, but I'm working on it!",
+      "format": "create <type> <name> (options)",
+      "alias": ["none"]
+    },
+    "delete": {
+      "desc": "Deletes a role, channel or category with a mention or by ID",
+      "format": "delete <@thing/thingID>",
+      "alias": ["none"]
+    }
   }
 }

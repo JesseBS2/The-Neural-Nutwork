@@ -16,9 +16,7 @@ module.exports = function(IsFullMeme){
 
   if(image in memes){
     if(bot.hasPermission("EMBED_LINKS") === false){
-      $channel.send("I do not have the necessary permissions for that");
-      $channel.send("I need the `Embed Links` permission to do that");
-      return;
+      return $channel.send("I do not have the necessary permissions for that.\nI need the `Embed Links` permission");
     }
 
     var MemeToShow = memes[image];
@@ -36,13 +34,11 @@ module.exports = function(IsFullMeme){
       //  first it takes the message and splits it by the last line, so that only the lines before the last one are retrevied
       //  then it returns everything before that
 
-      $channel.send( Embed("",global.discord.message.message.split(lines[lines.length-1])[0])[0].setPicture(MemeToShow)[0].footer(global.discord.message.tag)[1] );
       global.discord.message.msg.delete();
-      return;
+      return $channel.send( Embed("",global.discord.message.message.split(lines[lines.length-1])[0])[0].setPicture(MemeToShow)[0].footer(global.discord.message.tag)[1] );
     }
 
-    $channel.send("",{files: [ MemeToShow ]});
-    return;
+    return $channel.send({files: [ MemeToShow ]});
   }
 }
 

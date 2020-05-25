@@ -12,12 +12,12 @@ bot.on("ready", () => {
   global.discord.guilds = 0
   global.discord.online = true; // let the global know that the bot is online
   
-  bot.guilds.forEach(guild => {
+  bot.guilds.cache.forEach(guild => {
     global.discord.guilds += 1;
   });
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
-  bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING"});
+  bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"});
 
 });
 
@@ -31,7 +31,7 @@ global.discord.functions.saveJSON = function(srcJSON){
 }
 
 
-const _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
+var _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
 global.discord.admins = ["596938492752166922"];
 
 var Activity_Types = ["playing","watching","listening","streaming","custom"];
@@ -153,7 +153,7 @@ bot.on("message", async recievedmessage => {
   // when the bot is pinged/mentioned
   if(recievedmessage.content.split(" ")[0] === "<@!"+bot.user.id+">"){  // if the first word is the mentioned bot
     if(!words[1]){
-      $channel.send("My prefix for this server is: `"+Configs[recievedmessage.guild.id]["prefix"]+"`");
+      return $channel.send("My prefix for this server is: `"+Configs[recievedmessage.guild.id]["prefix"]+"`");
     }
     $cmnd = recievedmessage.content.split(" ")[1];
     global.discord.message.words.shift();  // offset words by one, so all future uses of the words array are still right
@@ -163,6 +163,8 @@ bot.on("message", async recievedmessage => {
 
   global.discord.message.command = $cmnd;
   
+
+
 
   /* Commands for the admins(me) to use */
   if(global.discord.admins.includes(recievedmessage.author.id)){
@@ -180,10 +182,10 @@ bot.on("message", async recievedmessage => {
       
       if(!words[1]){
         global.discord.debug("an admin "+recievedmessage.author.username+" reset the bot's activity");
-        bot.user.setActivity(global.discord.guilds+" servers",{type:"WATCHING"});
+        bot.user.setActivity(global.discord.guilds+" servers",{url: "github.com/JesseBS2", type:"WATCHING"});
         return $channel.send("Activity has been reset!");
       }else if(Activity_Types.includes(words[1].toLowerCase())){
-        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:Activity_Types[Activity_Types.indexOf(words[1].toLowerCase())] });
+        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:words[1].toUpperCase(),url:"github.com/JesseBS2" });
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
         return $channel.send("Activity has been changed!");
       }else if(words[1]){
@@ -194,13 +196,13 @@ bot.on("message", async recievedmessage => {
 
     }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
       if(words[1]){
-        if(["online","idle","dnd","invisible"].includes(words[1]) === false){$channel.send("That is not a valid status."); return;}
+        if(["online","idle","dnd","invisible"].includes(words[1]) === false){return $channel.send("That is not a valid status.");}
         bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's availablity to "+recievedmessage.content.split("$&status ")[1]);
-        $channel.send("Status has been changed!");
+        return $channel.send("Status has been changed!");
       }else{
         bot.user.setStatus("online");
-        $channel.send("Status has been reset!");
+        return $channel.send("Status has been reset!");
       }
     
     }else if(recievedmessage.content.split(" ")[0] === "$&forget"){ // Use FS to completely clear `configuration.json`
@@ -225,19 +227,21 @@ bot.on("message", async recievedmessage => {
   if($cmnd === "ping"){
     const pingedMessage = await $channel.send("Loading...");
 
-    let latency = Number(pingedMessage.createdTimestamp) - Number(recievedmessage.createdTimestamp).toString()+"ms";
-    let ping = Math.round(bot.ping).toString()+"ms";
+    let latency = (Number(pingedMessage.createdTimestamp) - Number(recievedmessage.createdTimestamp)).toString()+"ms";
+    let ping = (bot.ws.ping).toFixed(2).toString()+"ms";
 
-    let FancyPongMessage = global.discord.functions.CustomEmbed("Pong!","")[0].useImage()[0].field("Bot's Ping:",ping)[0].field("Latency to Server: ",latency)[1];
+    let FancyPongMessage = global.discord.functions.CustomEmbed(" ","")[0].useImage()[0].field("Bot's Ping:",ping)[0].field("Latency to Server: ",latency)[1];
 
+    pingedMessage.edit("Pong!");
     pingedMessage.edit(FancyPongMessage);
+    global.discord.debug("Latency & Ping to "+recievedmessage.guild.name+" "+latency+" & "+ping)
 
   }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
 
     return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
   }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
     
-    if(Configs[recievedmessage.guild.id]["categories"]["meme"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["meme"] === "disabled"){return $channel.send("An admin has disabled these commands!");}
     if(recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1]){
       require("./commands/react/index.js")(true);
     }else{
@@ -247,7 +251,7 @@ bot.on("message", async recievedmessage => {
   }else if($cmnd in _commands["help"]){
     require("./commands/help/help.js")();
   }else if($cmnd in _commands["math"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
-    if(Configs[recievedmessage.guild.id]["categories"]["math"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["math"] === "disabled")return $channel.send("An admin has disabled these commands!");
     require("./commands/math/index.js")();
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
@@ -256,13 +260,13 @@ bot.on("message", async recievedmessage => {
     // server commands can not be disabled.
     require("./commands/server/index.js")();
   }else if($cmnd in _commands["other"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}
     require("./commands/other/index.js")(bot);
   }else if($cmnd in _commands["ptoe"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}
     require("./commands/periodic/index.js")();
   }else if($cmnd in _commands["fun"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){$channel.send("An admin has disabled these commands!"); return;}    
+    if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}    
     require("./commands/fun/index.js")();
   }else{
    
@@ -325,7 +329,7 @@ bot.on("message", async recievedmessage => {
 bot.on("guildMemberAdd", member => {
   if(member.guild.me.hasPermission("MANAGE_ROLES") === false && member.guild.me.hasPermission("ADMINISTRATOR") === false){return;}  // can't do it so nevermind
   if(Configs[member.guild.id]["config"]["autorole"]["type"] !== "disabled"){  // if autorole is set
-    member.addRole(Configs[member.guild.id]["config"]["autorole"]["id"]);
+    member.roles.add(Configs[member.guild.id]["config"]["autorole"]["id"]);
     global.discord.debug("Gave "+member.id+" the auto-role "+Configs[member.guild.id]["config"]["autorole"]["id"]+" in server <#"+member.guild.id+">");
   }
 });

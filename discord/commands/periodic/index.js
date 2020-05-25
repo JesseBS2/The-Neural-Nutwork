@@ -9,7 +9,7 @@ module.exports = function(){
   let table = require("./table.json");
 
   if($cmnd === "periodic" || $cmnd === "periodictable" || $cmnd === "pt"){
-    if(!words[1]){$channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/rzoOEEY.jpg"]}); return;}
+    if(!words[1]) return $channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/rzoOEEY.jpg"]});
 
     let element = false;
     
@@ -23,11 +23,9 @@ module.exports = function(){
     }
 
     if(element === false){
-      $channel.send("I can't seem to find that element");
-      return;
+      return $channel.send("I can't seem to find that element");
     }else{
-      $channel.send(element);
-      return;
+      return $channel.send(element);
     }
   }
 }
