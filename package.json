@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["math","discord"],
+  "keywords": [
+    "math",
+    "discord"
+  ],
   "author": "JesseBS2",
   "license": "ISC",
   "dependencies": {
