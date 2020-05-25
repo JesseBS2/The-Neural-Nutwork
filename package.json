@@ -1,13 +1,13 @@
 {
   "name": "Nutwork",
   "version": "2.0.0",
-  "description": "The Source code the Nutwork!",
+  "description": "The Source code for The Neural Nutwork.\nA math and science bot for discord.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["math","discord"],
+  "author": "JesseBS2",
   "license": "ISC",
   "dependencies": {
     "algebra.js": "^0.2.6",
