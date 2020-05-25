@@ -23,32 +23,46 @@ module.exports = function(Client){
   }
 
   if($cmnd === "profile" || $cmnd === "self"){
-    var username,disc,status,snow,pfp,account_age,accStatusColor;
-    
-    username = message.author.username;
-    disc = message.author.discriminator;
-    status = message.author.presence.status;
-    snow = message.author.id;
-    pfp = message.author.displayAvatarURL || message.author.defaultAvatarURL; // avatar or their default.
-    account_age = message.author.createdAt.toString().split(" ")[1]+" "+message.author.createdAt.toString().split(" ")[2]+" "+message.author.createdAt.toString().split(" ")[3];
-    accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
-    
+    var username,disc,status,snow,pfp,account_age,accStatusColor,activity="",custom="";
+
     if($cmnd == "profile" && words[1] && words[1].startsWith("<@!") || $cmnd == "profile" && words[1] && words[1].length === 18 && words[1].replace(/[0-9]/gi,"") === ""){  // only works using profile because typing self then getting someone else is weird
-      var otherUser = Client.users.cache.get(words[1]); // by default try to get it based on numbers only
-      if(words[1].startsWith("<@!"))otherUser = Client.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
-      if(otherUser){
-        username = otherUser.username;
-        disc = otherUser.discriminator;
-        status = otherUser.presence.status;
-        snow = otherUser.id;
-        pfp = otherUser.displayAvatarURL() || otherUser.defaultAvatarURL();
-        account_age = otherUser.createdAt.toString().split(" ")[1]+" "+otherUser.createdAt.toString().split(" ")[2]+" "+otherUser.createdAt.toString().split(" ")[3];
-      }else{
-        return $channel.send("Something went wrong!\nI'm either not in a server with that user, or you did not provide a valid snowflake");
+      var GetUserAcc = Client.users.cache.get(words[1]); // by default try to get it based on numbers only
+      if(words[1].startsWith("<@!"))GetUserAcc = Client.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
+      //return $channel.send("Something went wrong!\nI'm either not in a server with that user, or you did not provide a valid snowflake");
+    }else{
+      GetUserAcc = message.author;
+    }
+
+    //console.log(GetUserAcc.presence)
+
+    // look all these beautiful settings!! :D
+    username = GetUserAcc.username;
+    disc = GetUserAcc.discriminator;
+    status = GetUserAcc.presence.status;
+    snow = GetUserAcc.id;
+    pfp = GetUserAcc.displayAvatarURL() || GetUserAcc.defaultAvatarURL();
+    account_age = GetUserAcc.createdAt.toString().split(" ")[1]+" "+GetUserAcc.createdAt.toString().split(" ")[2]+" "+GetUserAcc.createdAt.toString().split(" ")[3];
+    accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
+    if(GetUserAcc.presence.activities.length == 1){ 
+      //global.discord.debug("Didn't Loop");
+      if(GetUserAcc.presence.activities[0].type != null && GetUserAcc.presence.activities[0].name != null && GetUserAcc.presence.activities[0].type != "CUSTOM_STATUS"){
+        activity = "\n**"+GetUserAcc.presence.activities[0].type.charAt(0).toUpperCase() + GetUserAcc.presence.activities[0].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[0].name.toString();
+      }else if(GetUserAcc.presence.activities[0].state != null && GetUserAcc.presence.activities[0].type == "CUSTOM_STATUS"){
+        custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[0].state;
+      }
+    }else if(GetUserAcc.presence.activities.length > 1){
+      //global.discord.debug("Did Loop");
+      var LOOP = GetUserAcc.presence.activities;
+      for(let e in LOOP){
+        if(GetUserAcc.presence.activities[e].type != null && GetUserAcc.presence.activities[e].name != null && GetUserAcc.presence.activities[e].type != "CUSTOM_STATUS"){
+          activity += "\n**"+GetUserAcc.presence.activities[e].type.charAt(0).toUpperCase()+GetUserAcc.presence.activities[e].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[e].name.toString();
+        }else if(GetUserAcc.presence.activities[e].state != null && GetUserAcc.presence.activities[e].type == "CUSTOM_STATUS"){
+          custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[e].state;
+        }
       }
     }
 
-    let display = Embed(" ","Username: "+username+"\n"+"Discriminator: "+disc+"\n"+"Snowflake: "+snow+"\n"+"Status: "+status+"\n"+"User Since: "+account_age,accStatusColor[status])[0].useImage(pfp)[1];
+    var display = Embed(" ","**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age,accStatusColor[GetUserAcc.presence.status])[0].useImage(pfp)[1];
 
     return $channel.send(display);
   

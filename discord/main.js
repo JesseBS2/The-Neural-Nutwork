@@ -17,7 +17,7 @@ bot.on("ready", () => {
   });
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
-  bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING"});
+  bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"});
 
 });
 
@@ -31,7 +31,7 @@ global.discord.functions.saveJSON = function(srcJSON){
 }
 
 
-const _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
+var _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
 global.discord.admins = ["596938492752166922"];
 
 var Activity_Types = ["playing","watching","listening","streaming","custom"];
@@ -61,8 +61,7 @@ bot.on("message", async recievedmessage => {
           "other": "enabled",
           "ptoe": "enabled",
           "fun": "enabled",
-          "meme": "enabled",
-          "programming": "enabled"
+          "meme": "enabled"
         },
         "channels": {
           
@@ -165,6 +164,8 @@ bot.on("message", async recievedmessage => {
   global.discord.message.command = $cmnd;
   
 
+
+
   /* Commands for the admins(me) to use */
   if(global.discord.admins.includes(recievedmessage.author.id)){
     if(recievedmessage.content === "$&crash"){  // crash the bot
@@ -181,10 +182,10 @@ bot.on("message", async recievedmessage => {
       
       if(!words[1]){
         global.discord.debug("an admin "+recievedmessage.author.username+" reset the bot's activity");
-        bot.user.setActivity(global.discord.guilds+" servers",{type:"WATCHING"});
+        bot.user.setActivity(global.discord.guilds+" servers",{url: "github.com/JesseBS2", type:"WATCHING"});
         return $channel.send("Activity has been reset!");
       }else if(Activity_Types.includes(words[1].toLowerCase())){
-        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:Activity_Types[Activity_Types.indexOf(words[1].toLowerCase())] });
+        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:words[1].toUpperCase(),url:"github.com/JesseBS2" });
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
         return $channel.send("Activity has been changed!");
       }else if(words[1]){
@@ -226,12 +227,14 @@ bot.on("message", async recievedmessage => {
   if($cmnd === "ping"){
     const pingedMessage = await $channel.send("Loading...");
 
-    let latency = Number(pingedMessage.createdTimestamp) - Number(recievedmessage.createdTimestamp).toString()+"ms";
-    let ping = Math.round(bot.ping).toString()+"ms";
+    let latency = (Number(pingedMessage.createdTimestamp) - Number(recievedmessage.createdTimestamp)).toString()+"ms";
+    let ping = (bot.ws.ping).toFixed(2).toString()+"ms";
 
-    let FancyPongMessage = global.discord.functions.CustomEmbed("Pong!","")[0].useImage()[0].field("Bot's Ping:",ping)[0].field("Latency to Server: ",latency)[1];
+    let FancyPongMessage = global.discord.functions.CustomEmbed(" ","")[0].useImage()[0].field("Bot's Ping:",ping)[0].field("Latency to Server: ",latency)[1];
 
+    pingedMessage.edit("Pong!");
     pingedMessage.edit(FancyPongMessage);
+    global.discord.debug("Latency & Ping to "+recievedmessage.guild.name+" "+latency+" & "+ping)
 
   }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
 
@@ -265,9 +268,6 @@ bot.on("message", async recievedmessage => {
   }else if($cmnd in _commands["fun"]){
     if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}    
     require("./commands/fun/index.js")();
-  }else if($cmnd in _commands["programming"]){  // if the command is the math kind, special case for root symbol
-    if(Configs[recievedmessage.guild.id]["categories"]["programming"] === "disabled")return $channel.send("An admin has disabled these commands!");
-    require("./commands/prgming/index.js")();
   }else{
    
     let words = recievedmessage.content.split(" ");
@@ -355,8 +355,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "other": "enabled",
       "ptoe": "enabled",
       "fun": "enabled",
-      "meme": "enabled",
-      "programming": "enabled"
+      "meme": "enabled"
     },
     "channels": {
       
