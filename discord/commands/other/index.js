@@ -22,20 +22,23 @@ module.exports = function(Client){
     Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
   }
 
-  if($cmnd === "profile" || $cmnd === "self"){
+  if($cmnd === "profile"){
     var username,disc,status,snow,pfp,account_age,accStatusColor,activity="",custom="";
 
-    if($cmnd == "profile" && words[1] && words[1].startsWith("<@!") || $cmnd == "profile" && words[1] && words[1].length === 18 && words[1].replace(/[0-9]/gi,"") === ""){  // only works using profile because typing self then getting someone else is weird
-      var GetUserAcc = Client.users.cache.get(words[1]); // by default try to get it based on numbers only
-      if(words[1].startsWith("<@!"))GetUserAcc = Client.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
-      //return $channel.send("Something went wrong!\nI'm either not in a server with that user, or you did not provide a valid snowflake");
-    }else{
-      GetUserAcc = message.author;
+    try{
+      if(words[1] && words[1].startsWith("<@!") || $cmnd == "profile" && words[1] && words[1].length === 18 && words[1].replace(/[0-9]/gi,"") === ""){  // only works using profile because typing self then getting someone else is weird
+        var GetUserAcc = Client.users.cache.get(words[1]); // by default try to get it based on numbers only
+        if(words[1].startsWith("<@!"))GetUserAcc = Client.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
+      }else{
+        GetUserAcc = message.author;
+      }
+    }catch(e){
+      return $channel.send("Something went wrong!\nI'm either not in a server with that user, or you did not provide a valid snowflake");
     }
 
     //console.log(GetUserAcc.presence)
 
-    // look all these beautiful settings!! :D
+    // Look all these beautiful settings!! :D
     username = GetUserAcc.username;
     disc = GetUserAcc.discriminator;
     status = GetUserAcc.presence.status;
@@ -62,7 +65,7 @@ module.exports = function(Client){
       }
     }
 
-    var display = Embed(" ","**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age,accStatusColor[GetUserAcc.presence.status])[0].useImage(pfp)[1];
+    var display = Embed(" ","**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age,accStatusColor[GetUserAcc.presence.status])[0].useImage(pfp)/*[0].footer("Using discord for "+Object.keys(GetUserAcc.presence.clientStatus)[0])*/[1];
 
     return $channel.send(display);
   

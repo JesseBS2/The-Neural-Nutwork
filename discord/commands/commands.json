@@ -77,11 +77,6 @@
       "format": "profile (@user)",
       "alias": ["none"]
     },
-    "self": {
-      "desc": "Get information about your own discord account through a DM",
-      "format": "self",
-      "alias": ["none"]
-    },
     "poll": {
       "desc": "Create a poll that can be voted on by members of the server, only one poll can be active in a channel at a time.\nEach option is separated by commas",
       "format": "poll <option>, <option>, (option), (option), (option) (timer)",
@@ -153,7 +148,6 @@
       "format": "respect <thing>",
       "alias": ["F"]
     },
-    "f":  "",
     "F": "",
     "flip": {
       "desc": "Flips a coin and gives an output of either heads or tails",
