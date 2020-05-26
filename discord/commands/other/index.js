@@ -161,11 +161,16 @@ module.exports = function(Client){
     return;
   
   }else if($cmnd === "nickname" || $cmnd === "nick"){
-    if(!message.mentions.members.first() && $member.hasPermission("CHANGE_NICKNAME") === false || message.mentions.members.first() && $member.hasPermission("MANAGE_NICKNAME") === false){
+    if(Configs["config"]["nickname"] === "disabled" && $member.hasPermission("MANAGE_NICKNAMES") === false){
+      return $channel.send("An admin has disabled these commands!");
+    }
+
+    if(!message.mentions.members.first() && $member.hasPermission("CHANGE_NICKNAME") === false || message.mentions.members.first() && $member.hasPermission("MANAGE_NICKNAMES") === false){
       return $channel.send("You do not have the necessary permissions for that!");
     }else if(me.hasPermission("MANAGE_NICKNAMES") === false){
       return $channel.send("I do not have the necessary permissions for that.\nI need the `MANAGE_NICKNAMES` permission");
     }
+
 
     var toChangeNick = message.mentions.members.first() || message.member;
     var newNick = "";
