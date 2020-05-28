@@ -196,11 +196,13 @@ bot.on("message", async recievedmessage => {
 
     }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
       if(words[1]){
+        clearInterval(isLooping);
         if(["online","idle","dnd","invisible"].includes(words[1]) === false){return $channel.send("That is not a valid status.");}
         bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's availablity to "+recievedmessage.content.split("$&status ")[1]);
         return $channel.send("Status has been changed!");
       }else{
+        clearInterval(isLooping)
         bot.user.setStatus("online");
         return $channel.send("Status has been reset!");
       }
@@ -212,6 +214,11 @@ bot.on("message", async recievedmessage => {
         });
         global.discord.debug("an admin "+recievedmessage.author.username+" erased the bot's memories of servers");
       }
+    // }else if(recievedmessage.content.split(" ")[0] === "$&type"){
+    //   setTimeout(() => {
+    //     recievedmessage.channel.stopTyping();
+    //   },Number(words[1])*1000);
+    //   recievedmessage.channel.startTyping();
     }
   }
 

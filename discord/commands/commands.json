@@ -177,6 +177,11 @@
     "rand": ""
   },
   "server": {
+    "server": {
+      "desc": "View information about your server",
+      "format": "server",
+      "alias": ["none"]
+    },
     "create": {
       "desc": "Create a role, channel or category. No webhooks yet, but I'm working on it!",
       "format": "create <type> <name> (options)",

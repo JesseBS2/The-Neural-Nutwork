@@ -24,7 +24,27 @@ module.exports = function(){
     return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Channels` permission");
   }
 
-  if($cmnd === "create"){
+  if($cmnd === "server"){
+    var insights = {
+      name: $server.name,
+      description: $server.description || "No description is set for this server",
+      owner: $server.owner,
+      region: $server.region,
+      members: $server.memberCount,
+      boosts: $server.premiumSubscriptionCount,
+      roles: $server.roles.length,
+      emojis: $server.roles.length,
+      channels: $server.channels.length,
+      system: $server.systemChannel,
+      mfa: $server.mfaLevel
+    }
+  
+    //console.log($server.roles.size)
+    if(words[1] && words[1] in insights){
+      return $channel.send( Embed(" ",insights[words[1]])[1] );
+    }
+    return $channel.send( Embed(insights.name,insights.description)[0].field("Data",`Owner: ${insights.owner}\nMembers: ${insights.members}\nBoosting: ${insights.boosts}\nSystem Channel: ${insights.system}`)[0].useImage($server.iconURL)[0].footer("Your server's data is not stored by The Neural Nutwork")[0].useTimestamp()[1] );
+  }else if($cmnd === "create"){
     if(!words[1]){
       return $channel.send("You're forgetting part of that command!");
     }else if(words[1] === "channel"){
@@ -56,17 +76,17 @@ module.exports = function(){
       global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
       return $channel.send("I've created the role!");
     }else if(words[1] === "webhook"){
-      if(!words[2]) return $channel.send("You're forgetting the name parameter!");
+      // if(!words[2]) return $channel.send("You're forgetting the name parameter!");
 
-      $channel.createWebhook(words[2], {
-        avatar: "https://i.imgur.com/zfusTWU.png",
-        reason: "Webhook created with The Nutwork by "+$author.tag
-      }).then(webhook => {
-        $channel.send("I've created the webhook!");
-        global.discord.debug("Created webhook \n"+webhook);
-      }).catch(e => {
-        if(e) throw e;
-      });
+      // $channel.createWebhook(words[2], {
+      //   avatar: "https://i.imgur.com/zfusTWU.png",
+      //   reason: "Webhook created with The Nutwork by "+$author.tag
+      // }).then(webhook => {
+      //   $channel.send("I've created the webhook!");
+      //   global.discord.debug("Created webhook \n"+webhook);
+      // }).catch(e => {
+      //   if(e) throw e;
+      // });
     }
     return;
   }else if($cmnd === "delete"){
