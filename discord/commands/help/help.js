@@ -78,7 +78,7 @@ module.exports = function(){
     }else if(words[1].toLowerCase() in (x = $commands["math"]) || words[1].toLowerCase() in (x = $commands["ptoe"]) || words[1].toLowerCase() in (x = $commands["mod"]) || words[1].toLowerCase() in (x = $commands["fun"]) || words[1].toLowerCase() in (x = $commands["other"]) || words[1].toLowerCase() in (x = $commands["server"])){
       let GOTTENCOMMAND = x[words[1].toLowerCase()]
       
-      helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),GOTTENCOMMAND["desc"])[0].field("Usage",$pre+GOTTENCOMMAND["format"])[0].field("Aliases",GOTTENCOMMAND["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (optional parameters)")[1];
+      helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),GOTTENCOMMAND["desc"])[0].field("Usage",$pre+GOTTENCOMMAND["format"])[0].field("Aliases",GOTTENCOMMAND["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (optional parameters) - parameters starting with `?` means they are not always required")[1];
       return $channel.send(helpText);  // this wasn't here before so there wasn't any output.
     }else{
       return $channel.send("That's not a command I recognize! Are you sure you typed it right?\n*note: meme commands don't have a help command*");

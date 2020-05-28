@@ -36,12 +36,12 @@
     },
     "area": {
       "desc": "Get the area of a 2D geometric shape",
-      "format": "area <shape> <dimension1> <dimension2>",
+      "format": "area <shape> <dimension1> <?dimension2>",
       "alias": ["none"]
     },
     "volume": {
       "desc": "Get the volume of a 3D geometric shape",
-      "format": "volume <shape> <dimension1> <dimension2> <dimension3>",
+      "format": "volume <shape> <dimension1> <dimension2> <?dimension3>",
       "alias": ["none"]
     },
     "solve": {
@@ -68,6 +68,11 @@
     "group": {
       "desc": "Takes a number and places it into it's respective numerical group",
       "format": "group <number>",
+      "alias": ["none"]
+    },
+    "perimeter": {
+      "desc": "Get the area around the outside of a 2D shape",
+      "format": "perimeter <dimension1> <?dimension2> <?dimension3>",
       "alias": ["none"]
     }
   },
@@ -108,6 +113,11 @@
     "unban": {
       "desc": "Unban a member with a mention or Username+tag",
       "format": "unban <@member>",
+      "alias": ["none"]
+    },
+    "//mute": {
+      "desc": "Mutes a member",
+      "format": "mute <@member>",
       "alias": ["none"]
     },
     "clear": {

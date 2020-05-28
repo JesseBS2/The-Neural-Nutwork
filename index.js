@@ -27,9 +27,9 @@ global.SolveEquation = function(msg){
       .replace(/ /g,"");  // make it one message
     
     var toReturn = algebra.parse(msg);
-    // if(toReturn.toString().includes("/")){
-    //   return Number(toReturn.toString().split("/")[0]) / Number(toReturn.toString().split("/")[1]);
-    // }
+    if(toReturn.toString().includes("/")){
+      return Number(toReturn.toString().split("/")[0]) / Number(toReturn.toString().split("/")[1]);
+    }
 
     return toReturn;
   }catch(err){

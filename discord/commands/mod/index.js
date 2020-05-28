@@ -54,6 +54,8 @@ module.exports = async function(){
       $channel.send( DeathMessages[Math.round(Math.random()*DeathMessages.length-1)] );  // sends a random goobye into the server
       $guild.leave();
       return;
+    }else if(!toKick.id){
+      return $channel.send("I can't find this user.. are they in the server?");
     }
     
     toKick.kick()
@@ -96,6 +98,22 @@ module.exports = async function(){
       });
     }
 
+  // }else if($cmnd === "mute"){
+  //   if($author.hasPermission("MUTE_MEMBERS") === false){
+  //     return $channel.send("You do not have the necessary permissions for that");
+  //   }else if(me.hasPermission("MANAGE_ROLES") === false){
+  //     return $channel.send("I do not have the necessary permissions for that.\nI need the `Mute Members` permission");
+  //   }
+
+  //   if(!words[1]) return $channel.send("You're forgetting part of that command!");
+  //   if(!$message.mentions.members.first()) return $channel.send("You need to mention someone!");
+
+  //   if(!$guild.roles.cache.find(role => role.name == "Muted")){  // if there isn't already a "mute role" then make one
+  //     $guild.roles.create({data: {name: "Muted", permissions: ["READ_MESSAGE_HISTORY","VIEW_CHANNEL","CONNECT"]}, reason: "A role that prevents members from speaking"});
+  //   }
+
+  //   $message.mentions.members.first().roles.add($guild.roles.cache.find(role => role.name == "Muted").id);
+  
   }else if($cmnd === "unban"){
     if($author.hasPermission("BAN_MEMBERS") === false){
       return $channel.send("You do not have the necessary permissions for that");

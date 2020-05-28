@@ -35,7 +35,7 @@ module.exports = async function(ee){
     }
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
-    if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
     let num = Number(words[1]); // second word
     let index = Number(words[2]) || 2; // third word
     if(words[0].startsWith("√")){ num = Number(words[0].split("√")[1]); index = Number(words[1]) || 2;} // special case for the symbol
@@ -156,7 +156,7 @@ module.exports = async function(ee){
 
 
   }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
-    if(!words[1]) return $channel.send("Convert a value A into a value B");
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
     
     let A = words[1].toLowerCase();
     let B = words[2].toLowerCase();
@@ -246,7 +246,7 @@ module.exports = async function(ee){
 
     return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
   }else if($cmnd === "factorial"){
-    if(!words[1]){ $channel.send("You're forgetting part of that command!"); return;}
+    if(!words[1]) return $channel.send("You're forgetting part of that command!");
     
     function factorialize(num) {
       var result = num;
@@ -274,6 +274,34 @@ module.exports = async function(ee){
     }else{
       // return $channel.send(TheNumber+"\nReal");
       return $channel.send(Embed("Real or Complex","It is at this point that I am un-able to identify the number you've selected.\nReal numbers can be rational or irrational.\nA rational number is any of the previous numbers.\nAn irrational number is a decimal number that has an infinite amount of decimal places.\nA complex number is a number that can be express using the equation `a+bi`, where `a` and `b` are Real numbers and `i` is an \"imaginary number\" or a number that doesn't exist, example:\n`x^2 = -1`")[1]);
+    }
+
+  }else if($cmnd === "perimeter"){
+    if(!words[1]) return $channel.send("Perimeter is the space around the outside of a 2D object");
+
+    if(words[1] === "square"){
+      if(!words[2]) return $channel.send("You're forgetting the width parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the height parameter!");
+      
+      let math = (Number(words[2]) *2) + (Number(words[3]) *2)
+      
+      return $channel.send(Embed("Perimeter of a Square","Width: "+words[2]+" Height: "+words[3])[0].field("Formula","(Width \* 2) + (Height \* 2)")[0].field("Result",math)[1]);
+      
+    }else if(words[1] === "triangle"){
+      if(!words[2]) return $channel.send("You're forgetting the base parameter!");
+      if(!words[3]) return $channel.send("You're forgetting the height1 parameter!");
+      if(!words[4]) return $channel.send("You're forgetting the height2 parameter!");
+      
+      let math = Number(words[2]) + Number(words[3]) + Number(words[4]);
+      
+      return $channel.send(Embed("Perimeter of a Triangle","Width: "+words[2]+" Height1: "+words[3]+" Height2: "+words[4])[0].field("Formula","Width + Height1 + Height2")[0].field("Result",math)[1]);
+      
+    }else if(words[1] === "circle"){
+      if(!words[2]) return $channel.send("You're forgetting the radius parameter!");
+      
+      let math = 2*3.14159*Number(words[2]);
+      
+      return $channel.send(Embed("Circumference of a Circle","Radius: "+words[2])[0].field("Formula","2 \* Pi \* Radius")[0].field("Result",math)[1]); 
     }
 
   }
