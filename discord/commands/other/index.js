@@ -127,10 +127,21 @@ module.exports = function(Client){
             StopThisMans.delete();
           },2000);
         }else{
-          if(recievedMSG.content.split($pre+"vote ")[1].toLowerCase() in Votes){ // is everything but the command in votes?
+          if(recievedMSG.content.split($pre+"vote ")[1].toLowerCase() in Votes){  // is it voteable?
             Votes[recievedMSG.content.split($pre+"vote ")[1].toLowerCase()] += 1;  // lowercase
-            $channel.send("Vote Added!");
+            $channel.send("Vote added!");
             Voters.push(recievedMSG.author.toString()); // add them to an array so they can't vote again
+          }else if(Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase()) != NaN && Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase())%1 == 0){  // is it a number
+            if(Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase()) > options.length){
+              return $channel.send(`That is ${Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase())-options.length} higher than the max!`);
+            }else if(Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase()) <= 0){
+              return $channel.send("That is too low!");
+            }else{
+              let findTheThing = Object.keys(Votes)[Number(recievedMSG.content.split($pre+"vote ")[1].toLowerCase())-1];
+              Votes[ findTheThing ] += 1;  // lowercase
+              $channel.send("Vote added!");
+              Voters.push(recievedMSG.author.toString()); // add them to an array so they can't vote again
+            }
           }else{
             $channel.send("'"+recievedMSG.content.split($pre+"vote ")[1]+"' is not an option!"); // if you try to vote for failure when it's not someting you can vote for... heh.
           }
@@ -198,5 +209,4 @@ module.exports = function(Client){
 
     return;
   }
-
 }
