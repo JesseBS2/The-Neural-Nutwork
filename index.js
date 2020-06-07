@@ -43,12 +43,14 @@ global.discord = {  // global variables for discord bot
   online: false,
   functions: {
     CustomEmbed: function(title,description,color){
-      if(title === ""){title = " "}
+      if(title === "" || !title) title = " "
+      if(description === "" || !description) description = " ";
+      color = color || "#7289d9";
+      
       let self = {};
-      color = color || "#7289d9"
       var embed = new Discord.MessageEmbed().setColor(color).setTitle(title).setDescription(description);
             
-      self.useImage = function(img){
+      self.useImage = function(img){  // thumbnail
         img = img || "https://i.imgur.com/MStPhME.png";
         embed = embed.setThumbnail(img);
         return [self,embed];
@@ -59,7 +61,7 @@ global.discord = {  // global variables for discord bot
         return [self,embed];
       }
 
-      self.setPicture = function(src){
+      self.setPicture = function(src){  // external file, url
         embed = embed.setImage(src);
         return [self,embed];
       }

@@ -1,6 +1,9 @@
-let Embed = global.discord.functions.CustomEmbed;
+var Embed = global.discord.functions.CustomEmbed;
+const QRCode = require("qrcode");
+const fs = require("fs");
 
-module.exports = function(){
+
+module.exports = function(Client){
   
   global.discord.log("Ran /commands/fun/index.js")
 
@@ -64,9 +67,34 @@ module.exports = function(){
     if(First && Second && Math.ceil(Second)-Math.floor(First) <= 1){$channel.send(Math.random()*(Math.ceil(Second) - Math.floor(First))+Math.floor(First)); return;}
     if(First && Second){$channel.send(Math.round(Math.random()*(Second-First)+First)); return;}
   
+  }else if($cmnd == "qr"){
+    if(Configs["config"]["qr-codes"] === "disabled")return $channel.send("An Admin has disabled these commands!");
+    if(!words[1]) return $channel.send("You're forgetting to add some text to convert to QR!");
+    var toQR = "";
+    for(var e=1; e < words.length; e++){
+      if(e >= words.length-1){
+        toQR += words[e];
+      }else{
+        toQR += words[e]+" ";
+      }
+    }
+
+    QRCode.toFile("discord/commands/fun/QRcode.png", toQR, {errorCorrectionLevel: "H"}, function(err){
+      if(err) throw err;
+      global.discord.debug("Successfully generated QR code");
+      // Several of my failed attempts to get the QRs working
+      //let buffer = Buffer.from(url.split("data:image/png;base64,")[1], "base64"); // convert the image from base64
+      //fs.writeFile("discord/commands/fun/QRcode.png",buffer,function(e){if(e)throw e});  // write image to file. I don't know how efficent this would be if the command is used a lot in multiple servers, but my brain hurts so I'll just roll with it
+      //var QR_URL = http.get("data:image",function(e){if(e) throw e});
+      //return $channel.send(Embed("Here's your QR code!")[0].setAttachment("./discord/commands/fun/QRcode.png")[1]);
+      return $channel.send("Here's your QR code!",{files:["./discord/commands/fun/QRcode.png"]});      
+    });
+
   }
 
+
   /// functions ///
+
 
   function flipper(send){
     let math = 0.5;

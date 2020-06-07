@@ -8,12 +8,15 @@
   },
   "keywords": [
     "math",
-    "discord"
+    "discord",
+    "nutwork"
   ],
   "author": "JesseBS2",
   "license": "ISC",
   "dependencies": {
     "algebra.js": "^0.2.6",
-    "discord.js": "^12.2.0"
+    "discord": "^0.8.2",
+    "discord.js": "^12.2.0",
+    "qrcode": "^1.4.4"
   }
 }

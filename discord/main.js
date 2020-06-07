@@ -53,7 +53,8 @@ bot.on("message", async recievedmessage => {
           },
           "automath": "disabled",
           "autoperiodic": "disabled",
-          "nickname": "enabled"
+          "nickname": "enabled",
+          "qr-codes": "enabled",
         },
         "categories": {
           "math": "enabled",
@@ -351,7 +352,8 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       },
       "automath": "disabled",
       "autoperiodic": "disabled",
-      "nickname": "enabled"
+      "nickname": "enabled",
+      "qr-codes": "enabled",
     },
     "categories": {
       "math": "enabled",

@@ -174,7 +174,12 @@
       "format": "random (max/min) (max)",
       "alias": ["rand"]
     },
-    "rand": ""
+    "rand": "",
+    "qr": {
+      "desc": "Turn any text into a scan-able QR code",
+      "format": "QR <text/link>",
+      "alias": ["none"]
+    }
   },
   "server": {
     "server": {
