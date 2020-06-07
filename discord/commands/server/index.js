@@ -1,7 +1,7 @@
 var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
-module.exports = function(){
+module.exports = async function(){
 
   global.discord.log("Ran /commands/server/index.js");
   
@@ -17,12 +17,6 @@ module.exports = function(){
   var $server = global.discord.message.guild;
 
   var Configs = require("./../../configuration.json")[$server.id];
-
-  if($member.hasPermission("MANAGE_CHANNELS") === false){
-    return $channel.send("You do not have the necessary permissions for that");
-  }else if(bot.hasPermission("MANAGE_CHANNELS") === false){
-    return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Channels` permission");
-  }
 
   if($cmnd === "server"){
     var insights = {
@@ -48,6 +42,13 @@ module.exports = function(){
     if(!words[1]){
       return $channel.send("You're forgetting part of that command!");
     }else if(words[1] === "channel"){
+      if($member.hasPermission("MANAGE_CHANNELS") === false){
+        return $channel.send("You do not have the necessary permissions for that");
+      }else if(bot.hasPermission("MANAGE_CHANNELS") === false){
+        return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Channels` permission");
+      }
+      
+      
       let name = words[2] || "nameless"; 
       let type = "text";
       let category = $channel.parent.id;
@@ -63,6 +64,13 @@ module.exports = function(){
       global.discord.log("Created a channel '"+name+"' in server "+$server.name);
       return $channel.send("I've created the channel!");
     }else if(words[1] === "category"){
+      if($member.hasPermission("MANAGE_CHANNELS") === false){
+        return $channel.send("You do not have the necessary permissions for that");
+      }else if(bot.hasPermission("MANAGE_CHANNELS") === false){
+        return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Channels` permission");
+      }
+
+
       let name = words[2] || "nameless";
 
       $server.channels.create(name,{type: "category", reason: "Category created by "+$author.tag}); // same as create channel but the channel type is a category :O
@@ -70,11 +78,25 @@ module.exports = function(){
       return $channel.send("I've created the category!");
     
     }else if(words[1] === "role"){
-      let name = words[2] || "nameless-role";
+      if($member.hasPermission("MANAGE_ROLES") === false){
+        return $channel.send("You do not have the necessary permissions for that");
+      }else if(bot.hasPermission("MANAGE_ROLES") === false){
+        return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Roles` permission");
+      }
+      
 
-      $server.roles.create({data: {name: name}, reason: "Role created by "+$author.tag});
-      global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
-      return $channel.send("I've created the role!");
+      let name = words[2] || "nameless-role";
+      let color = null;
+      if(words[3] && words[3].startsWith("#") && words[3].length === 7)color = words[3];
+
+      $server.roles.create({data: {name: name, color: color}, reason: "Role created by "+$author.tag}).then(newRole => {
+        global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
+        return $channel.send("I've created the role!\n"+newRole);
+      }).catch((err) => {
+        $channel.send("Something went wrong!\nI couldn't create the role");
+        if(err) throw err;
+      });
+      
     }else if(words[1] === "webhook"){
       // if(!words[2]) return $channel.send("You're forgetting the name parameter!");
 
@@ -87,8 +109,8 @@ module.exports = function(){
       // }).catch(e => {
       //   if(e) throw e;
       // });
+      return;
     }
-    return;
   }else if($cmnd === "delete"){
     let mention, type="unknown thing";
     if(!words[1]) return $channel.send("You're forgetting the name parameter!");

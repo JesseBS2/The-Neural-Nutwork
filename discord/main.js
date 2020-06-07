@@ -165,7 +165,6 @@ bot.on("message", async recievedmessage => {
   
 
 
-
   /* Commands for the admins(me) to use */
   if(global.discord.admins.includes(recievedmessage.author.id)){
     if(recievedmessage.content === "$&crash"){  // crash the bot
@@ -196,13 +195,11 @@ bot.on("message", async recievedmessage => {
 
     }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
       if(words[1]){
-        clearInterval(isLooping);
         if(["online","idle","dnd","invisible"].includes(words[1]) === false){return $channel.send("That is not a valid status.");}
         bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
         global.discord.debug("an admin "+recievedmessage.author.username+" set the bot's availablity to "+recievedmessage.content.split("$&status ")[1]);
         return $channel.send("Status has been changed!");
       }else{
-        clearInterval(isLooping)
         bot.user.setStatus("online");
         return $channel.send("Status has been reset!");
       }

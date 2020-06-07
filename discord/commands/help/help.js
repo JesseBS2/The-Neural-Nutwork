@@ -11,7 +11,6 @@ module.exports = function(){
   global.discord.log("DISCORD: Ran /commands/help/help.js");
 
   if($cmnd === "commands"){
-    //let $commands = require("./../commands.json");
     let reactions = require("./../react/memes.json");
     if(!words[1]) return $channel.send(CustomEmbed("Commands: ","Separated by category")[0].field("🧮 Math Commands","x"+Object.keys($commands["math"]).length+" Commands")[0].field("🧪 PToE Commands","x"+Object.keys($commands["ptoe"]).length+" Commands")[0].field("🔐 Mod Commands","x"+Object.keys($commands["mod"]).length+" Commands")[0].field(":smile: Fun Commands","x"+Object.keys($commands["fun"]).length+" Commands")[0].field(":ok_hand: Meme Commands","x"+Object.keys(reactions).length+" Commands")[0].field(":grey_question: Other Commands","x"+Object.keys($commands["other"]).length+" Commands")[0].field(":control_knobs: Server Commands","x"+Object.keys($commands["server"]).length+" Commands")[0].useImage()[1]);
     
@@ -19,14 +18,14 @@ module.exports = function(){
       let group_arr = "";
       for(let ex = 0; ex < Object.values($commands[words[1].toLowerCase()]).length; ex++){
         let nextUp = $commands[words[1].toLowerCase()];
-        if(Object.values(nextUp)[ex] == ""){}else{  // check if it's blank. If it's blank it should be an alt, which are not included in help.json
+        if(Object.values(nextUp)[ex] == ""){}else{  
           // global.discord.debug(Object.values(nextUp)[ex]);
           group_arr += $pre+Object.keys($commands[words[1].toLowerCase()])[ex];
           group_arr += "\n";
         }
       }
       
-      return $channel.send(CustomEmbed(words[1].toLowerCase()+" commands",group_arr)[0].footer($pre+"help <command>")[1]);
+      return $channel.send(CustomEmbed(words[1].charAt(0).toUpperCase()+words[1].slice(1).toLowerCase()+" commands",group_arr)[0].footer($pre+"help <command>")[1]);
     }else if(words[1].toLowerCase() === "meme"){  // exception, as memes is not included in commands.json
       let memes_list = "";
       for(let ex = 0; ex < Object.keys(reactions).length; ex++){  // stolen from the above code
@@ -38,7 +37,7 @@ module.exports = function(){
         }
       }
 
-      return $channel.send(CustomEmbed("meme commands",memes_list)[0].footer("$<command>$")[1]);
+      return $channel.send(CustomEmbed("Meme commands",memes_list)[0].footer("$<command>$")[1]);
     
 
     }else if(words[1].toLowerCase() in $commands === false){
