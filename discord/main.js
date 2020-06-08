@@ -22,6 +22,7 @@ bot.on("ready", () => {
 });
 
 
+
 // Writes to the JSON file for discord servers
 global.discord.functions.saveJSON = function(srcJSON){
   srcJSON = srcJSON || require("./configuration.json");
@@ -29,6 +30,7 @@ global.discord.functions.saveJSON = function(srcJSON){
     if(err) throw err;
   });
 }
+
 
 
 var _commands = require("./commands/commands.json"); // all of the bot's commands, seperated by category
@@ -92,11 +94,6 @@ bot.on("message", async recievedmessage => {
     global.discord.message.tag = recievedmessage.author.username.toString() + "#" + recievedmessage.author.discriminator.toString(); // the person that sent the message as USERNAME#0000
     global.discord.message.command = recievedmessage.content.split(" ")[0].split("$")[1];
 
-    if(words[0] in require("./commands/help/help.json")){ // if it is a command, even though a prefix isn't present.
-      global.discord.message.command = recievedmessage.content.split(" ")[0]; // override the way the command was made before.
-    }
-
-
     if(words[0] === "$inv" || words[0] === "$invite"){
       return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
     }else if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
@@ -108,8 +105,9 @@ bot.on("message", async recievedmessage => {
       require("./commands/help/help.js")();
     }else if(words[0].startsWith("$") && words[0].split("$")[1] in _commands["other"] || words[0] in _commands["other"]){
       require("./commands/other/index.js")();
+    }else if(words[0].startsWith("$") && words[0].split("$")[1] == "qr" || words[0] == "qr"){
+      require("./commands/fun/index.js")(true);
     }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
-    
       if(recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1]){
         require("./commands/react/index.js")(true);
       }else{
@@ -272,7 +270,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/periodic/index.js")();
   }else if($cmnd in _commands["fun"]){
     if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}    
-    require("./commands/fun/index.js")();
+    require("./commands/fun/index.js")(false,Discord);
   }else{
    
     let words = recievedmessage.content.split(" ");

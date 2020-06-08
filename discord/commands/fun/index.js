@@ -3,22 +3,25 @@ const QRCode = require("qrcode");
 const fs = require("fs");
 
 
-module.exports = function(Client){
+module.exports = function(dm,CLIENT){
   
   global.discord.log("Ran /commands/fun/index.js")
 
 
-  let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+  let Configs, $pre, $server, $member;  // this won't be anything if it's a dm
   let message = global.discord.message.msg;
   let msg = global.discord.message.message
   let words = global.discord.message.words;
   let $channel = global.discord.message.channel;
   let $cmnd = global.discord.message.command;
   let $author = global.discord.message.author;
-  let $member = global.discord.message.msg.member;
-  let $pre = global.discord.message.prefix;
-  let $server = global.discord.message.guild;
   let CoinFlippingStreak = false; // used in flip and flips commands, so that flips doesn't show unless necessary.
+  if(dm !== true){
+    Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
+    $pre = global.discord.message.prefix;
+    $server = global.discord.message.guild;  
+    $member = global.discord.message.msg.member;  
+  }
 
   
   if($cmnd === "respect" || $cmnd == "F"){
@@ -68,7 +71,7 @@ module.exports = function(Client){
     if(First && Second){$channel.send(Math.round(Math.random()*(Second-First)+First)); return;}
   
   }else if($cmnd == "qr"){
-    if(Configs["config"]["qr-codes"] === "disabled")return $channel.send("An Admin has disabled these commands!");
+    if(dm !== true){ if(Configs["config"]["qr-codes"] === "disabled"){return $channel.send("An Admin has disabled these commands!");} }
     if(!words[1]) return $channel.send("You're forgetting to add some text to convert to QR!");
     var toQR = "";
     for(var e=1; e < words.length; e++){
@@ -79,15 +82,30 @@ module.exports = function(Client){
       }
     }
 
+    //global.discord.debug(words);
+    if(toQR === `"We're no strangers to love."`) toQR = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    
     QRCode.toFile("discord/commands/fun/QRcode.png", toQR, {errorCorrectionLevel: "H"}, function(err){
-      if(err) throw err;
+      if(err) throw err;  
+      
+      var attachment = new CLIENT.MessageAttachment("./discord/commands/fun/QRcode.png", "QRcode.png");
+      var titles = ["Here's your QR Code!","Here you go!","[QR Code Generated]","","Quirky QRs!","Sponsored by Squares","Denso Wave, 1994",""];  // I want empty title to be more likely than just 1 in X, so I'd say ratio of 1 in 4
+      let selectTitle = titles[Math.round(Math.random()*titles.length-1)];
+      
       global.discord.debug("Successfully generated QR code");
-      // Several of my failed attempts to get the QRs working
+      return $channel.send(Embed(selectTitle,"")[0].setAttachment(attachment)[0].setPicture("attachment://QRcode.png")[1]);
+
+    
+      // Several of my past attempts to get the QRs working
+      
+      //return $channel.send("Here's your QR code!",{files:["./discord/commands/fun/QRcode.png"]}); 
+
+      //var QR_URL = http.get("data:image",function(e){if(e) throw e});
+      
       //let buffer = Buffer.from(url.split("data:image/png;base64,")[1], "base64"); // convert the image from base64
       //fs.writeFile("discord/commands/fun/QRcode.png",buffer,function(e){if(e)throw e});  // write image to file. I don't know how efficent this would be if the command is used a lot in multiple servers, but my brain hurts so I'll just roll with it
-      //var QR_URL = http.get("data:image",function(e){if(e) throw e});
-      //return $channel.send(Embed("Here's your QR code!")[0].setAttachment("./discord/commands/fun/QRcode.png")[1]);
-      return $channel.send("Here's your QR code!",{files:["./discord/commands/fun/QRcode.png"]});      
+      
+      //return $channel.send(Embed("Here's your QR code!")[0].setAttachment("./discord/commands/fun/QRcode.png")[1]);   
     });
 
   }

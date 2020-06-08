@@ -123,8 +123,9 @@
     "clear": {
       "desc": "Removes a number of messages",
       "format": "clear <amount>",
-      "alias": ["none"]
+      "alias": ["purge"]
     },
+    "purge": "",
     "config": {
       "desc": "Customizeable bot settings for your server",
       "format": "config (option) (setting)",
@@ -176,7 +177,7 @@
     },
     "rand": "",
     "qr": {
-      "desc": "Turn any text into a scan-able QR code",
+      "desc": "Turn any text or web link into a scanable QR code",
       "format": "QR <text/link>",
       "alias": ["none"]
     }

@@ -66,6 +66,11 @@ global.discord = {  // global variables for discord bot
         return [self,embed];
       }
 
+      self.setAttachment = function(src){  // local image, in directory
+        embed = embed.attachFiles(src);
+        return [self,embed];
+      }
+
       self.footer = function(message){
         embed = embed.setFooter(message);
         return [self,embed];

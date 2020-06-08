@@ -13,7 +13,7 @@ module.exports = async function(){
   let me = global.discord.bot.me;
   let Configs = require("./../../configuration.json")[global.discord.message.msg.guild.id];
 
-  if($cmnd === "clear"){
+  if($cmnd === "clear" || $cmnd === "purge"){
     if($author.hasPermission("MANAGE_MESSAGES") === false){
       return $channel.send("You do not have the necessary permissions for that");
     }else if(me.hasPermission("MANAGE_MESSAGES") === false){
@@ -23,15 +23,25 @@ module.exports = async function(){
 
     try{ 
       var amount = Number(words[1]) + 1;
-      if(amount >= 100){
-        for(let x = 0; x < amount; x++){  // loops!
-          if(x%10 === 0){$channel.bulkDelete(10); // if it can be evenly divided by ten then remove that much
-          }else if(x%5 === 0){$channel.bulkDelete(5); // if it can be evenly divided by five then remove *that* much
-          }else if(x%2 === 0){$channel.bulkDelete(2); // if it can be evenly divided by two... you guessed it: Take a nap..... Sike! remove that much.
-          }else{$channel.bulkDelete(1);}  // otherwise just remove one this time.
+      if(amount > 501) return $channel.send("Sorry! I have a clear limit of 500");
+      try{
+        if(amount >= 100){
+          for(let x = 0; x < amount; x++){  // loops!
+            if(x%100 === 0){$channel.bulkDelete(100);
+            }else if(x%25 === 0){$channel.bulkDelete(25);
+            }else if(x%10 === 0){$channel.bulkDelete(10);
+            }else if(x%5 === 0){$channel.bulkDelete(5); 
+            }else if(x%2 === 0){$channel.bulkDelete(2); 
+            }else{$channel.bulkDelete(1);}  // otherwise just remove one this time.
+          }
+        }else{
+          $channel.bulkDelete(amount);
         }
-      }else{
-        $channel.bulkDelete(amount);
+      }catch(err){
+        if(err){
+          global.discord.debug("Stopped an attempt to delete too old of messages.");
+          return $channel.send("Something went wrong!\nI can not delete messages older than 14 days!");
+        }
       }
 
       global.discord.log("Erased "+amount+" messages from "+$channel.name+" in "+global.discord.message.msg.guild);
