@@ -65,6 +65,8 @@ module.exports = function(){
     $commands["ptoe"]["pt"] = $commands["ptoe"]["periodic"];
     $commands["fun"]["F"] = $commands["fun"]["respect"];
     $commands["fun"]["rand"] = $commands["fun"]["random"];
+    $commands["mod"]["purge"] = $commands["mod"]["clear"];
+
     
     var helpText;
     var x;
