@@ -10,7 +10,7 @@ Now the files are separated and easy to read; Which is like 10,000x better!
 
 The bot will (hopefully) be accessable on much more than just Discord in it's complete form; Twitch being one of my goals.
 Until then, an invite link for the Discord version is here:<br/>
-  https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=8&scope=bot
+  https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot
 
 
 Have a good one! :)<br/>
