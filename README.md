@@ -8,9 +8,8 @@ This code in this repository is actually considered v2 of the bot, and it is way
 Version 1 of the bot actually took place all in one file, which did remove the need of global variables(which *can* be removed but I like them). But it also made the code very cluttered, and as a result, had one really long file.
 Now the files are separated and easy to read; Which is like 10,000x better!
 
-The bot will (hopefully) be accessable on much more than just Discord in it's complete form; Twitch being one of my goals.
-Until then, an invite link for the Discord version is here:<br/>
-  https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot
+The bot will (hopefully) be accessable on much more than just Discord in it's complete form;
+I should mention that there is no server for the bot, so it's not normally online, so there is no point in providing a link to the bot
 
 
 Have a good one! :)<br/>
