@@ -130,19 +130,7 @@
       "desc": "Customizeable bot settings for your server",
       "format": "config (option) (setting)",
       "alias": ["none"]
-    },
-    "addrole": {
-      "desc": "Give a role or roles to a mentioned member or members",
-      "format": "addrole <@member> <@role>",
-      "alias": ["ar"]
-    },
-    "ar": "",
-    "takerole": {
-      "desc": "Take a role or roles from a mentioned member or members",
-      "format": "takerole <@member> <@role>",
-      "alias": ["tr"]
-    },
-    "tr": ""
+    }
   },
   "ptoe": {
     "periodic": {
@@ -152,6 +140,46 @@
     },
     "periodictable": "",
     "pt": ""
+  },
+  "image": {
+    "image": {
+      "desc": "Get the width and height of image",
+      "format": "image <image>",
+      "alias": ["image-data","data"]
+    },
+    "image-data": "",
+    "data": "",
+    "greyscale": {
+      "desc": "Convert any image to only be on the white-black color scale",
+      "format": "greyscale <image>",
+      "alias": ["grey"]
+    },
+    "mirror": {
+      "desc": "Mirrors an image horizontally or vertically",
+      "format": "mirror <image> (horizontal/vertical) (horizontal/vertical)",
+      "alias": ["none"]
+    },
+    "invert": {
+      "desc": "Converts all colors in an image to opposite of color wheel",
+      "format": "invert <image>",
+      "alias": ["none"]
+    },
+    "blur": {
+      "desc": "Blurs an image with a custom level of blurry-ness",
+      "format": "blur <image> (number)",
+      "alias": ["none"]
+    },
+    "pixelate": {
+      "desc": "Increases the pixel size of an image, making it harder to see",
+      "format": "pixelate <image> (number)",
+      "alias": ["pixel"]
+    },
+    "pixel": "",
+    "subtitle": {
+      "desc": "yes",
+      "format": "subtitle <image> <text>",
+      "alias": ["none"]
+    }
   },
   "fun": {
     "respect": {

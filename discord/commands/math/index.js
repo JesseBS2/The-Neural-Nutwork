@@ -2,7 +2,7 @@ const algebra = require("algebra.js");
 var Embed = global.discord.functions.CustomEmbed; // makes calling it easier
 var SolveEquation = global.SolveEquation; // also easier
 
-
+var FooterTitle = "Math processed by algebra.js";
 module.exports = async function(ee){
   global.discord.log("Ran /commands/math/index.js");
   
@@ -31,7 +31,7 @@ module.exports = async function(ee){
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
       let n = SolveEquation( toEquation );
-      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[1] );
+      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[0].footer(FooterTitle)[1] );
     }
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
@@ -41,7 +41,7 @@ module.exports = async function(ee){
     if(words[0].startsWith("√")){ num = Number(words[0].split("√")[1]); index = Number(words[1]) || 2;} // special case for the symbol
     
     let randomNonsensicalVariable = ["th","st","nd","rd","th","th","th","th","th","th"];
-    let theEndingToTheNumber = randomNonsensicalVariable[Number(num.toString().charAt(num.toString().length-1))-2];  // not the most effeciant way, but aye. It works.
+    let theEndingToTheNumber = randomNonsensicalVariable[Number(index.toString().charAt(index.length))];
 
     try{
       return $channel.send( Embed("Root","The "+index+""+theEndingToTheNumber+" root of "+num)[0].field("Result",Math.pow(num,1/index))[1] ); // x to power of y, but it's divide first so it's actually root
@@ -79,7 +79,7 @@ module.exports = async function(ee){
     }
 
     let expr = algebra.parse(words[1]);
-    let asEmbed = Embed("Evaluate","Evaluating "+words[1]+" when: "+nameForEveryVariableOccurence)[0].field("Result",expr.eval(obj))[1];
+    let asEmbed = Embed("Evaluate","Evaluating "+words[1]+" when: "+nameForEveryVariableOccurence)[0].field("Result",expr.eval(obj))[0].footer(FooterTitle)[1];
 
     return $channel.send(asEmbed);
 
@@ -237,14 +237,14 @@ module.exports = async function(ee){
     let equation = message.split($pre+$cmnd+" ")[1];
     let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
     let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
-    return $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[1]);
+    return $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[0].footer(FooterTitle)[1]);
   
   }else if($cmnd === "solve"){
     if(!words[2]) return $channel.send("You're forgetting part of that command!");
     let expr = algebra.parse(words[1]);
     let x = expr.solveFor(words[2]);
 
-    return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[1] );
+    return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[0].footer(FooterTitle)[1] );
   }else if($cmnd === "factorial"){
     if(!words[1]) return $channel.send("You're forgetting part of that command!");
     

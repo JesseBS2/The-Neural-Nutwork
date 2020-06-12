@@ -57,16 +57,16 @@ module.exports = async function(){
     }
 
     let toKick = global.discord.message.msg.mentions.members.first();
-    if(toKick.id === global.discord.bot.user.id){
+    if(!toKick.id){
+      return $channel.send("Something went wrong!\nDid you mention someone?\nAre you sure this person is in the server?"); 
+    }else if(toKick.id === global.discord.bot.user.id){
       // DeathMessages ordered like so: Goodbyes, Movie References, Video Game References
-      let DeathMessages = ["Kicked *myself* from the server!","Okay. Peace! :wave:","Kicking me? Aww okay, bye :(","'*The Nutwork* has left the *server*'", "You can't fire me! I quit!","I'll get you! And your little dog too!","Hasta la vista baby", "Advancement Made: The End?","Bravo six, Going dark.","Killed by "+$author.tag+"\nYou placed 4th"]
+      let DeathMessages = ["Kicked *myself* from the server!","Okay. Peace! :wave:","Kicking me? Aww okay, bye :(","'*The Nutwork* has left the *server*'", "You can't fire me! I quit!","I'll get you! And your little dog too!","Hasta la vista baby", "Advancement Made: The End?","Bravo six, Going dark."]
 
       $channel.send( DeathMessages[Math.round(Math.random()*DeathMessages.length-1)] );  // sends a random goobye into the server
       $guild.leave();
       return;
-    }else if(!toKick.id){
-      return $channel.send("I can't find this user.. are they in the server?");
-    }
+    } 
     
     toKick.kick()
       .then(() => {
@@ -259,61 +259,5 @@ module.exports = async function(){
     }
 
 
-  }else if($cmnd === "addrole" || $cmnd === "ar"){
-    if($author.hasPermission("MANAGE_ROLES") === false){
-      return $channel.send("You do not have the necessary permissions for that");
-    }else if(me.hasPermission("MANAGE_ROLES") === false){
-      return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Roles` permission to do that");
-    }
-
-    let member, mentioendRole;
-    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ return $channel.send("You didn't mention a member!");}  // if a member is mentioned, get them
-    if($message.mentions.roles){ mentioendRole = $message.mentions.roles; }else{ return $channel.send("You didn't mention a role!");}  // if a role is mentioned, get it
-    
-    let failFlag = false;
-
-   mentioendRole.forEach(currentRole => {
-      //global.discord.debug(currentRole);
-      member.roles.add(currentRole).catch(e => {
-        if(e === "DiscordAPIError: Unknown Role"){
-          failFlag = true;
-        }else if(e){
-          throw e;
-        }
-      });
-    });
-
-    if(failFlag === true){
-      return $channel.send("I couldn't assign one or more of the roles");
-    }else{
-      return $channel.send("I've assigned the roles");
-    }
-  
-  }else if($cmnd === "takerole" || $cmnd === "tr"){
-    if($author.hasPermission("MANAGE_ROLES") === false){
-      return $channel.send("You do not have the necessary permissions for that");
-    }else if(me.hasPermission("MANAGE_ROLES") === false){
-      return $channel.send("I do not have the necessary permissions for that.\nI need the `Manage Roles` permission");
-    }
-
-    let member, mentioendRole;
-    if($message.mentions.members.first()){ member = $message.mentions.members.first(); }else{ return $channel.send("You didn't mention a member!");}  // if a member is mentioned, get them
-    if($message.mentions.roles){ mentioendRole = $message.mentions.roles; }else{ return $channel.send("You didn't mention a role!");}  // if a role is mentioned, get it
-    
-    let failFlag = false;
-
-    mentioendRole.forEach(currentRole => {
-      member.roles.remove(currentRole).catch(e => {
-        // couldn't apply the current role
-        if(e) failFlag = true;
-      })
-    
-    });
-
-    if(failFlag === true){
-      return $channel.send("I couldn't take one or more of the roles from that member");
-    }else{
-      return $channel.send("Roles were removed from the member");
-    }
   }
 }

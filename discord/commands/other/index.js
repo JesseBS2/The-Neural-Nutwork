@@ -2,11 +2,9 @@ var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
 module.exports = function(Client){
-
   global.discord.log("Ran /commands/other/index.js");
 
   let Configs;
-  
   let message = global.discord.message.msg;
   let msg = global.discord.message.message;
   let words = global.discord.message.words;

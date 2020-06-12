@@ -39,8 +39,14 @@ global.discord.admins = ["596938492752166922"];
 var Activity_Types = ["playing","watching","listening","streaming","custom"];
 
 
-
 bot.on("message", async recievedmessage => {
+
+
+  global.discord.log = function(msg){
+    console.log("\x1b[36m"+"DISCORD: "+recievedmessage.author.username+" "+msg,"\x1b[0m");
+  }
+
+
 
   if(recievedmessage.channel.type !== "dm"){
     if(recievedmessage.guild.id in Configs === false || typeof Configs[recievedmessage.guild.id] !== "object" || Configs[recievedmessage.guild.id] === null){
@@ -59,10 +65,7 @@ bot.on("message", async recievedmessage => {
           "qr-codes": "enabled",
         },
         "categories": {
-          "math": "enabled",
-          "mod": "enabled",
           "other": "enabled",
-          "ptoe": "enabled",
           "fun": "enabled",
           "meme": "enabled"
         },
@@ -263,14 +266,17 @@ bot.on("message", async recievedmessage => {
     // server commands can not be disabled.
     require("./commands/server/index.js")();
   }else if($cmnd in _commands["other"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled")return $channel.send("An admin has disabled these commands!");
     require("./commands/other/index.js")(bot);
   }else if($cmnd in _commands["ptoe"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}
+    if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled")return $channel.send("An admin has disabled these commands!");
     require("./commands/periodic/index.js")();
   }else if($cmnd in _commands["fun"]){
-    if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled"){return $channel.send("An admin has disabled these commands!"); return;}    
+    if(Configs[recievedmessage.guild.id]["categories"]["fun"] === "disabled")return $channel.send("An admin has disabled these commands!");   
     require("./commands/fun/index.js")(false,Discord);
+  }else if($cmnd in _commands["image"]){  // if the command is the math kind, special case for root symbol
+    if(Configs[recievedmessage.guild.id]["categories"]["image"] === "disabled")return $channel.send("An admin has disabled these commands!");
+    require("./commands/image/index.js")(Discord);
   }else{
    
     let words = recievedmessage.content.split(" ");
@@ -354,10 +360,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "qr-codes": "enabled",
     },
     "categories": {
-      "math": "enabled",
-      "mod": "enabled",
       "other": "enabled",
-      "ptoe": "enabled",
       "fun": "enabled",
       "meme": "enabled"
     },

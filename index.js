@@ -1,9 +1,3 @@
-/*
-* NodeJS        12.16.1
-* Discord.js    12.2.0
-* Algebra.js    0.2.6
-*/
-
 const Discord = require("discord.js"); // discord library
 const algebra = require("algebra.js");
 
@@ -88,19 +82,10 @@ global.discord = {  // global variables for discord bot
 }
 
 
-// https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
-
-
 /* these log to the console, with the colors for the designated app */
 global.discord.debug = function(msg){
   console.log("\x1b[36m"+"DISCORD "+"\x1b[33m"+"DEBUG: \x1b[36m"+msg,"\x1b[0m");  // logs to console with colors and stuff
 }
-
-/* these are the same as the global debugs, but without the DEBUG at the beginning */
-global.discord.log = function(msg){
-  console.log("\x1b[36m"+"DISCORD: "+msg,"\x1b[0m");
-}
-
 
 console.log("HH  HH  IIIIII\nHH  HH    II\nHHHHHH    II\nHH  HH    II\nHH  HH  IIIIII\n"); 
 

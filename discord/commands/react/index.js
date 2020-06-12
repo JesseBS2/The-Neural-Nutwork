@@ -40,5 +40,5 @@ module.exports = function(IsFullMeme){
 
     return $channel.send({files: [ MemeToShow ]});
   }
-}
 
+}

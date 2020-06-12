@@ -1,3 +1,17 @@
+var $commands = require("./../commands.json");
+// $commands["math"]["algebra"] = $commands["math"]["math"];
+// $commands["math"]["eval"] = $commands["math"]["evaluate"];
+// $commands["math"]["simp"] = $commands["math"]["simplify"];
+// $commands["other"]["nick"] = $commands["other"]["nickname"];
+// $commands["ptoe"]["periodictable"] = $commands["ptoe"]["periodic"];
+// $commands["ptoe"]["pt"] = $commands["ptoe"]["periodic"];
+// $commands["fun"]["F"] = $commands["fun"]["respect"];
+// $commands["fun"]["rand"] = $commands["fun"]["random"];
+// $commands["mod"]["purge"] = $commands["mod"]["clear"];
+// $commands["image"]["image-data"] = $commands["image"]["image"];
+// $commands["image"]["data"] = $commands["image"]["image"];
+// $commands["image"]["pixel"] = $commands["image"]["pixelate"];
+
 module.exports = function(){
 
   const Message = global.discord.message;
@@ -6,13 +20,12 @@ module.exports = function(){
   var $pre = Message.prefix;
   var $cmnd = Message.command;
   const CustomEmbed = global.discord.functions.CustomEmbed;
-  var $commands = require("./../commands.json");
 
-  global.discord.log("DISCORD: Ran /commands/help/help.js");
+  global.discord.log("Ran /commands/help/help.js");
 
   if($cmnd === "commands"){
     let reactions = require("./../react/memes.json");
-    if(!words[1]) return $channel.send(CustomEmbed("Commands: ","Separated by category")[0].field("🧮 Math Commands","x"+Object.keys($commands["math"]).length+" Commands")[0].field("🧪 PToE Commands","x"+Object.keys($commands["ptoe"]).length+" Commands")[0].field("🔐 Mod Commands","x"+Object.keys($commands["mod"]).length+" Commands")[0].field(":smile: Fun Commands","x"+Object.keys($commands["fun"]).length+" Commands")[0].field(":ok_hand: Meme Commands","x"+Object.keys(reactions).length+" Commands")[0].field(":grey_question: Other Commands","x"+Object.keys($commands["other"]).length+" Commands")[0].field(":control_knobs: Server Commands","x"+Object.keys($commands["server"]).length+" Commands")[0].useImage()[1]);
+    if(!words[1]) return $channel.send(CustomEmbed("Commands: ","Separated by category")[0].field("🧮 Math Commands","x"+Object.keys($commands["math"]).length+" Commands")[0].field("🧪 PToE Commands","x"+Object.keys($commands["ptoe"]).length+" Commands")[0].field("🔐 Mod Commands","x"+Object.keys($commands["mod"]).length+" Commands")[0].field(":smile: Fun Commands","x"+Object.keys($commands["fun"]).length+" Commands")[0].field(":frame_photo: Image Commands","x"+Object.keys($commands["image"]).length+" Commands")[0].field(":ok_hand: Meme Commands","x"+Object.keys(reactions).length+" Commands")[0].field(":grey_question: Other Commands","x"+Object.keys($commands["other"]).length+" Commands")[0].field(":control_knobs: Server Commands","x"+Object.keys($commands["server"]).length+" Commands")[0].useImage()[0].footer("$commands <category>")[1]);
     
     if(words[1].toLowerCase() in $commands){
       let group_arr = "";
@@ -55,19 +68,8 @@ module.exports = function(){
     // just assign the blank aliases here,
     // Might change this to a loop later, loop through each category and each command
     // then anytime there is an empty string, just paste the previous one
-    $commands["math"]["algebra"] = $commands["math"]["math"];
-    $commands["math"]["eval"] = $commands["math"]["evaluate"];
-    $commands["math"]["simp"] = $commands["math"]["simplify"];
-    $commands["other"]["nick"] = $commands["other"]["nickname"];
-    $commands["other"]["ar"] = $commands["other"]["addrole"];
-    $commands["other"]["tr"] = $commands["other"]["takerole"];
-    $commands["ptoe"]["periodictable"] = $commands["ptoe"]["periodic"];
-    $commands["ptoe"]["pt"] = $commands["ptoe"]["periodic"];
-    $commands["fun"]["F"] = $commands["fun"]["respect"];
-    $commands["fun"]["rand"] = $commands["fun"]["random"];
-    $commands["mod"]["purge"] = $commands["mod"]["clear"];
 
-    
+
     var helpText;
     var x;
 
@@ -76,7 +78,7 @@ module.exports = function(){
       helpText = CustomEmbed("Command: "+$pre+"echo","Recreates your message as an Rich Embed.",)[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (optional parameters)")[1];
     }else if(words[1] === "Echo"){
       helpText = CustomEmbed("Command: "+$pre+"Echo","Recreates your message as an Rich Embed and deletes your original message.")[0].field("Usage",$pre+"Echo <any text> (color)")[0].footer("<required parameters> – (optional parameters)")[1];
-    }else if(words[1].toLowerCase() in (x = $commands["math"]) || words[1].toLowerCase() in (x = $commands["ptoe"]) || words[1].toLowerCase() in (x = $commands["mod"]) || words[1].toLowerCase() in (x = $commands["fun"]) || words[1].toLowerCase() in (x = $commands["other"]) || words[1].toLowerCase() in (x = $commands["server"])){
+    }else if(words[1].toLowerCase() in (x = $commands["math"]) || words[1].toLowerCase() in (x = $commands["ptoe"]) || words[1].toLowerCase() in (x = $commands["mod"]) || words[1].toLowerCase() in (x = $commands["fun"]) || words[1].toLowerCase() in (x = $commands["other"]) || words[1].toLowerCase() in (x = $commands["server"]) || words[1].toLowerCase() in (x = $commands["image"])){
       let GOTTENCOMMAND = x[words[1].toLowerCase()]
       
       helpText = CustomEmbed("Command: "+$pre+words[1].toLowerCase(),GOTTENCOMMAND["desc"])[0].field("Usage",$pre+GOTTENCOMMAND["format"])[0].field("Aliases",GOTTENCOMMAND["alias"].toString().replace(/\,/g,", "))[0].footer("<required parameters> – (optional parameters) - parameters starting with `?` means they are not always required")[1];
