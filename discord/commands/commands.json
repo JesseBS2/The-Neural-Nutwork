@@ -159,6 +159,22 @@
       "format": "mirror <image> (horizontal/vertical) (horizontal/vertical)",
       "alias": ["none"]
     },
+    "rotate": {
+      "desc": "Rotate an image(clockwise) by a number of degrees",
+      "format": "rotate <image> <number>",
+      "alias": ["none"]
+    },
+    "brightness": {
+      "desc": "Changes the level of brightness 0-100(were 50 is default, 0 means brighter) in an image",
+      "format": "brightness <image> <number>",
+      "alias": ["light"]
+    },
+    "light": "",
+    "contrast": {
+      "desc": "Changes the level of contrast 0-100(were 50 is default) in an image",
+      "format": "contrast <image> <number>",
+      "alias": ["none"]
+    },
     "invert": {
       "desc": "Converts all colors in an image to opposite of color wheel",
       "format": "invert <image>",
@@ -175,8 +191,13 @@
       "alias": ["pixel"]
     },
     "pixel": "",
+    "posterize": {
+      "desc": "Adds posterize effect to an image",
+      "format": "dither <image>",
+      "alias": ["none"]
+    },
     "subtitle": {
-      "desc": "yes",
+      "desc": "Add subtitles to the bottom of an image",
       "format": "subtitle <image> <text>",
       "alias": ["none"]
     }

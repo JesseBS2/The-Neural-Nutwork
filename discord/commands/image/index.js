@@ -17,9 +17,9 @@ module.exports = function(Client){
   }
 
 
-  //console.log(Images());
+  //global.discord.debug(Images());
   var fileType = Images().name.split(".")[Images().name.split(".").length-1]; // gets file type, such as png or jpeg
-
+  if(fileType == "gif")return $channel.send("I can't accept gifs"); // literally, idk if it's cause of the site i'm using to program, or if discord just doesn't except gifs. But it doesn't work
   if($cmnd === "image" || $cmnd === "image-data" || $cmnd === "data"){
     
     return $channel.send(Embed("Image Data","Width: "+Images().width+"px\nHeight: "+Images().height+"px\nSize: "+Images().size+" bytes")[1]); // some stuff built into the discord API 
@@ -47,8 +47,45 @@ module.exports = function(Client){
       if(err)throw err;
     });
 
+  }else if($cmnd === "contrast"){  
+    var intensity = Number(words[1]) || 50;
+    if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+    if(intensity > 100)return $channel.send("Contrast can not be higher than 100");
+    if(intensity < 0) return $channel.send("Contrast can not be lower than 0");
+
+    intensity = (intensity-50)/100; // actual values are -1 to +1 so the math here is required
+
+    jimp.read(Images().url).then(file => {
+      file
+        .contrast(intensity)
+        .write("discord/commands/image/image_manipulation."+fileType);
+
+      return $channel.send(ImageEmbed("Contrasted colors"));
+    }).catch(err => {
+      if(err)throw err;
+    });
+
+  }else if($cmnd === "brightness" || $cmnd === "light"){  
+    var intensity = Number(words[1]) || 50;
+    if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+    if(intensity > 100)return $channel.send("Brightness can not be higher than 100");
+    if(intensity < 0) return $channel.send("Brightness can not be lower than 0");
+
+    intensity = (intensity-50)/100;
+
+    jimp.read(Images().url).then(file => {
+      file
+        .contrast(intensity)
+        .write("discord/commands/image/image_manipulation."+fileType);
+
+      return $channel.send(ImageEmbed("Changed Brightness"));
+    }).catch(err => {
+      if(err)throw err;
+    });
+
   }else if($cmnd === "mirror"){
     let directions = [false,false];
+    if(!words[1]) directions = [true,false]
     if(words[1] == "horizontal" || words[1] == "side" || words[2] == "horizontal" || words[2] == "side")directions[0] = true;
     if(words[1] == "vertical" || words[1] == "top" || words[2] == "vertical" || words[2] == "top")directions[1] = true;
 
@@ -62,8 +99,24 @@ module.exports = function(Client){
       if(err)throw err;
     });
   
+  }else if($cmnd === "rotate"){
+    var degree = Number(words[1]);
+    if(degree == "NaN" || degree == NaN || typeof degree == "NaN" || degree.toString() == "NaN") return $channel.send("Please enter a valid number");
+    
+    jimp.read(Images().url).then(file => {
+      file
+        .rotate(degree)
+        .write("discord/commands/image/image_manipulation."+fileType);
+
+      return $channel.send(ImageEmbed("Rotated image"));
+    }).catch(err => {
+      if(err)throw err;
+    });
+  
   }else if($cmnd === "blur"){
     var intensity = Number(words[1]) || 5;
+    if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+    
     jimp.read(Images().url).then(file => {
       file
         .blur(intensity)
@@ -74,8 +127,24 @@ module.exports = function(Client){
       if(err)throw err;
     });
 
+  }else if($cmnd === "posterize"){
+    var intensity = Number(words[1]) || 3;
+    if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+
+    jimp.read(Images().url).then(file => {
+      file
+        .posterize(intensity)
+        .write("discord/commands/image/image_manipulation."+fileType);
+
+      return $channel.send(ImageEmbed("Posterized image"));
+    }).catch(err => {
+      if(err)throw err;
+    });
+
   }else if($cmnd === "pixelate" || $cmnd === "pixel"){ // as of now, this does not work
     var intensity = Number(words[1]) || 3;
+    if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+
     jimp.read(Images().url).then(file => {
       file
         .pixelate(intensity,0,0,Images().width,Images().height)
@@ -89,6 +158,7 @@ module.exports = function(Client){
   }else if($cmnd === "subtitle"){
     if(!words[1])return $channel.send("You're forgetting to add text!");
     var toSendMessage = "", endsInColor = false;
+
     if(words[words.length-1] === "!!WHITE" || words[words.length-1] === "!!BLACK")endsInColor = true;
     for(var e = 1; e < words.length; e++){
       if(e == words.length-1 && endsInColor === true) break;

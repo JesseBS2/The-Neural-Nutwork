@@ -31,7 +31,7 @@ module.exports = async function(ee){
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
       let n = SolveEquation( toEquation );
-      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",n)[0].footer(FooterTitle)[1] );
+      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",SolveEquation(n.toString()))[0].footer(FooterTitle)[1] );
     }
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
@@ -237,14 +237,14 @@ module.exports = async function(ee){
     let equation = message.split($pre+$cmnd+" ")[1];
     let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
     let SimpedEquation = algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
-    return $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SimpedEquation)[0].footer(FooterTitle)[1]);
+    return $channel.send(Embed("Simplify",equation.replace(/\*/g,"\*"))[0].field("Result",SolveEquation(SimpedEquation))[0].footer(FooterTitle)[1]);
   
   }else if($cmnd === "solve"){
     if(!words[2]) return $channel.send("You're forgetting part of that command!");
     let expr = algebra.parse(words[1]);
     let x = expr.solveFor(words[2]);
 
-    return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+x.toString())[0].footer(FooterTitle)[1] );
+    return $channel.send( Embed("Solve for "+words[2],"in "+words[1])[0].field("Equals",words[2]+" = "+SolveEquation(x.toString()))[0].footer(FooterTitle)[1] );
   }else if($cmnd === "factorial"){
     if(!words[1]) return $channel.send("You're forgetting part of that command!");
     
