@@ -210,7 +210,7 @@ module.exports = function(Client,Discord){
 
     var titles = [];
     var descriptions = [];
-    var color = "000000";
+    var color = "#7289d9";
     var footer = "";
 
     let ReturnEmbed = new Discord.MessageEmbed(); // find it easier to do this than to use my custom function(for this particular command)
@@ -224,6 +224,7 @@ module.exports = function(Client,Discord){
 
     for(var x = 1; x < splitTitle.length; x++){
       titles[x-1] = splitTitle[x].split("]")[0];
+      descriptions[x-1] = "*Empty Field*";
     }
     for(var x = 1; x < splitDescription.length; x++){
       descriptions[x-1] = splitDescription[x].split("}")[0];

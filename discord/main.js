@@ -38,14 +38,16 @@ global.discord.admins = ["596938492752166922"];
 
 var Activity_Types = ["playing","watching","listening","streaming","custom"];
 
+
 // These variables are used in this file only
-var invitePermssions = "470019223";
-var credits_desc = "Want to view the source code?: [Click Here](http://github.com/JesseBS2/The-Neural-Nutwork \"Github.com\")";
-var credits_testers = ["Wyatt(wuse)", "Xavier", "Kevin(zap)", "Ashely", "Christopher(noob-sauce)", "Rajesh", "Xveno", "Asim", "Yoshi", "Elio"];
+var invitePermissions = "470019223";
+var credits_desc = "Want to view the source code?: [Source Code](http://github.com/JesseBS2/The-Neural-Nutwork \"Github.com\")\n\nInvite the bot: [Invite Bot](https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot \"Discord.com\")";
+var credits_testers = ["Wyatt(wuse)", "Xavier", "Kevin(zap)", "Ashely", "<@704036561439817760>", "Rajesh", "<@667201563122466816>", "Asim", "<@262776330402267137>", "<@708940822837723179>","Ender(Eli)"];
 var creditsMessage = global.discord.functions.CustomEmbed("Credits",credits_desc)[0].field("Creator","<@"+global.discord.admins[0]+">")[0].field("Testers",credits_testers)[1];
 
-bot.on("message", async recievedmessage => {
 
+
+bot.on("message", async recievedmessage => {
 
   global.discord.log = function(msg){
     console.log("\x1b[36m"+"DISCORD: "+recievedmessage.author.username+" "+msg,"\x1b[0m");
@@ -103,7 +105,7 @@ bot.on("message", async recievedmessage => {
     global.discord.message.command = recievedmessage.content.split(" ")[0].split("$")[1];
 
     if(words[0] === "$inv" || words[0] === "$invite"){
-      return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
+      return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
     }else if(words[0] === "$credits"){
       return $channel.send(creditsMessage);
     }else if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
@@ -171,7 +173,6 @@ bot.on("message", async recievedmessage => {
 
 
   global.discord.message.command = $cmnd;
-  
 
 
   /* Commands for the admins(me) to use */
@@ -229,13 +230,6 @@ bot.on("message", async recievedmessage => {
   }
 
 
-  // Commands!
-  //  the only reason that the "ping" command is inside main.js and not in /commands/ is because it needs the Client,
-  //  all other commands should be found inside /commands/<category>/index.js.
-  //  the command is detected by splitting the commands up by category in a json file;
-  //  then it checks the to see if the command is within any of those categories,
-  //  if not then see if it is an Algebraic Math Problem or an Element of the Periodic Table,
-  //  if niether of those, ignore it.
 
   if($cmnd === "ping"){
     const pingedMessage = await $channel.send("Loading...");
@@ -251,7 +245,7 @@ bot.on("message", async recievedmessage => {
 
   }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
 
-    return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
+    return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
   }else if(words[0] === "$credits" || words[0] === "$" && words[1] === "credits"){
   
     return $channel.send(creditsMessage);
