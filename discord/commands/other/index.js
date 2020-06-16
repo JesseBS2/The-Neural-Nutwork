@@ -1,7 +1,7 @@
 var Embed = global.discord.functions.CustomEmbed;
 var SolveEquation = global.SolveEquation;
 
-module.exports = function(Client){
+module.exports = function(Client,Discord){
   global.discord.log("Ran /commands/other/index.js");
 
   let Configs;
@@ -206,5 +206,41 @@ module.exports = function(Client){
     
 
     return;
+  }else if($cmnd === "embed"){
+
+    var titles = [];
+    var descriptions = [];
+    var color = "000000";
+    var footer = "";
+
+    let ReturnEmbed = new Discord.MessageEmbed(); // find it easier to do this than to use my custom function(for this particular command)
+
+    let splitTitle = msg.split("[");
+    let splitDescription = msg.split("{");
+
+    if(splitTitle.length < 0) return $channel.send("Please add at least one title");
+    if(splitDescription.length < 0) return $channel.send("Please add at least one description"); 
+
+
+    for(var x = 1; x < splitTitle.length; x++){
+      titles[x-1] = splitTitle[x].split("]")[0];
+    }
+    for(var x = 1; x < splitDescription.length; x++){
+      descriptions[x-1] = splitDescription[x].split("}")[0];
+    }
+    
+    if(msg.indexOf("(") !== -1) footer = msg.split("(")[msg.split("(").length-1].split(")")[0];
+    if(msg.indexOf("#") !== -1 && msg.split("#")[1].split(" ")[0].length === 6)color = "#"+msg.split("#")[1].slice(-6);
+
+    ReturnEmbed.setTitle(titles[0]).setDescription(descriptions[0]);
+
+    for(let e = 1; e < titles.length; e++){
+      ReturnEmbed.addField(titles[e],descriptions[e]);
+    }
+    
+    ReturnEmbed.setColor(color);
+    ReturnEmbed.setFooter(footer);
+    return $channel.send(ReturnEmbed);
   }
+  
 }

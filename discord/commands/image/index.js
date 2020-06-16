@@ -3,12 +3,18 @@ var Embed = global.discord.functions.CustomEmbed;
 
 var FooterTitle = "Image manipulation provided by JIMP";
 module.exports = function(Client){
-  var msg = global.discord.message.msg; // message content
+  global.discord.log("Ran /commands/image/index.js");
+
+
+  var msg = global.discord.message.msg; // message data
   var $cmnd = global.discord.message.command;
   var $channel = global.discord.message.channel;
   var words = global.discord.message.words;
+  var me = global.discord.bot.me;
 
-  global.discord.log("Ran /commands/image/index.js");
+  if(me.hasPermission("ATTACH_FILES") === false){
+    return $channel.send("I do not have the necessary permissions for that.\nI need the `Attach Files` permission");
+  }
 
   if(msg.attachments.size <= 0) {
     return $channel.send("You need to attach an image!");
@@ -19,7 +25,7 @@ module.exports = function(Client){
 
   //global.discord.debug(Images());
   var fileType = Images().name.split(".")[Images().name.split(".").length-1]; // gets file type, such as png or jpeg
-  if(fileType == "gif")return $channel.send("I can't accept gifs"); // literally, idk if it's cause of the site i'm using to program, or if discord just doesn't except gifs. But it doesn't work
+  if(fileType == "gif")return $channel.send("I can't accept gifs"); // literally, idk if it's cause of the site i'm using to program, or if jimp just doesn't except gifs. But it doesn't work
   if($cmnd === "image" || $cmnd === "image-data" || $cmnd === "data"){
     
     return $channel.send(Embed("Image Data","Width: "+Images().width+"px\nHeight: "+Images().height+"px\nSize: "+Images().size+" bytes")[1]); // some stuff built into the discord API 

@@ -17,7 +17,7 @@
       "format": "math <equation>",
       "alias": ["algebra"]
     },
-    "algebra": "",
+    "algebra": "math",
     "root": {
       "desc": "Get the X root of a number",
       "format": "root <number> (index)",
@@ -28,7 +28,7 @@
       "format": "evalutate <equation> <variable=number>",
       "alias": ["eval"]
     },
-    "eval": "",
+    "eval": "evaluate",
     "notate": {
       "desc": "Convert a very large or very small number into scientific notation",
       "format": "notate <number>",
@@ -59,7 +59,7 @@
       "format": "simplify <equation>",
       "alias": ["simp"]
     },
-    "simp": "",
+    "simp": "simplify",
     "factorial": {
       "desc": "Factorialize a number",
       "format": "factorial <number>",
@@ -97,7 +97,12 @@
       "format": "nickname (@user) <nickname>",
       "alias": ["nick"]
     },
-    "nick": ""
+    "nick": "nickname",
+    "embed": {
+      "desc": "Create an embed(like this) with your own text/color\nTo add a title, put text inside [square brackets]\nTo add a description, put text inside {curly brackets}\nTo set the footer, put text into (parantheses)\nTo set a color, put a hex code behind a #",
+      "format": "embed [title] {description} #color (footer)",
+      "alias": ["none"]
+    }
   },
   "mod": {
     "kick": {
@@ -125,7 +130,7 @@
       "format": "clear <amount>",
       "alias": ["purge"]
     },
-    "purge": "",
+    "purge": "clear",
     "config": {
       "desc": "Customizeable bot settings for your server",
       "format": "config (option) (setting)",
@@ -138,8 +143,8 @@
       "format": "periodic <element name/symbol/number>",
       "alias": ["periodictable","pt"]
     },
-    "periodictable": "",
-    "pt": ""
+    "periodictable": "periodic",
+    "pt": "periodic"
   },
   "image": {
     "image": {
@@ -147,8 +152,8 @@
       "format": "image <image>",
       "alias": ["image-data","data"]
     },
-    "image-data": "",
-    "data": "",
+    "image-data": "image",
+    "data": "image",
     "greyscale": {
       "desc": "Convert any image to only be on the white-black color scale",
       "format": "greyscale <image>",
@@ -169,7 +174,7 @@
       "format": "brightness <image> <number>",
       "alias": ["light"]
     },
-    "light": "",
+    "light": "brightness",
     "contrast": {
       "desc": "Changes the level of contrast 0-100(were 50 is default) in an image",
       "format": "contrast <image> <number>",
@@ -190,7 +195,7 @@
       "format": "pixelate <image> (number)",
       "alias": ["pixel"]
     },
-    "pixel": "",
+    "pixel": "pixelate",
     "posterize": {
       "desc": "Adds posterize effect to an image",
       "format": "dither <image>",
@@ -208,7 +213,7 @@
       "format": "respect <thing>",
       "alias": ["F"]
     },
-    "F": "",
+    "F": "respect",
     "flip": {
       "desc": "Flips a coin and gives an output of either heads or tails",
       "format": "flip",
@@ -224,7 +229,7 @@
       "format": "random (max/min) (max)",
       "alias": ["rand"]
     },
-    "rand": "",
+    "rand": "random",
     "qr": {
       "desc": "Turn any text or web link into a scanable QR code",
       "format": "QR <text/link>",

@@ -38,6 +38,11 @@ global.discord.admins = ["596938492752166922"];
 
 var Activity_Types = ["playing","watching","listening","streaming","custom"];
 
+// These variables are used in this file only
+var invitePermssions = "470019223";
+var credits_desc = "Want to view the source code?: [Click Here](http://github.com/JesseBS2/The-Neural-Nutwork \"Github.com\")";
+var credits_testers = ["Wyatt(wuse)", "Xavier", "Kevin(zap)", "Ashely", "Christopher(noob-sauce)", "Rajesh", "Xveno", "Asim", "Yoshi", "Elio"];
+var creditsMessage = global.discord.functions.CustomEmbed("Credits",credits_desc)[0].field("Creator","<@"+global.discord.admins[0]+">")[0].field("Testers",credits_testers)[1];
 
 bot.on("message", async recievedmessage => {
 
@@ -98,7 +103,9 @@ bot.on("message", async recievedmessage => {
     global.discord.message.command = recievedmessage.content.split(" ")[0].split("$")[1];
 
     if(words[0] === "$inv" || words[0] === "$invite"){
-      return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
+      return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
+    }else if(words[0] === "$credits"){
+      return $channel.send(creditsMessage);
     }else if(words[0].startsWith("√") || words[0].startsWith("$") && words[0].split("$")[1] in _commands["math"] || words[0] in _commands["math"]){
       if(words[0] in _commands["math"]){global.discord.message.command = words[0]}
       require("./commands/math/index.js")();
@@ -244,7 +251,11 @@ bot.on("message", async recievedmessage => {
 
   }else if(words[0] === "$inv" || words[0] === "$invite" || words[0] === "$" && words[1] === "invite" || words[0] === "$" && words[1] === "inv"){  // the invite command has an exception because I am too lazy to modify commands.json and add it into a group
 
-    return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions=100702107&scope=bot")[1]);
+    return $channel.send(global.discord.functions.CustomEmbed("Invite","If you want to invite me into your server, click the link below or paste it into your browser!")[0].field("Invite","https://discordapp.com/api/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot")[1]);
+  }else if(words[0] === "$credits" || words[0] === "$" && words[1] === "credits"){
+  
+    return $channel.send(creditsMessage);
+  
   }else if(words[0].toLowerCase().startsWith("$") && words[0].toLowerCase().endsWith("$") && words[0].toLowerCase().split("$")[1] in require("./commands/react/memes.json") || recievedmessage.content.includes("\n") && recievedmessage.content.split("\n")[recievedmessage.content.split("\n").length-1].split(" ")[0].split("$")[1] in require("./commands/react/memes.json") ){
     
     if(Configs[recievedmessage.guild.id]["categories"]["meme"] === "disabled"){return $channel.send("An admin has disabled these commands!");}
@@ -267,7 +278,7 @@ bot.on("message", async recievedmessage => {
     require("./commands/server/index.js")();
   }else if($cmnd in _commands["other"]){
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled")return $channel.send("An admin has disabled these commands!");
-    require("./commands/other/index.js")(bot);
+    require("./commands/other/index.js")(bot,Discord);
   }else if($cmnd in _commands["ptoe"]){
     if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled")return $channel.send("An admin has disabled these commands!");
     require("./commands/periodic/index.js")();
