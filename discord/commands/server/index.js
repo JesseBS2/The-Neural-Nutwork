@@ -91,7 +91,7 @@ module.exports = async function(){
 
       $server.roles.create({data: {name: name, color: color}, reason: "Role created by "+$author.tag}).then(newRole => {
         global.discord.log("Created a role '"+name+"' in server ' "+$server.name+" '");
-        return $channel.send("I've created the role!\n"+newRole);
+        return $channel.send("I've created the role!\n<@"+newRole+">");
       }).catch((err) => {
         $channel.send("Something went wrong!\nI couldn't create the role");
         if(err) throw err;

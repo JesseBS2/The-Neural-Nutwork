@@ -31,7 +31,7 @@ module.exports = async function(ee){
 
     if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
       let n = SolveEquation( toEquation );
-      return $channel.send( Embed("Algebra",toEquation.replace(/\*/g,"\*"))[0].field("Result",SolveEquation(n.toString()))[0].footer(FooterTitle)[1] );
+      return $channel.send( Embed("Algebra",toEquation.replace(/(\*)/g,"\*"))[0].field("Result",SolveEquation(n.toString()))[0].footer(FooterTitle)[1] );
     }
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type

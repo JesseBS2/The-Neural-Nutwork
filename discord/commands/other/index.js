@@ -37,35 +37,41 @@ module.exports = function(Client,Discord){
     //console.log(GetUserAcc.presence)
 
     // Look all these beautiful settings!! :D
-    username = GetUserAcc.username;
-    disc = GetUserAcc.discriminator;
-    status = GetUserAcc.presence.status;
-    snow = GetUserAcc.id;
-    pfp = GetUserAcc.displayAvatarURL() || GetUserAcc.defaultAvatarURL();
-    account_age = GetUserAcc.createdAt.toString().split(" ")[1]+" "+GetUserAcc.createdAt.toString().split(" ")[2]+" "+GetUserAcc.createdAt.toString().split(" ")[3];
-    accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
-    if(GetUserAcc.presence.activities.length == 1){ 
-      //global.discord.debug("Didn't Loop");
-      if(GetUserAcc.presence.activities[0].type != null && GetUserAcc.presence.activities[0].name != null && GetUserAcc.presence.activities[0].type != "CUSTOM_STATUS"){
-        activity = "\n**"+GetUserAcc.presence.activities[0].type.charAt(0).toUpperCase() + GetUserAcc.presence.activities[0].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[0].name.toString();
-      }else if(GetUserAcc.presence.activities[0].state != null && GetUserAcc.presence.activities[0].type == "CUSTOM_STATUS"){
-        custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[0].state;
-      }
-    }else if(GetUserAcc.presence.activities.length > 1){
-      //global.discord.debug("Did Loop");
-      var LOOP = GetUserAcc.presence.activities;
-      for(let e in LOOP){
-        if(GetUserAcc.presence.activities[e].type != null && GetUserAcc.presence.activities[e].name != null && GetUserAcc.presence.activities[e].type != "CUSTOM_STATUS"){
-          activity += "\n**"+GetUserAcc.presence.activities[e].type.charAt(0).toUpperCase()+GetUserAcc.presence.activities[e].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[e].name.toString();
-        }else if(GetUserAcc.presence.activities[e].state != null && GetUserAcc.presence.activities[e].type == "CUSTOM_STATUS"){
-          custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[e].state;
+    try{
+      username = GetUserAcc.username;
+      disc = GetUserAcc.discriminator;
+      status = GetUserAcc.presence.status;
+      snow = GetUserAcc.id;
+      pfp = GetUserAcc.displayAvatarURL() || GetUserAcc.defaultAvatarURL();
+      account_age = GetUserAcc.createdAt.toString().split(" ")[1]+" "+GetUserAcc.createdAt.toString().split(" ")[2]+" "+GetUserAcc.createdAt.toString().split(" ")[3];
+      accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
+      if(GetUserAcc.presence.activities.length == 1){ 
+        //global.discord.debug("Didn't Loop");
+        if(GetUserAcc.presence.activities[0].type != null && GetUserAcc.presence.activities[0].name != null && GetUserAcc.presence.activities[0].type != "CUSTOM_STATUS"){
+          activity = "\n**"+GetUserAcc.presence.activities[0].type.charAt(0).toUpperCase() + GetUserAcc.presence.activities[0].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[0].name.toString();
+        }else if(GetUserAcc.presence.activities[0].state != null && GetUserAcc.presence.activities[0].type == "CUSTOM_STATUS"){
+          custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[0].state;
+        }
+      }else if(GetUserAcc.presence.activities.length > 1){
+        //global.discord.debug("Did Loop");
+        var LOOP = GetUserAcc.presence.activities;
+        for(let e in LOOP){
+          if(GetUserAcc.presence.activities[e].type != null && GetUserAcc.presence.activities[e].name != null && GetUserAcc.presence.activities[e].type != "CUSTOM_STATUS"){
+            activity += "\n**"+GetUserAcc.presence.activities[e].type.charAt(0).toUpperCase()+GetUserAcc.presence.activities[e].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[e].name.toString();
+          }else if(GetUserAcc.presence.activities[e].state != null && GetUserAcc.presence.activities[e].type == "CUSTOM_STATUS"){
+            custom = "\n**Custom Status**: "+GetUserAcc.presence.activities[e].state;
+          }
         }
       }
+
+      var display = Embed(" ","**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age,accStatusColor[GetUserAcc.presence.status])[0].useImage(pfp)/*[0].footer("Using discord for "+Object.keys(GetUserAcc.presence.clientStatus)[0])*/[1];
+
+      return $channel.send(display);
+    }catch(err){
+      console.log(err);
+      console.log("Caught Error");
+      return $channel.send("Sorry! I couldn't find that user, I may not be in a server with them.")
     }
-
-    var display = Embed(" ","**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age,accStatusColor[GetUserAcc.presence.status])[0].useImage(pfp)/*[0].footer("Using discord for "+Object.keys(GetUserAcc.presence.clientStatus)[0])*/[1];
-
-    return $channel.send(display);
   
   }else if($cmnd === "poll"){
     if($member.hasPermission("MANAGE_MESSAGES") === false){ // check if user is allowed to do that. Why is it the MANAGE_MESSAGES permission? ...I do NOT know.
@@ -104,7 +110,7 @@ module.exports = function(Client,Discord){
         voteFor += options[n]+"\n";
       }
       
-      $channel.send( Embed(selectedHeader,voteFor)[0].field("How to vote?","Use "+$pre+"vote <thing you want to vote for>")[1]); // annoucement! announcement!
+      $channel.send( Embed(selectedHeader,voteFor)[0].field("How to vote?","Use "+$pre+"vote <item or number>")[1]); // annoucement! announcement!
 
       const isAVote = newMsg => newMsg.content.startsWith($pre+"vote"); // what to look for when getting commands
       
@@ -207,7 +213,7 @@ module.exports = function(Client,Discord){
 
     return;
   }else if($cmnd === "embed"){
-
+    if(Configs["config"]["embeds"] == "disabled" && $member.hasPermission("ADMINISTRATOR") === false){return $channel.send("An Admin has disabled this command");}
     var titles = [];
     var descriptions = [];
     var color = "#7289d9";

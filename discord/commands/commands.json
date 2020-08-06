@@ -170,13 +170,13 @@
       "alias": ["none"]
     },
     "brightness": {
-      "desc": "Changes the level of brightness 0-100(were 50 is default, 0 means brighter) in an image",
+      "desc": "Changes the level of brightness 0-100(where 50 is default) in an image",
       "format": "brightness <image> <number>",
       "alias": ["light"]
     },
     "light": "brightness",
     "contrast": {
-      "desc": "Changes the level of contrast 0-100(were 50 is default) in an image",
+      "desc": "Changes the level of contrast 0-100(where 50 is default) in an image",
       "format": "contrast <image> <number>",
       "alias": ["none"]
     },
@@ -198,12 +198,17 @@
     "pixel": "pixelate",
     "posterize": {
       "desc": "Adds posterize effect to an image",
-      "format": "dither <image>",
+      "format": "posterize <image>",
       "alias": ["none"]
     },
     "subtitle": {
       "desc": "Add subtitles to the bottom of an image",
       "format": "subtitle <image> <text>",
+      "alias": ["none"]
+    },
+    "crop": {
+      "desc": "Crops an image",
+      "format": "crop <x> <y> <w> <h>",
       "alias": ["none"]
     }
   },

@@ -41,7 +41,7 @@ module.exports = function(Client){
       if(err)throw err;
     });
     
-  }else if($cmnd === "invert"){  
+  }else if($cmnd === "invert"){
     
     jimp.read(Images().url).then(file => {
       file
@@ -53,7 +53,7 @@ module.exports = function(Client){
       if(err)throw err;
     });
 
-  }else if($cmnd === "contrast"){  
+  }else if($cmnd === "contrast"){ 
     var intensity = Number(words[1]) || 50;
     if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
     if(intensity > 100)return $channel.send("Contrast can not be higher than 100");
@@ -71,17 +71,17 @@ module.exports = function(Client){
       if(err)throw err;
     });
 
-  }else if($cmnd === "brightness" || $cmnd === "light"){  
+  }else if($cmnd === "brightness" || $cmnd === "light"){ 
     var intensity = Number(words[1]) || 50;
     if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
     if(intensity > 100)return $channel.send("Brightness can not be higher than 100");
     if(intensity < 0) return $channel.send("Brightness can not be lower than 0");
 
-    intensity = (intensity-50)/100;
+    intensity = setToScale(intensity);
 
     jimp.read(Images().url).then(file => {
       file
-        .contrast(intensity)
+        .brightness(intensity)
         .write("discord/commands/image/image_manipulation."+fileType);
 
       return $channel.send(ImageEmbed("Changed Brightness"));
@@ -105,6 +105,22 @@ module.exports = function(Client){
       if(err)throw err;
     });
   
+  }else if($cmnd === "crop"){
+    if(!words[4]){return $channel.send("You're forgetting one of the 4 necessary values!");}
+    var x = Number(words[1]);
+    var y = Number(words[2]);
+    var w = Number(words[3]);
+    var h = Number(words[4]);
+    
+    jimp.read(Images().url).then(file => {
+      file
+        .crop(x,y,w,h)
+        .write("discord/commands/image/image_manipulation."+fileType);
+      return $channel.send(ImageEmbed("Cropped image"));
+    }).catch(err => {
+      if(err)throw err;
+    });
+
   }else if($cmnd === "rotate"){
     var degree = Number(words[1]);
     if(degree == "NaN" || degree == NaN || typeof degree == "NaN" || degree.toString() == "NaN") return $channel.send("Please enter a valid number");
@@ -134,8 +150,12 @@ module.exports = function(Client){
     });
 
   }else if($cmnd === "posterize"){
-    var intensity = Number(words[1]) || 3;
+    var intensity = Number(words[1]) || 5;
     if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+    if(intensity > 10) return $channel.send("Number can not be higher than 10");
+    if(intensity < 0) return $channel.send("Number can not be lower than 0");
+    
+    intensity = 10-intensity;
 
     jimp.read(Images().url).then(file => {
       file
@@ -147,7 +167,7 @@ module.exports = function(Client){
       if(err)throw err;
     });
 
-  }else if($cmnd === "pixelate" || $cmnd === "pixel"){ // as of now, this does not work
+  }else if($cmnd === "pixelate" || $cmnd === "pixel"){
     var intensity = Number(words[1]) || 3;
     if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
 
@@ -173,7 +193,7 @@ module.exports = function(Client){
     }
 
     
-    var ImageWidth = Images().width, ImageHeight = Images().height, TextSizeH = ImageHeight/3, fontcolor = jimp.FONT_SANS_16_BLACK;
+    var ImageWidth = Images().width, ImageHeight = Images().height, TextSizeH = ImageHeight/4, fontcolor = jimp.FONT_SANS_16_BLACK;
     
     if(words[words.length-1] == "!!WHITE"){
       fontcolor = jimp.FONT_SANS_16_WHITE;
@@ -207,4 +227,12 @@ module.exports = function(Client){
     return Embed("Image Manipulation",desc)[0].setAttachment(new Client.MessageAttachment("./discord/commands/image/image_manipulation."+fileType, "image_manipulation."+fileType))[0].setPicture("attachment://image_manipulation."+fileType)[0].footer(FooterTitle)[1];
   }
 
+}
+
+function setToScale(number){
+  // 50 will be 0
+  // 100 will be 1
+  // 0 will be -1
+  if(number >= 50) return (number-50)/100;
+  if(number < 50) return (number-100)/100;
 }

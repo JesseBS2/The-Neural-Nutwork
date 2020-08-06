@@ -3,10 +3,12 @@ const bot = new Discord.Client(); // create a client and name it bot
 
 const fs = require("fs");
 const Configs = require("./configuration.json");
-const Periodic = require("./commands/periodic/table.json");
+
+const request = require("request"); // request used to get the periodic table
 
 bot.login(fs.readFileSync("discord/token.txt","utf8").toString());  // log into discord account
 
+var activity_value_swap = 0;
 
 bot.on("ready", () => {
   global.discord.guilds = 0
@@ -18,6 +20,10 @@ bot.on("ready", () => {
 
   console.log("Nutwork is online on DISCORD, running in "+global.discord.guilds+" servers\n\n");
   bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"});
+  setInterval(function(){
+    if(activity_value_swap === 0){ bot.user.setActivity("$commands",{type: "PLAYING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=1;}
+    if(activity_value_swap === 1){ bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=0; }
+  },10000); // changes every 10 seconds
 
 });
 
@@ -42,8 +48,9 @@ var Activity_Types = ["playing","watching","listening","streaming","custom"];
 // These variables are used in this file only
 var invitePermissions = "470019223";
 var credits_desc = "Want to view the source code?: [Source Code](http://github.com/JesseBS2/The-Neural-Nutwork \"Github.com\")\n\nInvite the bot: [Invite Bot](https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot \"Discord.com\")";
-var credits_testers = ["Wyatt(wuse)", "Xavier", "Kevin(zap)", "Ashely", "<@704036561439817760>", "Rajesh", "<@667201563122466816>", "Asim", "<@262776330402267137>", "<@708940822837723179>","Ender(Eli)"];
-var creditsMessage = global.discord.functions.CustomEmbed("Credits",credits_desc)[0].field("Creator","<@"+global.discord.admins[0]+">")[0].field("Testers",credits_testers)[1];
+var credits_testers = ["Wyatt(wuse)", "Xavier", "Kevin(Zap)", "Ashley(Ash)", "Christopher(Noobsauce)", "Rajesh", "Xveno", "Asim", "Alan(Yoshi)", "Elio", "Ender(Eli)"];
+var credits_sources = ["[Algebra.js](https://www.npmjs.com/package/algebra.js)","[Periodic Table of Elements](https://github.com/Bowserinator/Periodic-Table-JSON)","[Memes](https://imgur.com)","[Javascript Image Manipulation Program](https://www.npmjs.com/package/jimp)","[QR Codes](https://www.npmjs.com/package/qrcode)","[File System](https://www.npmjs.com/package/fs)"];
+var creditsMessage = global.discord.functions.CustomEmbed("Credits",credits_desc)[0].field("Creator","<@"+global.discord.admins[0]+">")[0].field("External Sources", credits_sources)[0].field("Testers",credits_testers)[1];
 
 
 
@@ -70,6 +77,7 @@ bot.on("message", async recievedmessage => {
           "autoperiodic": "disabled",
           "nickname": "enabled",
           "qr-codes": "enabled",
+          "embeds": "enabled"
         },
         "categories": {
           "other": "enabled",
@@ -283,7 +291,6 @@ bot.on("message", async recievedmessage => {
     if(Configs[recievedmessage.guild.id]["categories"]["image"] === "disabled")return $channel.send("An admin has disabled these commands!");
     require("./commands/image/index.js")(Discord);
   }else{
-   
     let words = recievedmessage.content.split(" ");
     let AllowedSymbols = ["+","-","*","/","÷","x","^","\\","(",")","[","]","{","}"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
     let AllowedNumbers = ["0","1","2","3","4","5","6","7","8","9"];
@@ -316,12 +323,29 @@ bot.on("message", async recievedmessage => {
       }
     }
 
-    for( let j = 1; j < Object.keys(Periodic).length+1; j++ ){
-      if(words[0].toLowerCase() === Periodic[j]["name"].toLowerCase() ){
-        type = "periodic";
-        other.value = j;
+    request({
+      url: "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json",
+      json: true
+    }, function(error, response, body){
+
+      if(!error && response.statusCode === 200){
+
+        // for some reason request doesn't save variables after it's run
+        // stupid request :(
+        var PeriodicTable = body["elements"];
+        for(let j = 0; j < PeriodicTable.length; j++){
+          if(words[0].toLowerCase() === PeriodicTable[j]["name"].toLowerCase()){
+            // type = "periodic";
+            other.value = j;
+            // //console.log(PeriodicTable[j])
+            global.discord.log("Ran a PToE command in main.js");
+            let element = global.discord.functions.CustomEmbed(PeriodicTable[other.value]["name"]+" - #"+other.value,"Symbol: "+PeriodicTable[other.value]["symbol"]+"\nAtomic Weight: "+PeriodicTable[other.value]["atomic_mass"])[0].field("Discovery","Discovered by "+PeriodicTable[other.value]["discovered_by"])[1];
+            return $channel.send(element);
+          }
+        }
+
       }
-    }
+    });
 
     if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled" && including.number === true && including.symbols === true){
       
@@ -329,13 +353,7 @@ bot.on("message", async recievedmessage => {
       require("./commands/math/index.js")(math);  // evaluate
       return;
 
-    }else if(type === "periodic" && Configs[recievedmessage.guild.id]["config"]["autoperiodic"] == "enabled"){
-
-      global.discord.log("Ran a PToE command in main.js");
-      let element = global.discord.functions.CustomEmbed(Periodic[other.value]["name"]+" - #"+other.value,"Symbol: "+Periodic[other.value]["abr"]+"\nAtomic Weight: "+Periodic[other.value]["weight"])[0].field("Discovery",Periodic[other.value]["disc"]+" by "+Periodic[other.value]["by"])[1];
-      return $channel.send(element);
     }
-
   }
 
 });
@@ -343,8 +361,9 @@ bot.on("message", async recievedmessage => {
 bot.on("guildMemberAdd", member => {
   if(member.guild.me.hasPermission("MANAGE_ROLES") === false && member.guild.me.hasPermission("ADMINISTRATOR") === false){return;}  // can't do it so nevermind
   if(Configs[member.guild.id]["config"]["autorole"]["type"] !== "disabled"){  // if autorole is set
+    try{ var TestIfReal = member.guild.roles.get(Configs[member.guild.id]["config"]["autorole"]["id"]) }catch(err){if(err) return (Configs[member.guild.id]["config"]["autorole"]["id"] = "disabled");}  // disables autorole if the set role can't be found
     member.roles.add(Configs[member.guild.id]["config"]["autorole"]["id"]);
-    global.discord.debug("Gave "+member.id+" the auto-role "+Configs[member.guild.id]["config"]["autorole"]["id"]+" in server <#"+member.guild.id+">");
+    return global.discord.debug("Gave "+member.id+" the auto-role "+Configs[member.guild.id]["config"]["autorole"]["id"]+" in server <#"+member.guild.id+">");
   }
 });
 
@@ -363,6 +382,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
       "autoperiodic": "disabled",
       "nickname": "enabled",
       "qr-codes": "enabled",
+      "embeds": "enabled"
     },
     "categories": {
       "other": "enabled",
