@@ -1,6 +1,8 @@
 const algebra = require("algebra.js");
+
 var Embed = global.discord.functions.CustomEmbed; // makes calling it easier
 var SolveEquation = global.SolveEquation; // also easier
+
 
 var FooterTitle = "Math processed by algebra.js";
 module.exports = async function(ee){
@@ -28,10 +30,14 @@ module.exports = async function(ee){
     }
 
     toEquation = toEquation.replace(/÷/g,"/").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(/ /g,"");
-
-    if(SolveEquation(toEquation) === false){return;}{ // only send if it's not false
+    if(SolveEquation(toEquation) === false){
+      // it'd be really cool if I could post to the below website, get the number back and send it to the channel
+      // but i have no clue how to do that, I've tried a lot(using request) but i never got it working
+      return $channel.send( Embed("Too Large","The provided equation was too large for the bot and produced 'infinity'.\nThe following website can calculate your problem for you:\n\nhttps://keisan.casio.com/calculator","error")[1]);
+    }else{
       let n = SolveEquation( toEquation );
-      return $channel.send( Embed("Algebra",toEquation.replace(/(\*)/g,"\*"))[0].field("Result",SolveEquation(n.toString()))[0].footer(FooterTitle)[1] );
+      if(typeof n == "Object") n = n["constants"][0]["numer"];
+      return $channel.send( Embed("Algebra",toEquation.replace(/(\*)/g,"\*"))[0].field("Result",n.toString())[0].footer(FooterTitle)[1] );
     }
 
   }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type

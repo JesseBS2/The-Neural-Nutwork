@@ -1,7 +1,6 @@
 const Discord = require("discord.js"); // discord library
 const algebra = require("algebra.js");
 
-
 global.discord = {};  // Global variables for discord
 
 // SolveEquation was originally in global.discord but I realize it will also be in twitch bot
@@ -40,6 +39,7 @@ global.discord = {  // global variables for discord bot
       if(title === "" || !title) title = " "
       if(description === "" || !description) description = " ";
       color = color || "#7289d9";
+      if(["default","error"].includes(color)) color = ["#7289d9","#cc1100"][["default","error"].indexOf(color)];
       
       let self = {};
       var embed = new Discord.MessageEmbed().setColor(color).setTitle(title).setDescription(description);
@@ -88,6 +88,5 @@ global.discord.debug = function(msg){
 }
 
 console.log("HH  HH  IIIIII\nHH  HH    II\nHHHHHH    II\nHH  HH    II\nHH  HH  IIIIII\n"); 
-
 
 var $Discord = require("./discord/main.js"); // the discord file

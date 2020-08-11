@@ -24,7 +24,6 @@ bot.on("ready", () => {
     if(activity_value_swap === 0){ bot.user.setActivity("$commands",{type: "PLAYING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=1;}
     if(activity_value_swap === 1){ bot.user.setActivity(global.discord.guilds+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=0; }
   },10000); // changes every 10 seconds
-
 });
 
 
@@ -229,11 +228,9 @@ bot.on("message", async recievedmessage => {
         });
         global.discord.debug("an admin "+recievedmessage.author.username+" erased the bot's memories of servers");
       }
-    // }else if(recievedmessage.content.split(" ")[0] === "$&type"){
-    //   setTimeout(() => {
-    //     recievedmessage.channel.stopTyping();
-    //   },Number(words[1])*1000);
-    //   recievedmessage.channel.startTyping();
+
+    }else if(recievedmessage.content === "$&report"){
+      return $channel.send(global.discord.functions.CustomEmbed("Code Report","Used Storage Space: "+process.memoryUsage().rss/1000000+" MB\nServers In: "+global.discord.guilds+"\nCurrently running on: "+process.platform+"\nUptime: "+Math.floor(process.uptime())/60/60+" hours"));
     }
   }
 
