@@ -51,6 +51,19 @@ var credits_sources = ["[Algebra.js](https://www.npmjs.com/package/algebra.js)",
 var creditsMessage = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Credits").setDescription(credits_desc).setThumbnail(BotLogo).addField("Creator","<@"+Dev_IDs[0]+">").addField("External Sources", credits_sources).addField("Testers",credits_testers);
 
 
+// This is used for getting the accurate amount of commands to display in $commands
+// Otherwise it would display aliases and that's a bad
+let commands_for = {}
+
+for(let loop = 0; loop < Object.keys(_commands).length; loop++){  // loop through command categories
+  commands_for[Object.keys(_commands)[loop]] = 0;
+  for(let innerloop = 0; innerloop < Object.values(Object.values(_commands)[loop]).length; innerloop++){  // commands in those categories
+    if(typeof Object.values(Object.values(_commands)[loop])[innerloop] == "object"){
+      commands_for[Object.keys(_commands)[loop]] += 1;
+    }
+  }
+}
+
 
 bot.on("message", async recievedmessage => {
   if(recievedmessage.channel.type !== "dm"){
@@ -84,12 +97,14 @@ bot.on("message", async recievedmessage => {
 
   }
 
+
+  // variables
   var words = recievedmessage.content.split(" ");
   var $channel = recievedmessage.channel; // before this wasn't defined and it was so ugly
   var message = recievedmessage.content;
   var author = recievedmessage.author;
   var author_tag = recievedmessage.author.username.toString() + "#" + recievedmessage.author.discriminator.toString(); // the person that sent the message as USERNAME#0000
-  var msg_command = recievedmessage.content.split(" ")[0].split("$")[1];
+  var $cmnd = recievedmessage.content.split(" ")[0].split("$")[1];
 
   if(recievedmessage.author === bot.user || recievedmessage.author.bot){return;}  // check if message sender is self or a bot
   
@@ -101,7 +116,7 @@ bot.on("message", async recievedmessage => {
   var self = recievedmessage.guild.me;
   var $pre = "$"
   var $member = recievedmessage.member;
-
+  isARealCommand_ThisVariableIsUsedOnce = false;
 
   if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
     Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
@@ -111,8 +126,10 @@ bot.on("message", async recievedmessage => {
   if(words[0].startsWith("$") && words[0].length === 1){  // then word 0 is $ which means word 1 is the command
     $cmnd = recievedmessage.content.split(" ")[1];
     words.shift();
+    isARealCommand_ThisVariableIsUsedOnce = true;
   }else if(words[0].startsWith("$")){
     $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
+    isARealCommand_ThisVariableIsUsedOnce = true;
   }
 
   let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
@@ -124,11 +141,70 @@ bot.on("message", async recievedmessage => {
     }
     $cmnd = recievedmessage.content.split(" ")[1];
     words.shift();  // offset words by one, so all future uses of the words array are still right
+    isARealCommand_ThisVariableIsUsedOnce = true;
   }
 
+  if(isARealCommand_ThisVariableIsUsedOnce == false){
+    let words = recievedmessage.content.split(" ");
+    let AllowedSymbols = ["+","-","*","/","÷","x","^","\\","(",")","[","]","{","}"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
+    let AllowedNumbers = ["0","1","2","3","4","5","6","7","8","9"];
 
-  msg_command = $cmnd;
+    let math = "";
+    let type = null
+    let other = {
+      value: null
+    }
 
+    let Characters = recievedmessage.content.split("");
+    let including = {number:false,symbols:false};  // it has to be an equation
+      
+    for( let j = 0; j < Characters.length; j++ ){  // loop through all words
+      let flag = false;
+      if( AllowedSymbols.includes(Characters[j]) || AllowedNumbers.includes(Characters[j]) ){ // if it is allowed then allow it
+        if(AllowedNumbers.includes(Characters[j])){including.number=true}
+        if(AllowedSymbols.includes(Characters[j])){including.symbols=true}
+        type = "math";
+        math += Characters[j];
+      }else{
+        type = null;
+        flag = true;  // the flag is used to break both loops
+        break;
+      }
+
+      if(flag === true){  // if one word is wrong, they all should be. So don't run it.
+        type = null;
+        break;
+      }
+    }
+
+    Request({
+      url: "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json",
+      json: true
+    }, function(error, response, body){
+
+      if(!error && response.statusCode === 200){
+        var PeriodicTable = body["elements"];
+        for(let j = 0; j < PeriodicTable.length; j++){
+          if(words[0].toLowerCase() === PeriodicTable[j]["name"].toLowerCase()){
+            // type = "periodic";
+            other.value = j;
+            console.log("Ran: autoperiodic - Server: "+Guild.name);
+            let element = new Discord.MessageEmbed().setColor("#7289d9").setTitle(PeriodicTable[other.value]["name"]+" - #"+other.value).setDescription("Symbol: "+PeriodicTable[other.value]["symbol"]+"\nAtomic Weight: "+PeriodicTable[other.value]["atomic_mass"]).addField("Discovery","Discovered by "+PeriodicTable[other.value]["discovered_by"]);
+            return $channel.send(element);
+          }
+        }
+
+      }
+    });
+
+    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled" && including.number === true && including.symbols === true){
+      
+      console.log("Ran: automath - Server: "+Guild.name);
+      if(SolveEquation(math) === false) return $channel.send("Something went wrong!");
+      return $channel.send( "> "+ Number(SolveEquation(math)) ); 
+
+    }
+  }
 
   ////////////////////////////
   ////////////////////////////
@@ -205,9 +281,9 @@ bot.on("message", async recievedmessage => {
     pingedMessage.edit(FancyPongMessage);
     console.log("Latency & Ping to "+recievedmessage.guild.name+" "+latency+" & "+ping)
 
-  }else if(msg_command === "inv" || msg_command === "invite"){ 
+  }else if($cmnd === "inv" || $cmnd === "invite"){ 
     return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Invite").setDescription("If you want to invite me into your server, click the link below or paste it into your browser!").addField("Invite","https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot").setThumbnail(BotLogo));
-  }else if(msg_command === "credits"){
+  }else if($cmnd === "credits"){
   
     return $channel.send(creditsMessage);
   
@@ -220,20 +296,19 @@ bot.on("message", async recievedmessage => {
     ////////////////////////////
 
     var $commands = require("./commands.json");
+    let group_arr = "";
+    
     if($cmnd === "commands"){
-      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Math Commands","x"+Object.keys($commands["math"]).length+" Commands").addField(":test_tube: PToE Commands","x"+Object.keys($commands["ptoe"]).length+" Commands").addField(":lock: Mod Commands","x"+Object.keys($commands["mod"]).length+" Commands").addField(":smile: Fun Commands","x"+Object.keys($commands["fun"]).length+" Commands").addField(":frame_photo: Image Commands","x"+Object.keys($commands["image"]).length+" Commands").addField(":grey_question: Other Commands","x"+Object.keys($commands["other"]).length+" Commands").addField(":control_knobs: Server Commands","x"+Object.keys($commands["server"]).length+" Commands").addField("Credits","Use "+$pre+"credits").setFooter("$commands <category>").setThumbnail(BotLogo));
+      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Math Commands","x"+commands_for["math"]+" Commands").addField(":test_tube: PToE Commands","x"+commands_for["ptoe"]+" Commands").addField(":lock: Mod Commands","x"+commands_for["mod"]+" Commands").addField(":smile: Fun Commands","x"+commands_for["fun"]+" Commands").addField(":frame_photo: Image Commands","x"+commands_for["image"]+" Commands").addField(":grey_question: Other Commands","x"+commands_for["other"]+" Commands").addField(":control_knobs: Server Commands","x"+commands_for["server"]+" Commands").addField("No category","Ping: "+$pre+"ping\nCredits: "+$pre+"credits").setFooter("$commands <category>").setThumbnail(BotLogo));
       
       if(words[1].toLowerCase() in $commands){
-        let group_arr = "";
         for(let ex = 0; ex < Object.values($commands[words[1].toLowerCase()]).length; ex++){
           let nextUp = $commands[words[1].toLowerCase()];
-          if(typeof Object.values(nextUp)[ex] != "object"){}else{  
-            // console.log(Object.values(nextUp)[ex]);
+          if(typeof Object.values(nextUp)[ex] != "object"){}else{  // skip commands that are just aliases
             group_arr += $pre+Object.keys($commands[words[1].toLowerCase()])[ex];
             group_arr += "\n";
           }
         }
-        
         return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle(words[1].charAt(0).toUpperCase()+words[1].slice(1).toLowerCase()+" commands").setDescription(group_arr).setFooter($pre+"help <command>"));
       }else if(words[1].toLowerCase() in $commands === false){
         return $channel.send("Something went wrong!\nThat's not a valid group");
@@ -284,7 +359,7 @@ bot.on("message", async recievedmessage => {
 
     var FooterTitle = "Math processed by algebra.js";
 
-    if(msg_command === "math" || msg_command === "algebra"){
+    if($cmnd === "math" || $cmnd === "algebra"){
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       let toEquation = words[1]; // to be evaluated by algebra.js
 
@@ -305,7 +380,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Algebra").setDescription(toEquation.replace(/(\*)/g,"\*")).addField("Result",n.toString()).setFooter(FooterTitle) );
       }
 
-    }else if(msg_command === "root" || words[0].startsWith("√")){ // special case for the symbol type
+    }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       let num = Number(words[1]); // second word
       let index = Number(words[2]) || 2; // third word
@@ -321,7 +396,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send("Sorry, something went wrong!");
       }
 
-    }else if(msg_command === "eval" || msg_command === "evaluate"){
+    }else if($cmnd === "eval" || $cmnd === "evaluate"){
       if(!words[2]){
         $channel.send("You're forgetting part of that command!");
         setTimeout(function(){
@@ -354,7 +429,7 @@ bot.on("message", async recievedmessage => {
 
       return $channel.send(asEmbed);
 
-    }else if(msg_command === "area"){
+    }else if($cmnd === "area"){
       if(!words[1]) return $channel.send("Area is the amount of 2D space that a shape takes up");
           
       if(words[1] == "square"){
@@ -384,7 +459,7 @@ bot.on("message", async recievedmessage => {
       }
 
       return;
-    }else if(msg_command === "volume"){
+    }else if($cmnd === "volume"){
       if(!words[1]) return $channel.send("Volume is the amount of 3D space that an object takes up");
       /* Going to need: Cube, Pyramid, Sphere, Cylinder, Cone */
       if(words[1] == "cube" || words[1] == "cuboid"){
@@ -426,7 +501,7 @@ bot.on("message", async recievedmessage => {
 
 
 
-    }else if(msg_command === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
+    }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       
       let A = words[1].toLowerCase();
@@ -502,21 +577,21 @@ bot.on("message", async recievedmessage => {
       }
 
       return $channel.send(conversion);
-    }else if(msg_command === "simplify" || msg_command === "simp"){
+    }else if($cmnd === "simplify" || $cmnd === "simp"){
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
 
-      let equation = message.split($pre+msg_command+" ")[1];
-      let pre_parse = message.split($pre+msg_command+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
+      let equation = message.split($pre+$cmnd+" ")[1];
+      let pre_parse = message.split($pre+$cmnd+" ")[1].replace(/\\/g,"").replace(/\*\*/g,"^").replace(/÷/gi, "/").replace(/\[/g,"(").replace(/\]/g,")").replace(/\{/g,"(").replace(/\}/g,")").replace(/ /g,"");
       let SimpedEquation = Algebra.parse( pre_parse );  // Simplify the eqution... wait that means parsing is the same as simping
       return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Simplify").setDescription(equation.replace(/\*/g,"\*")).addField("Result",SolveEquation(SimpedEquation)).setFooter(FooterTitle));
     
-    }else if(msg_command === "solve"){
+    }else if($cmnd === "solve"){
       if(!words[2]) return $channel.send("You're forgetting part of that command!");
       let expr = Algebra.parse(words[1]);
       let x = expr.solveFor(words[2]);
 
       return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Solve for "+words[2]).setDescription("in "+words[1]).addField("Equals",words[2]+" = "+SolveEquation(x.toString())).setFooter(FooterTitle) );
-    }else if(msg_command === "factorial"){
+    }else if($cmnd === "factorial"){
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       
       function factorialize(num) {
@@ -530,7 +605,7 @@ bot.on("message", async recievedmessage => {
       }
 
       return $channel.send("> "+ factorialize( Number(words[1]) ) ); 
-    }else if(msg_command === "group"){
+    }else if($cmnd === "group"){
       var groups = ["counting","whole","integer","real","complex"]
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
 
@@ -547,7 +622,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Real or Complex").setDescription("It is at this point that I am un-able to identify the number you've selected.\nReal numbers can be rational or irrational.\nA rational number is any of the previous numbers.\nAn irrational number is a decimal number that has an infinite amount of decimal places.\nA complex number is a number that can be express using the equation `a+bi`, where `a` and `b` are Real numbers and `i` is an \"imaginary number\" or a number that doesn't exist, example:\n`x^2 = -1`"));
       }
 
-    }else if(msg_command === "perimeter"){
+    }else if($cmnd === "perimeter"){
       if(!words[1]) return $channel.send("Perimeter is the space around the outside of a 2D object");
 
       if(words[1] === "square"){
@@ -585,10 +660,11 @@ bot.on("message", async recievedmessage => {
     ////  For moderating your server
     ////////////////////////////
     ////////////////////////////
+    console.log("Ran: Moderator - Server: "+Guild.name);
 
     var RlConfig = require("./configuration.json")[Guild.id];
 
-    if(msg_command === "clear" || msg_command === "purge"){
+    if($cmnd === "clear" || $cmnd === "purge"){
       if($member.hasPermission("MANAGE_MESSAGES") === false){
         return $channel.send("You do not have the necessary permissions for that");
       }else if(Guild.me.hasPermission("MANAGE_MESSAGES") === false){
@@ -624,7 +700,7 @@ bot.on("message", async recievedmessage => {
         throw err;
       }
       
-    }else if(msg_command === "kick"){
+    }else if($cmnd === "kick"){
       if($member.hasPermission("KICK_MEMBERS") === false){
         return $channel.send("You do not have the necessary permissions for that");
       }else if(Guild.me.hasPermission("KICK_MEMBERS") === false){
@@ -652,7 +728,7 @@ bot.on("message", async recievedmessage => {
           return $channel.send("I can not kick this user!");
         });
 
-    }else if(msg_command === "ban"){
+    }else if($cmnd === "ban"){
       if($member.hasPermission("BAN_MEMBERS") === false){
         return $channel.send("You do not have the necessary permissions for that");
       }else if(Guild.me.hasPermission("BAN_MEMBERS") === false){
@@ -676,30 +752,55 @@ bot.on("message", async recievedmessage => {
           days: time,
           reason: desc
         }).then(e => {
-          return $channel.send("Successfully banned "+toBan);
+          return $channel.send("**Successfully banned** "+toBan);
         }).catch(err => {
-          console.log(err);
+          console.error(err);
           return $channel.send("This user can not be banned!");
         });
       }
 
-    // }else if(msg_command === "mute"){
-    //   if($member.hasPermission("MUTE_MEMBERS") === false){
-    //     return $channel.send("You do not have the necessary permissions for that");
-    //   }else if(Guild.me.hasPermission("MANAGE_ROLES") === false){
-    //     return $channel.send("I do not have the necessary permissions for that.\nI need the `Mute Members` permission");
-    //   }
+    }else if($cmnd === "mute"){
+      if($member.hasPermission("MUTE_MEMBERS") === false){
+        return $channel.send("You do not have the necessary permissions for that");
+      }else if(Guild.me.hasPermission("MANAGE_ROLES") === false){
+        return $channel.send("I do not have the necessary permissions for that.\nI need the `Mute Members` permission");
+      }
 
-    //   if(!words[1]) return $channel.send("You're forgetting part of that command!");
-    //   if(!message.mentions.members.first()) return $channel.send("You need to mention someone!");
+      if(!words[1]) return $channel.send("You're forgetting part of that command!");
+      if(!recievedmessage.mentions.members.first()) return $channel.send("You need to mention someone!");
 
-    //   if(!Guild.roles.cache.find(role => role.name == "Muted")){  // if there isn't already a "mute role" then make one
-    //     Guild.roles.create({data: {name: "Muted", permissions: ["READ_MESSAGE_HISTORY","VIEW_CHANNEL","CONNECT"]}, reason: "A role that prevents members from speaking"});
-    //   }
+      if(!Guild.roles.cache.find(role => role.name == "Muted")){  // if there isn't already a "mute" role then make one
+        Guild.roles.create({data: {name: "Muted", permissions: ["READ_MESSAGE_HISTORY","VIEW_CHANNEL","CONNECT"]}, reason: "A role that prevents members from speaking"}).then(() => {
+          Guild.channels.cache.forEach(editchannel => {
+            editchannel.updateOverwrite(Guild.roles.cache.find(role => role.name == "Muted"), {SEND_MESSAGES: false, SPEAK: false, ADD_REACTIONS: false, STREAM: false});
+          }); // loop through channels
+        
+          recievedmessage.mentions.members.forEach(member => {
+            member.roles.add(Guild.roles.cache.find(role => role.name == "Muted").id).then(() => {
+              $channel.send("**Successfully Muted** "+member);
+              console.log("Muted "+member+" in "+Guild.name);
+            }).catch(err => {
+              console.error(err);
+              $channel.send("Failed to mute "+member);
+            });
+          }); // loop through mentioned members
+        });
+      }
 
-    //   message.mentions.members.first().roles.add(Guild.roles.cache.find(role => role.name == "Muted").id);
-    
-    }else if(msg_command === "unban"){
+    if(Guild.roles.cache.find(role => role.name == "Muted")){
+      recievedmessage.mentions.members.forEach(member => {  // loop through all mentioned users
+        member.roles.add(Guild.roles.cache.find(role => role.name == "Muted").id).then(() => {
+          $channel.send("**Successfully Muted** "+member);
+          console.log("Muted "+member+" in "+Guild.name);
+        }).catch(err => {
+          console.error(err);
+          $channel.send("Failed to mute "+member);
+        });
+      });
+    }
+    return;
+
+    }else if($cmnd === "unban"){
       if($member.hasPermission("BAN_MEMBERS") === false){
         return $channel.send("You do not have the necessary permissions for that");
       }else if(Guild.me.hasPermission("BAN_MEMBERS") === false){
@@ -723,7 +824,7 @@ bot.on("message", async recievedmessage => {
 
       return $channel.send("I could not find an active ban for this user");
 
-    }else if(msg_command === "config"){
+    }else if($cmnd === "config"){
       if($member.hasPermission("ADMINISTRATOR") === false){
         return $channel.send("You do not have the necessary permissions for that!");
       }
@@ -846,7 +947,7 @@ bot.on("message", async recievedmessage => {
 
     console.log("Ran: Server - Server: "+Guild.name);
 
-    if(msg_command === "server"){
+    if($cmnd === "server"){
       var insights = {
         name: Guild.name,
         description: Guild.description || "No description is set for this server",
@@ -866,7 +967,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle(" ").setDescription(insights[words[1]]) );
       }
       return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle(insights.name).setDescription(insights.description).addField("Data",`Owner: ${insights.owner}\nMembers: ${insights.members}\nBoosts: ${insights.boosts}\nSystem Channel: ${insights.system}`).setImage(Guild.iconURL).setFooter("Your server's data is not stored by The Neural Nutwork").setTimestamp() );
-    }else if(msg_command === "create"){
+    }else if($cmnd === "create"){
       if(!words[1]){
         return $channel.send("You're forgetting part of that command!");
       }else if(words[1] === "channel"){
@@ -926,7 +1027,7 @@ bot.on("message", async recievedmessage => {
         });
         
       }
-    }else if(msg_command === "delete"){
+    }else if($cmnd === "delete"){
       let mention, type="unknown thing";
       if(!words[1]) return $channel.send("You're forgetting the name parameter!");
       if(words[1].startsWith("<")){
@@ -983,11 +1084,11 @@ bot.on("message", async recievedmessage => {
     if(Configs[recievedmessage.guild.id]["categories"]["other"] === "disabled")return $channel.send("An admin has disabled these commands!");
     console.log("Ran: Other - Server: "+Guild.name)
 
-    if(msg_command === "profile"){
+    if($cmnd === "profile"){
       var username,disc,status,snow,pfp,account_age,accStatusColor,activity="",custom="";
 
       try{
-        if(words[1] && words[1].startsWith("<@!") || msg_command == "profile" && words[1] && words[1].length === 18 && words[1].replace(/[0-9]/gi,"") === ""){  // only works using profile because typing self then getting someone else is weird
+        if(words[1] && words[1].startsWith("<@!") || $cmnd == "profile" && words[1] && words[1].length === 18 && words[1].replace(/[0-9]/gi,"") === ""){  // only works using profile because typing self then getting someone else is weird
           var GetUserAcc = bot.users.cache.get(words[1]); // by default try to get it based on numbers only
           if(words[1].startsWith("<@!"))GetUserAcc = bot.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
         }else{
@@ -1035,7 +1136,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send("Sorry! I couldn't find that user, I may not be in a server with them.")
       }
     
-    }else if(msg_command === "poll"){
+    }else if($cmnd === "poll"){
       if($member.hasPermission("MANAGE_MESSAGES") === false){ // check if user is allowed to do that. Why is it the MANAGE_MESSAGES permission? ...I do NOT know.
         return $channel.send("You do not have the necessary permissions for that!");
       }
@@ -1133,7 +1234,7 @@ bot.on("message", async recievedmessage => {
 
       return;
     
-    }else if(msg_command === "nickname" || msg_command === "nick"){
+    }else if($cmnd === "nickname" || $cmnd === "nick"){
       if(Configs[recievedmessage.guild.id]["config"]["nickname"] === "disabled" && $member.hasPermission("MANAGE_NICKNAMES") === false){
         return $channel.send("An admin has disabled these commands!");
       }
@@ -1149,7 +1250,7 @@ bot.on("message", async recievedmessage => {
       var newNick = "";
 
       for(let j = 1; j < words.length; j++){
-        if(words[1] === msg_command){j++}
+        if(words[1] === $cmnd){j++}
         if(words[j].startsWith("<@!") && words[j].endsWith(">") && words[j].length === 22){}else{
           newNick += words[j];
           if(j < words.length){newNick+=" ";}
@@ -1168,7 +1269,7 @@ bot.on("message", async recievedmessage => {
       
 
       return;
-    }else if(msg_command === "embed"){
+    }else if($cmnd === "embed"){
       if(Configs["config"]["embeds"] == "disabled" && $member.hasPermission("ADMINISTRATOR") === false){return $channel.send("An Admin has disabled this command");}
       var titles = [];
       var descriptions = [];
@@ -1216,7 +1317,7 @@ bot.on("message", async recievedmessage => {
 
     if(Configs[recievedmessage.guild.id]["categories"]["ptoe"] === "disabled")return $channel.send("An admin has disabled these commands!");
 
-      if(msg_command === "periodic" || msg_command === "periodictable" || msg_command === "pt"){
+      if($cmnd === "periodic" || $cmnd === "periodictable" || $cmnd === "pt"){
         if(!words[1])return $channel.send("Here is the Periodic Table of Elements: ",{files: ["https://i.imgur.com/rzoOEEY.jpg"]});
         
         let element = false;
@@ -1268,10 +1369,10 @@ bot.on("message", async recievedmessage => {
 
     var FooterTitle;
 
-    if(msg_command === "respect" || msg_command == "F"){
+    if($cmnd === "respect" || $cmnd == "F"){
       Configs[Guild.id]["channels"][$channel.id] = {}
       if(Configs[Guild.id]["channels"][$channel.id]["activepoll"] === true){$channel.send("Can not do that right now"); return;}
-      let thing = message.split(msg_command+" ")[1] || "";  // everything after the command
+      let thing = message.split($cmnd+" ")[1] || "";  // everything after the command
       $channel.send("Press F to pay respects for \""+thing+"\"");
 
       let respecters = [];
@@ -1301,7 +1402,7 @@ bot.on("message", async recievedmessage => {
         });
       return;
       
-    }else if(msg_command === "flip"){
+    }else if($cmnd === "flip"){
       let flipcoin = Math.round(Math.random()*1); // which would make more sense? random 0 or 1; or random 1-100
       if(flipcoin == 1){
         return $channel.send("It's Heads!");
@@ -1311,7 +1412,7 @@ bot.on("message", async recievedmessage => {
         return $channel.send("It landed on.. it's side?");
       }
       return;
-    }else if(msg_command === "random" || msg_command === "rand"){
+    }else if($cmnd === "random" || $cmnd === "rand"){
       let First = false, Second = false;  // false by default because ifs check for these
       if(words[1]) First = Number(words[1].replace(/\D/gi,""));
       if(words[2]) Second = Number(words[2].replace(/\D/gi,""));
@@ -1321,7 +1422,7 @@ bot.on("message", async recievedmessage => {
       if(First && Second && Math.ceil(Second)-Math.floor(First) <= 1){$channel.send(Math.random()*(Math.ceil(Second) - Math.floor(First))+Math.floor(First)); return;}
       if(First && Second){$channel.send(Math.round(Math.random()*(Second-First)+First)); return;}
     
-    }else if(msg_command == "qr"){
+    }else if($cmnd == "qr"){
       if(Guild.me.hasPermission("ATTACH_FILES") === false){
         return $channel.send("I do not have the necessary permissions for that.\nI need the `Attach Files` permission");
       }
@@ -1383,11 +1484,11 @@ bot.on("message", async recievedmessage => {
 
     var fileType = Images().name.split(".")[Images().name.split(".").length-1]; // gets file type, such as png or jpeg
     if(fileType == "gif")return $channel.send("I can't accept gifs"); // literally, idk if it's cause of the site i'm using to program, or if JIMP just doesn't except gifs. But it doesn't work
-    if(msg_command === "image" || msg_command === "image-data" || msg_command === "data"){
+    if($cmnd === "image" || $cmnd === "image-data" || $cmnd === "data"){
       
       return $channel.send(Embed("Image Data","Width: "+Images().width+"px\nHeight: "+Images().height+"px\nSize: "+Images().size+" bytes")[1]); // some stuff built into the discord API 
     
-    }else if(msg_command === "grey" || msg_command === "greyscale"){
+    }else if($cmnd === "grey" || $cmnd === "greyscale"){
       JIMP.read(Images().url).then(file => {
         file
           .greyscale()
@@ -1398,7 +1499,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
       
-    }else if(msg_command === "invert"){
+    }else if($cmnd === "invert"){
       
       JIMP.read(Images().url).then(file => {
         file
@@ -1410,7 +1511,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "contrast"){ 
+    }else if($cmnd === "contrast"){ 
       var intensity = Number(words[1]) || 50;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       if(intensity > 100)return $channel.send("Contrast can not be higher than 100");
@@ -1428,7 +1529,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "brightness" || msg_command === "light"){ 
+    }else if($cmnd === "brightness" || $cmnd === "light"){ 
       var intensity = Number(words[1]) || 50;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       if(intensity > 100)return $channel.send("Brightness can not be higher than 100");
@@ -1446,7 +1547,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "mirror"){
+    }else if($cmnd === "mirror"){
       let directions = [false,false];
       if(!words[1]) directions = [true,false]
       if(words[1] == "horizontal" || words[1] == "side" || words[2] == "horizontal" || words[2] == "side")directions[0] = true;
@@ -1462,7 +1563,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
     
-    }else if(msg_command === "crop"){
+    }else if($cmnd === "crop"){
       if(!words[4]){return $channel.send("You're forgetting one of the 4 necessary values!");}
       var x = Number(words[1]);
       var y = Number(words[2]);
@@ -1478,7 +1579,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "rotate"){
+    }else if($cmnd === "rotate"){
       var degree = Number(words[1]);
       if(degree == "NaN" || degree == NaN || typeof degree == "NaN" || degree.toString() == "NaN") return $channel.send("Please enter a valid number");
       
@@ -1492,7 +1593,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
     
-    }else if(msg_command === "blur"){
+    }else if($cmnd === "blur"){
       var intensity = Number(words[1]) || 5;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       
@@ -1506,7 +1607,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "posterize"){
+    }else if($cmnd === "posterize"){
       var intensity = Number(words[1]) || 5;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       if(intensity > 10) return $channel.send("Number can not be higher than 10");
@@ -1524,7 +1625,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if(msg_command === "pixelate" || msg_command === "pixel"){
+    }else if($cmnd === "pixelate" || $cmnd === "pixel"){
       var intensity = Number(words[1]) || 3;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
 
@@ -1538,7 +1639,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
     
-    }else if(msg_command === "subtitle"){
+    }else if($cmnd === "subtitle"){
       if(!words[1])return $channel.send("You're forgetting to add text!");
       var toSendMessage = "", endsInColor = false;
 
@@ -1585,70 +1686,7 @@ bot.on("message", async recievedmessage => {
     }
 
 
-  }else{
-    let words = recievedmessage.content.split(" ");
-    let AllowedSymbols = ["+","-","*","/","÷","x","^","\\","(",")","[","]","{","}"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
-    let AllowedNumbers = ["0","1","2","3","4","5","6","7","8","9"];
-
-    let math = "";
-    let type = null
-    let other = {
-      value: null
-    }
-
-    let Characters = recievedmessage.content.split("");
-    let including = {number:false,symbols:false};  // it has to be an equation
-      
-    for( let j = 0; j < Characters.length; j++ ){  // loop through all words
-      let flag = false;
-      if( AllowedSymbols.includes(Characters[j]) || AllowedNumbers.includes(Characters[j]) ){ // if it is allowed then allow it
-        if(AllowedNumbers.includes(Characters[j])){including.number=true}
-        if(AllowedSymbols.includes(Characters[j])){including.symbols=true}
-        type = "math";
-        math += Characters[j];
-      }else{
-        type = null;
-        flag = true;  // the flag is used to break both loops
-        break;
-      }
-
-      if(flag === true){  // if one word is wrong, they all should be. So don't run it.
-        type = null;
-        break;
-      }
-    }
-
-    Request({
-      url: "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json",
-      json: true
-    }, function(error, response, body){
-
-      if(!error && response.statusCode === 200){
-        var PeriodicTable = body["elements"];
-        for(let j = 0; j < PeriodicTable.length; j++){
-          if(words[0].toLowerCase() === PeriodicTable[j]["name"].toLowerCase()){
-            // type = "periodic";
-            other.value = j;
-            // //console.log(PeriodicTable[j])
-            console.log("Ran a PToE command in main.js");
-            let element = new Discord.MessageEmbed().setColor("#7289d9").setTitle(PeriodicTable[other.value]["name"]+" - #"+other.value).setDescription("Symbol: "+PeriodicTable[other.value]["symbol"]+"\nAtomic Weight: "+PeriodicTable[other.value]["atomic_mass"]).addField("Discovery","Discovered by "+PeriodicTable[other.value]["discovered_by"]);
-            return $channel.send(element);
-          }
-        }
-
-      }
-    });
-
-    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled" && including.number === true && including.symbols === true){
-      
-      console.log("Ran a Math command in main.js");
-      require("./commands/math/index.js")(math);  // evaluate
-      if(SolveEquation(math) === false) return $channel.send("Something went wrong!");
-      return $channel.send( "> "+ Number(SolveEquation(math)) ); 
-
-    }
   }
-
 });
 
 bot.on("guildMemberAdd", member => {

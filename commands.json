@@ -120,7 +120,7 @@
       "format": "unban <@member>",
       "alias": ["none"]
     },
-    "//mute": {
+    "mute": {
       "desc": "Mutes a member",
       "format": "mute <@member>",
       "alias": ["none"]
