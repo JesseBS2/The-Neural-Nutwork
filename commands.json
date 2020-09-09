@@ -72,7 +72,7 @@
     },
     "perimeter": {
       "desc": "Get the area around the outside of a 2D shape",
-      "format": "perimeter <dimension1> <?dimension2> <?dimension3>",
+      "format": "perimeter <shape> <dimension1> <dimension2> <?dimension3>",
       "alias": ["none"]
     }
   },

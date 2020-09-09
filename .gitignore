@@ -1,2 +1,6 @@
 package-lock.json
 *.gitignore
+*/image_manipulation.*
+image/QRCode.png
+token.txt
+configuration.json
