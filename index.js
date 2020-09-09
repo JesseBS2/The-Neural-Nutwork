@@ -120,7 +120,7 @@ bot.on("message", async recievedmessage => {
 
   if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
     Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
-    $pre = Configs[recievedmessage.guild.id]["channels"].prefix;
+    $pre = Configs[Guild.id]["prefix"];
   }
 
   if(words[0].startsWith("$") && words[0].length === 1){  // then word 0 is $ which means word 1 is the command
@@ -830,7 +830,7 @@ bot.on("message", async recievedmessage => {
       }
 
       if(!words[1]){
-        let displayconfigures = new Discord.MessageEmbed().setTitle("Configurable Settings").setDescription("Settings that can be changed for this server by the admins.\n"+$pre+"config <setting> <set>").addField("Autorole - "+RlConfig["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)").addField("Nickname - "+RlConfig["config"]["nickname"],"Allow people to change their own or other people's nicknames.\n(enable/disable)").addField("Embeds - "+RlConfig["config"]["embeds"],"Allow anyone to create an Rich Message Embed.\n(enable/disable)").addField("Automath - "+RlConfig["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)").addField("Autoperiodic - "+RlConfig["config"]["autoperiodic"],"The bot shows an element without the need of a command.\n(enable/disable)").addField("QR-Codes - "+RlConfig["config"]["qr-codes"],"Allow users to convert text and links into scanable QR codes.\n(enable/disable)").addField("Fun - "+RlConfig["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)").setThumbnail(Guild.iconURL);
+        let displayconfigures = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Configurable Settings").setDescription("Settings that can be changed for this server by the admins.\n"+$pre+"config <setting> <set>").addField("Autorole - "+RlConfig["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)").addField("Nickname - "+RlConfig["config"]["nickname"],"Allow people to change their own or other people's nicknames.\n(enable/disable)").addField("Embeds - "+RlConfig["config"]["embeds"],"Allow anyone to create an Rich Message Embed.\n(enable/disable)").addField("Automath - "+RlConfig["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)").addField("Autoperiodic - "+RlConfig["config"]["autoperiodic"],"The bot shows an element without the need of a command.\n(enable/disable)").addField("QR-Codes - "+RlConfig["config"]["qr-codes"],"Allow users to convert text and links into scanable QR codes.\n(enable/disable)").addField("Fun - "+RlConfig["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)").setThumbnail(Guild.iconURL);
         return $channel.send(displayconfigures);
       }
 
@@ -842,7 +842,7 @@ bot.on("message", async recievedmessage => {
         }else{
           RlConfig["prefix"] = words[2].toLowerCase();
           SaveJSON();
-          return $channel.send(new Discord.MessageEmbed().setTitle("A new prefix has been set!").setDescription("An admin, "+author.displayName+" set the server prefix to: "+RlConfig["prefix"]).addField("How to use it?","Use the new prefix just like the old one! ex:\n"+RlConfig["prefix"]+"snowflake"));
+          return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("A new prefix has been set!").setDescription("An admin, "+author.displayName+" set the server prefix to: "+RlConfig["prefix"]).addField("How to use it?","Use the new prefix just like the old one! ex:\n"+RlConfig["prefix"]+"snowflake"));
         }
       }
       
@@ -1747,7 +1747,7 @@ bot.on("guildDelete", guild => {  // bot is removed from server
 // Writes to the JSON file for discord servers
 function SaveJSON(srcJSON){
   srcJSON = srcJSON || require("./configuration.json");
-  fs.writeFile("./discord/configuration.json", JSON.stringify(srcJSON), (err) => {
+  Fs.writeFile("./discord/configuration.json", JSON.stringify(srcJSON), (err) => {
     if(err) throw err;
   });
 }

@@ -1,6 +1,6 @@
 package-lock.json
 *.gitignore
 */image_manipulation.*
-*/QRCode.png
+*/QRcode.png
 token.txt
 configuration.json

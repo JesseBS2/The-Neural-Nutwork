@@ -1,6 +1,6 @@
 {
   "name": "Nutwork",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The Source code for The Neural Nutwork.\nA math and science bot for Discord.",
   "main": "index.js",
   "scripts": {
