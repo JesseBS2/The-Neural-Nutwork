@@ -210,64 +210,6 @@ bot.on("message", async recievedmessage => {
     }
   }
 
-  ////////////////////////////
-  ////////////////////////////
-  ////  DEV Commands
-  ////////////////////////////
-  ////////////////////////////
-  if(Dev_IDs.includes(recievedmessage.author.id)){
-    
-    if(recievedmessage.content.split(" ")[0] === "$&activity"){ // change the bot's activity
-    
-      
-      if(!words[1]){
-        console.log("an admin "+recievedmessage.author.username+" reset the bot's activity");
-        bot.user.setActivity(CACHED_GUILDS+" servers",{url: "github.com/JesseBS2", type:"WATCHING"});
-        return $channel.send("Activity has been reset!");
-      }else if(Activity_Types.includes(words[1].toLowerCase())){
-        bot.user.setActivity(recievedmessage.content.split("$&activity "+words[1]+" ")[1],{type:words[1].toUpperCase(),url:"github.com/JesseBS2" });
-        console.log("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
-        return $channel.send("Activity has been changed!");
-      }else if(words[1]){
-        bot.user.setActivity(recievedmessage.content.split("$&activity ")[1],{type:4});
-        console.log("an admin "+recievedmessage.author.username+" set the bot's status to "+recievedmessage.content.split("$&activity ")[1]);
-        return $channel.send("Activity has been changed!");
-      }
-
-
-    }else if(recievedmessage.content.split(" ")[0] === "$&status"){  // change how the bot appears on discord; Online, Offline, Idle, or Do not Disturb
-      
-      
-      if(words[1]){
-        if(["online","idle","dnd","invisible"].includes(words[1]) === false){return $channel.send("That is not a valid status.");}
-        bot.user.setStatus(recievedmessage.content.split("$&status ")[1]);
-        console.log("an admin "+recievedmessage.author.username+" set the bot's availablity to "+recievedmessage.content.split("$&status ")[1]);
-        return $channel.send("Status has been changed!");
-      }else{
-        bot.user.setStatus("online");
-        return $channel.send("Status has been reset!");
-      }
-    
-    
-    }else if(recievedmessage.content.split(" ")[0] === "$&forget"){ // Use commands to completely clear `configuration.json`
-
-
-      if(words[1] === "server"){
-        Fs.writeFile("configuration.json", JSON.stringify("{}"), err => {
-          if(err) throw err;
-        });
-        console.log("an admin "+recievedmessage.author.username+" erased the bot's memories of servers");
-      }
-
-
-    }else if(recievedmessage.content === "$&info"){ // sends a report to the channel
-      return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Code info").setDescription("Storage Space: "+process.memoryUsage().rss/1000000+"MB\nServers In: "+CACHED_GUILDS+"\nCurrently running on: "+process.platform+"\nUptime: "+Math.floor(process.uptime())/60/60+" hours"));
-    }
-  }
-
-
-
-
 
   ////////////////////////////
   ////////////////////////////
@@ -288,9 +230,9 @@ bot.on("message", async recievedmessage => {
   }else if($cmnd === "inv" || $cmnd === "invite"){ 
     return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Invite").setDescription("If you want to invite me into your server, click the link below or paste it into your browser!").addField("Invite","https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot").setThumbnail(BotLogo));
   }else if($cmnd === "credits"){
-  
     return $channel.send(creditsMessage);
-  
+  }else if($cmnd === "code-info"){
+    return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Code info").setDescription("Storage Space: "+process.memoryUsage().rss/1000000+"MB\nServers In: "+CACHED_GUILDS+"\nCurrently running on: "+process.platform+"\nUptime: "+(Math.floor(process.uptime())/60/60).toFixed(3)+" hours"));
   }else if($cmnd in _commands["help"]){
 
     ////////////////////////////
@@ -316,8 +258,6 @@ bot.on("message", async recievedmessage => {
         return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle(words[1].charAt(0).toUpperCase()+words[1].slice(1).toLowerCase()+" commands").setDescription(group_arr).setFooter($pre+"help <command>"));
       }
 
-      //return;
-    //}else if($cmnd === "commands" || $cmnd === "help"){
       if(words[1].startsWith("$")){words[1] = words[1].replace("$","");}
 
       var helpText;
@@ -345,10 +285,12 @@ bot.on("message", async recievedmessage => {
 
       if(typeof helpText != "object") helpText = x[helpText];
 
-      return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle($pre+words[1]).setDescription(helpText["desc"]).addField("Usage",helpText["format"]).addField("Examples",helpText["examples"]).addField("Aliases",helpText["alias"])) || $channel.send("That's not a command I recognize! Are you sure you typed it right?");
+      try{
+        return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle($pre+words[1]).setDescription(helpText["desc"]).addField("Usage",helpText["format"]).addField("Examples",helpText["examples"]).addField("Aliases",helpText["alias"])) || $channel.send("That's not a command I recognize! Are you sure you typed it right?");
+      }catch(err){
+        return $channel.send("Could not find that group or command!");
+      }
     }
-
-    return $channel.send("Could not find that group or command!");
   }else if($cmnd in _commands["algebra"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
     if(Configs[recievedmessage.guild.id]["categories"]["math"] === "disabled")return $channel.send("An admin has disabled these commands!");
 
