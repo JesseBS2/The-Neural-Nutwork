@@ -3,94 +3,110 @@
     "help": {
       "desc": "Shows a description and format for a command.\nAnything in <triangle brackets> is a required parameter, anything in (parentheses) is an optional parameter.",
       "format": "help <command>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["none"]
     },
     "commands": {
       "desc": "Get a list of categories and commands in a category",
       "format": "commands (category)",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["none"]
     }
   },
-  "math": {
+  "algebra": {
     "math": {
       "desc": "Do basic algebra",
       "format": "math <equation>",
-      "alias": ["algebra"]
+      "alias": ["none"],
+      "examples": ["math 5+5","math (5+1)/2","math (172÷2)^7"]
     },
-    "algebra": "math",
     "root": {
       "desc": "Get the X root of a number",
       "format": "root <number> (index)",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["root 4","root 343 3","root 25 2","root 328510 3"]
     },
     "evaluate": {
       "desc": "Execute a math equation with interchangeable variables",
       "format": "evalutate <equation> <variable=number>",
-      "alias": ["eval"]
+      "alias": ["eval"],
+      "examples": ["evaluate 5x x=10","eval y+(z\\*4) y=7 z=5","evaluate (e*100+(a^2))\\*a e=40 a=2"]
     },
     "eval": "evaluate",
     "notate": {
       "desc": "Convert a very large or very small number into scientific notation",
       "format": "notate <number>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["notate 2,823,546,366,488,624,003,700"]
     },
     "area": {
       "desc": "Get the area of a 2D geometric shape",
       "format": "area <shape> <dimension1> <?dimension2>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["area square 5 2","area circle 7","area triangle 5 12"]
     },
     "volume": {
       "desc": "Get the volume of a 3D geometric shape",
       "format": "volume <shape> <dimension1> <dimension2> <?dimension3>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["volume cube 5 7 11","volume cylinder 10 20"]
     },
     "solve": {
       "desc": "Takes an algebraic expression and solves for a variable inside the expression",
       "format": "solve <expression> <variable>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["solve 10+x=20 x","solve a/10=42 a"]
     },
     "convert": {
       "desc": "Convert a number value from one to another",
       "format": "convert <value1> <value2>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["convert 5mi km","convert 8oz cup","convert 10kg mg"]
     },
     "simplify": {
       "desc": "Converts a complex equation down to a simplified equation",
       "format": "simplify <equation>",
-      "alias": ["simp"]
+      "alias": ["simp"],
+      "examples": ["none"]
     },
     "simp": "simplify",
     "factorial": {
-      "desc": "Factorialize a number",
+      "desc": "Multiplies a number by all numbers below it down to 1.\n!5 = 5\\*4\\*3\\*2\\*1 = 120",
       "format": "factorial <number>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["factorial 5","factorial 100"]
     },
     "group": {
       "desc": "Takes a number and places it into it's respective numerical group",
       "format": "group <number>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["group 21","group 18.32","group 0","group π"]
     },
     "perimeter": {
       "desc": "Get the area around the outside of a 2D shape",
       "format": "perimeter <shape> <dimension1> <dimension2> <?dimension3>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["perimeter square 5 15","perimeter circle 6"]
     }
   },
   "other": {
     "profile": {
       "desc": "Get information about yours or another person's discord account(only what is permitted by the discord API)",
       "format": "profile (@user)",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["profile","profile <@!661249786350927892>"]
     },
     "poll": {
       "desc": "Create a poll that can be voted on by members of the server, only one poll can be active in a channel at a time.\nEach option is separated by commas",
       "format": "poll <option>, <option>, (option), (option), (option) (timer)",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["poll tea, coffee, boba","poll \"best game\", minecraft, smash bros","poll \"this has a timer\", pick, fast 120"]
     },
     "vote": {
       "desc": "Vote on an active poll in the current channel",
       "format": "vote <option>",
-      "alias": ["none"]
+      "alias": ["none"],
+      "examples": ["vote coffee", "vote 1"]
     },
     "nickname": {
       "desc": "Change your nickname or another member's nickname in the server",
@@ -242,7 +258,7 @@
     }
   },
   "server": {
-    "server": {
+    "info": {
       "desc": "View information about your server",
       "format": "server",
       "alias": ["none"]

@@ -65,6 +65,10 @@ for(let loop = 0; loop < Object.keys(_commands).length; loop++){  // loop throug
 }
 
 
+
+
+
+
 bot.on("message", async recievedmessage => {
   if(recievedmessage.channel.type !== "dm"){
     if(recievedmessage.guild.id in Configs === false || typeof Configs[recievedmessage.guild.id] !== "object" || Configs[recievedmessage.guild.id] === null){
@@ -298,8 +302,8 @@ bot.on("message", async recievedmessage => {
     var $commands = require("./commands.json");
     let group_arr = "";
     
-    if($cmnd === "commands"){
-      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Math Commands","x"+commands_for["math"]+" Commands").addField(":test_tube: PToE Commands","x"+commands_for["ptoe"]+" Commands").addField(":lock: Mod Commands","x"+commands_for["mod"]+" Commands").addField(":smile: Fun Commands","x"+commands_for["fun"]+" Commands").addField(":frame_photo: Image Commands","x"+commands_for["image"]+" Commands").addField(":grey_question: Other Commands","x"+commands_for["other"]+" Commands").addField(":control_knobs: Server Commands","x"+commands_for["server"]+" Commands").addField("No category","Ping: "+$pre+"ping\nCredits: "+$pre+"credits").setFooter("$commands <category>").setThumbnail(BotLogo));
+    if($cmnd === "commands" || $cmnd === "help"){
+      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Algebra Commands","x"+commands_for["algebra"]+" Commands").addField(":test_tube: PToE Commands","x"+commands_for["ptoe"]+" Commands").addField(":lock: Mod Commands","x"+commands_for["mod"]+" Commands").addField(":smile: Fun Commands","x"+commands_for["fun"]+" Commands").addField(":frame_photo: Image Commands","x"+commands_for["image"]+" Commands").addField(":grey_question: Other Commands","x"+commands_for["other"]+" Commands").addField(":control_knobs: Server Commands","x"+commands_for["server"]+" Commands").addField("No category","Ping: "+$pre+"ping\nCredits: "+$pre+"credits").setFooter("$commands <category>").setThumbnail(BotLogo));
       
       if(words[1].toLowerCase() in $commands){
         for(let ex = 0; ex < Object.values($commands[words[1].toLowerCase()]).length; ex++){
@@ -310,13 +314,10 @@ bot.on("message", async recievedmessage => {
           }
         }
         return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle(words[1].charAt(0).toUpperCase()+words[1].slice(1).toLowerCase()+" commands").setDescription(group_arr).setFooter($pre+"help <command>"));
-      }else if(words[1].toLowerCase() in $commands === false){
-        return $channel.send("Something went wrong!\nThat's not a valid group");
       }
 
-      return;
-    }else if($cmnd === "help"){
-      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Help Command").setDescription("This command provides a description and format for each command"));
+      //return;
+    //}else if($cmnd === "commands" || $cmnd === "help"){
       if(words[1].startsWith("$")){words[1] = words[1].replace("$","");}
 
       var helpText;
@@ -328,7 +329,7 @@ bot.on("message", async recievedmessage => {
         helpText = x[words[1].toLowerCase()];
       }else if(words[1] in (x = $commands["other"])){
         helpText = x[words[1].toLowerCase()];
-      }else if(words[1] in (x = $commands["math"])){
+      }else if(words[1] in (x = $commands["algebra"])){
         helpText = x[words[1].toLowerCase()];
       }else if(words[1] in (x = $commands["ptoe"])){
         helpText = x[words[1].toLowerCase()];
@@ -344,10 +345,11 @@ bot.on("message", async recievedmessage => {
 
       if(typeof helpText != "object") helpText = x[helpText];
 
-      return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle($pre+words[1]).setDescription(helpText["desc"]).addField("Usage",helpText["format"]).addField("Aliases",helpText["alias"])) || $channel.send("That's not a command I recognize! Are you sure you typed it right?");
+      return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle($pre+words[1]).setDescription(helpText["desc"]).addField("Usage",helpText["format"]).addField("Examples",helpText["examples"]).addField("Aliases",helpText["alias"])) || $channel.send("That's not a command I recognize! Are you sure you typed it right?");
     }
 
-  }else if($cmnd in _commands["math"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
+    return $channel.send("Could not find that group or command!");
+  }else if($cmnd in _commands["algebra"] || firstWord.startsWith("√")){  // if the command is the math kind, special case for root symbol
     if(Configs[recievedmessage.guild.id]["categories"]["math"] === "disabled")return $channel.send("An admin has disabled these commands!");
 
     ////////////////////////////
@@ -359,7 +361,7 @@ bot.on("message", async recievedmessage => {
 
     var FooterTitle = "Math processed by algebra.js";
 
-    if($cmnd === "math" || $cmnd === "algebra"){
+    if($cmnd === "math"){
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       let toEquation = words[1]; // to be evaluated by algebra.js
 
@@ -380,17 +382,16 @@ bot.on("message", async recievedmessage => {
         return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Algebra").setDescription(toEquation.replace(/(\*)/g,"\*")).addField("Result",n.toString()).setFooter(FooterTitle) );
       }
 
-    }else if($cmnd === "root" || words[0].startsWith("√")){ // special case for the symbol type
+    }else if($cmnd === "root"){ // special case for the symbol type
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
       let num = Number(words[1]); // second word
       let index = Number(words[2]) || 2; // third word
-      if(words[0].startsWith("√")){ num = Number(words[0].split("√")[1]); index = Number(words[1]) || 2;} // special case for the symbol
       
       let randomNonsensicalVariable = ["th","st","nd","rd","th","th","th","th","th","th"];
       let theEndingToTheNumber = randomNonsensicalVariable[Number(index.toString().charAt(index.length))];
 
       try{
-        return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Root").setDescription("The "+index+""+theEndingToTheNumber+" root of "+num).addField("Result",Math.pow(num,1/index)) ); // x to power of y, but it's divide first so it's actually root
+        return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Root").setDescription("The "+index+""+theEndingToTheNumber+" root of "+num).addField("Result",Math.pow(num,1/index).toFixed(3)) ); // x to power of y, but it's divide first so it's actually root
       }catch(e){
         console.log(e);
         return $channel.send("Sorry, something went wrong!");
@@ -591,20 +592,15 @@ bot.on("message", async recievedmessage => {
       let x = expr.solveFor(words[2]);
 
       return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Solve for "+words[2]).setDescription("in "+words[1]).addField("Equals",words[2]+" = "+SolveEquation(x.toString())).setFooter(FooterTitle) );
+    }else if($cmnd === "notate"){
+      if(!words[1]) return $channel.send("You're forgetting part of that command!");
+
+      return $channel.send(Number(SolveEquation(words[1])).toExponential(10));
+    
     }else if($cmnd === "factorial"){
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
-      
-      function factorialize(num) {
-        var result = num;
-        if(num === 0 || num === 1)return 1; 
-          while (num > 1) { 
-          num--;
-          result *= num;
-        }
-        return result;
-      }
+      return $channel.send("> "+ factorialize( Number(words[1]) ) );
 
-      return $channel.send("> "+ factorialize( Number(words[1]) ) ); 
     }else if($cmnd === "group"){
       var groups = ["counting","whole","integer","real","complex"]
       if(!words[1]) return $channel.send("You're forgetting part of that command!");
@@ -947,7 +943,7 @@ bot.on("message", async recievedmessage => {
 
     console.log("Ran: Server - Server: "+Guild.name);
 
-    if($cmnd === "server"){
+    if($cmnd === "info"){
       var insights = {
         name: Guild.name,
         description: Guild.description || "No description is set for this server",
@@ -959,10 +955,10 @@ bot.on("message", async recievedmessage => {
         emojis: Guild.roles.length,
         channels: Guild.channels.length,
         system: Guild.systemChannel,
-        mfa: Guild.mfaLevel
+        mfa: Guild.mfaLevel // mafia level
       }
     
-      //console.log(Guild.roles.size)
+      //console.log(Guild.roles.size);
       if(words[1] && words[1] in insights){
         return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle(" ").setDescription(insights[words[1]]) );
       }
@@ -1427,7 +1423,6 @@ bot.on("message", async recievedmessage => {
         return $channel.send("I do not have the necessary permissions for that.\nI need the `Attach Files` permission");
       }
       FooterTitle = "QR Codes generated by qrcode";
-      if(dm !== true){ if(Configs[recievedmessage.guild.id]["config"]["qr-codes"] === "disabled"){return $channel.send("An Admin has disabled these commands!");} }
       if(!words[1] && recievedmessage.attachments.size <= 0) return $channel.send("You're forgetting to add some text to convert to QR!");
       if(recievedmessage.attachments.size > 1) return $channel.send("You can only turn one image into a QR code");
       if(recievedmessage.attachments.size > 1) return $channel.send("You can not turn images into QR Codes");
@@ -1444,10 +1439,10 @@ bot.on("message", async recievedmessage => {
 
       if(toQR === `"We're no strangers to love."`) toQR = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
       
-      QRCode.toFile("discord/commands/fun/QRcode.png", toQR, {errorCorrectionLevel: "H"}, function(err){
+      QRCode.toFile("image/QRcode.png", toQR, {errorCorrectionLevel: "H"}, function(err){
         if(err) throw err;  
         
-        var attachment = new CLIENT.MessageAttachment("./discord/commands/fun/QRcode.png", "QRcode.png");
+        var attachment = new Discord.MessageAttachment("./image/QRcode.png", "QRcode.png");
         var titles = ["Here's your QR Code!","Here you go!","[QR Code Generated]","","Quirky QRs!","Sponsored by Squares","Denso Wave, 1994",""];  // I want empty title to be more likely than just 1 in X, so I'd say ratio of 1 in 4
         let selectTitle = titles[Math.round(Math.random()*titles.length-1)];
         
@@ -1747,7 +1742,7 @@ bot.on("guildDelete", guild => {  // bot is removed from server
 // Writes to the JSON file for discord servers
 function SaveJSON(srcJSON){
   srcJSON = srcJSON || require("./configuration.json");
-  Fs.writeFile("./discord/configuration.json", JSON.stringify(srcJSON), (err) => {
+  Fs.writeFile("./configuration.json", JSON.stringify(srcJSON), (err) => {
     if(err) throw err;
   });
 }
@@ -1756,6 +1751,7 @@ function SaveJSON(srcJSON){
 function SolveEquation(input){
   try{
     input = input.replace(/\\/g,"")  // remove back slashes(which help ignore \* \*)
+      .replace(/,/g,"") // remove commas(used by humans for big numbers)
       .replace(/x/g,"*")
       .replace(/\*\*/g,"^")
       .replace(/÷/gi, "/")
@@ -1785,4 +1781,15 @@ function setToScale(number){
   // 0 will be -1
   if(number >= 50) return (number-50)/100;
   if(number < 50) return (number-100)/100;
+}
+
+//
+function factorialize(num) {
+  var result = num;
+  if(num === 0 || num === 1)return 1; 
+    while (num > 1) { 
+      num--;
+      result *= num;
+    }
+  return result;
 }
