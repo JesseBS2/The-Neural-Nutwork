@@ -58,7 +58,7 @@
       "examples": ["solve 10+x=20 x","solve a/10=42 a"]
     },
     "convert": {
-      "desc": "Convert a number value from one to another",
+      "desc": "Convert a number value from one to another\nOne length measurement can be converted to any other, however liquid measurements can not be converted from U.S. Customary to Metric or vise-versa",
       "format": "convert <value1> <value2>",
       "alias": ["none"],
       "examples": ["convert 5mi km","convert 8oz cup","convert 10kg mg"]

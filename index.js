@@ -445,7 +445,7 @@ bot.on("message", async recievedmessage => {
 
 
     }else if($cmnd === "convert"){ // 100cm --> 1m, 3ft --> 1yd, 1.5 --> 1(1/2)
-      if(!words[1]) return $channel.send("You're forgetting part of that command!");
+      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Conversions").setDescription("").addField("Length U.S. Customary","Mile = mi\nYard = yd\nFeet = ft\nInches = in\nCentimeters = cm").addField("Length Metric","Kilometer = km\nHectometer = hm\nDekameter = dkm\nMeter = m\nDecimeter = dm\nCentimeter = cm\nMillimeter = mm\nMicrometer = um").addField("Measurements U.S. Customary","Gallon = gal\nQuart = qt\nPint = pt\nCup = cup\nOunce = oz\nTablespoon = tbsp\nTeaspoon = tsp").addField("Measurements Metric","Kilogram = kg\nHectogram = hg\nDekagram = dkg\nGram = g\nDecimeter = dm\nCentigram = cg\nMilligram = mg\nMicrogram = ug"));
       
       let A = words[1].toLowerCase();
       let B = words[2].toLowerCase();
@@ -465,19 +465,19 @@ bot.on("message", async recievedmessage => {
       }
       let metricMeas = {
         // metric measurements, based around gram
-        ug: 0.000001,
+        ug: 0.000001, //microgram
         mg: 0.001, //milligram
         cg: 0.01, //centigram
-        dg: 0.1,
+        dg: 0.1, //decigram
         g: 1, //gram
-        dkg: 10,
-        hg: 100,
-        kg: 1000
+        dkg: 10, //dekagram
+        hg: 100, //hectogram
+        kg: 1000 //kilogram
       }
       let usDist = {
         // U.S. Customary Distances, based around inches
         cm: 2.54,
-        "in.": 1, // in quotes because `in` is already an operator
+        "in.": 1, // in quotes because `in` is already an operator also periods are a function-thingy in javascript
         ft: 12,
         yd: 36, 
         mi: 63360
