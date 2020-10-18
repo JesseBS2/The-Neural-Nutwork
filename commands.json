@@ -211,16 +211,6 @@
       "alias": ["pixel"]
     },
     "pixel": "pixelate",
-    "posterize": {
-      "desc": "Adds posterize effect to an image",
-      "format": "posterize <image>",
-      "alias": ["none"]
-    },
-    "subtitle": {
-      "desc": "Add subtitles to the bottom of an image",
-      "format": "subtitle <image> <text>",
-      "alias": ["none"]
-    },
     "crop": {
       "desc": "Crops an image",
       "format": "crop <x> <y> <w> <h>",

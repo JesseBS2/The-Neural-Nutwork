@@ -1544,24 +1544,6 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if($cmnd === "posterize"){
-      var intensity = Number(words[1]) || 5;
-      if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
-      if(intensity > 10) return $channel.send("Number can not be higher than 10");
-      if(intensity < 0) return $channel.send("Number can not be lower than 0");
-      
-      intensity = 10-intensity;
-
-      JIMP.read(Images().url).then(file => {
-        file
-          .dither565(intensity)
-          .write("image/image_manipulation."+fileType);
-
-        return $channel.send(ImageEmbed("Posterized image"));
-      }).catch(err => {
-        if(err)throw err;
-      });
-
     }else if($cmnd === "pixelate" || $cmnd === "pixel"){
       var intensity = Number(words[1]) || 3;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
@@ -1578,45 +1560,12 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
     
-    }else if($cmnd === "subtitle"){
-      if(!words[1])return $channel.send("You're forgetting to add text!");
-      var toSendMessage = "", endsInColor = false;
-
-      if(words[words.length-1] === "!!WHITE" || words[words.length-1] === "!!BLACK")endsInColor = true;
-      for(var e = 1; e < words.length; e++){
-        if(e == words.length-1 && endsInColor === true) break;
-        if(e == words.length-1) toSendMessage += words[e];
-        toSendMessage += words[e]+" ";
-      }
-
-      
-      var ImageWidth = Images().width, ImageHeight = Images().height, TextSizeH = ImageHeight/4, fontcolor = JIMP.FONT_SANS_16_BLACK;
-      
-      if(words[words.length-1] == "!!WHITE"){
-        fontcolor = JIMP.FONT_SANS_16_WHITE;
-      }else if(words[words.length-1] == "!!BLACK"){
-        fontcolor = JIMP.FONT_SANS_16_BLACK;
-      }
-
-      JIMP.read(Images().url).then(file => {
-        JIMP.loadFont(fontcolor).then(font => {
-          file
-          .print(font, 0, ImageHeight-TextSizeH, {
-                text: toSendMessage,
-                alignmentX: JIMP.HORIZONTAL_ALIGN_CENTER,
-                alignmentY: JIMP.VERTICAL_ALIGN_BOTTOM
-              },
-              ImageWidth, TextSizeH)
-            .write("image/image_manipulation."+fileType); // prints 'Hello world!' on an image, middle and center-aligned, when x = 0 and y = 0
-          return $channel.send(ImageEmbed("Added subtitles"));
-        });
-      });
-    
     }
 
 
-    function Images() {
-      var INFO = recievedmessage.attachments.first();
+    function Images(val){
+      val = val || 0;
+      var INFO = recievedmessage.attachments.array()[val];
       return INFO;
     }
 
