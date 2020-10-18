@@ -34,9 +34,9 @@ bot.on("ready", () => {
   console.log("The Nutwork is online, running in "+CACHED_GUILDS+" discord servers\n\n");
   bot.user.setActivity(CACHED_GUILDS+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"});
   setInterval(function(){
-    if(activity_value_swap === 0){ bot.user.setActivity("$commands",{type: "PLAYING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=1;}
+    if(activity_value_swap === 0){ bot.user.setActivity("$help",{type: "PLAYING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=1;}
     if(activity_value_swap === 1){ bot.user.setActivity(CACHED_GUILDS+" servers",{type: "WATCHING", url:"https://www.github.com/JesseBS2/The-Neural-Nutwork"}); return activity_value_swap=0; }
-  },8000); // changes every 8 seconds
+  },7000); // changes every 7 seconds
 });
 
 
@@ -314,12 +314,12 @@ bot.on("message", async recievedmessage => {
       }
 
       toEquation = toEquation.replace(/÷/g,"/").replace(/\{/g,"(").replace(/\[/g,"(").replace(/\]/g,")").replace(/}/g,")").replace(/ /g,"");
-      if(SolveEquation(toEquation) === false){
-        // it'd be really cool if I could post to the below website, get the number back and send it to the channel
-        // but i have no clue how to do that, I've tried a lot(using request) but i never got it working
-        return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Too Large").setDescription("The provided equation was too large for the bot and produced 'infinity'.\nThe following website can calculate your problem for you:\n\nhttps://keisan.casio.com/calculator").setColor("#cc1100"));
+      let n = SolveEquation( toEquation );
+
+      if(n === false){
+        //return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Too Large").setDescription("The provided equation was too large for the bot and produced 'infinity'.\nThe following website can calculate your problem for you:\n\nhttps://keisan.casio.com/calculator").setColor("#cc1100"));
+        return $channel.send( new Discord.MessageEmbed().setColor("#cc1100").setTitle("Err").setDescription(""));
       }else{
-        let n = SolveEquation( toEquation );
         if(typeof n == "Object") n = n["constants"][0]["numer"];
         return $channel.send( new Discord.MessageEmbed().setColor("#7289d9").setTitle("Algebra").setDescription(toEquation.replace(/(\*)/g,"\*")).addField("Result",n.toString()).setFooter(FooterTitle) );
       }
@@ -340,13 +340,7 @@ bot.on("message", async recievedmessage => {
       }
 
     }else if($cmnd === "eval" || $cmnd === "evaluate"){
-      if(!words[2]){
-        $channel.send("You're forgetting part of that command!");
-        setTimeout(function(){
-          e.delete();
-          return;
-        },1500);
-      }  
+      if(!words[2]) return $channel.send("You're forgetting part of that command!");
       
       let obj = {}
       let n = words[1];
@@ -367,10 +361,15 @@ bot.on("message", async recievedmessage => {
         }
       }
 
-      let expr = Algebra.parse(words[1]);
-      let asEmbed = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Evaluate").setDescription("Evaluating "+words[1]+" when: "+nameForEveryVariableOccurence).addField("Result",expr.eval(obj)).setFooter(FooterTitle);
+      try{
+        let expr = Algebra.parse(words[1]);
+        let asEmbed = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Evaluate").setDescription("Evaluating "+words[1]+" when: "+nameForEveryVariableOccurence).addField("Result",expr.eval(obj)).setFooter(FooterTitle);
 
-      return $channel.send(asEmbed);
+        return $channel.send(asEmbed);
+      }catch(err){
+        console.log(err);
+        return $channel.send( new Discord.MessageEmbed().setColor("#cc1100").setTitle("Err").setDescription(""));
+      }
 
     }else if($cmnd === "area"){
       if(!words[1]) return $channel.send("Area is the amount of 2D space that a shape takes up");
@@ -589,7 +588,6 @@ bot.on("message", async recievedmessage => {
       }
 
     }
-
   }else if($cmnd in _commands["mod"]){
     // mod commands can not be disabled.
     
@@ -1421,7 +1419,7 @@ bot.on("message", async recievedmessage => {
 
     var fileType = Images().name.split(".")[Images().name.split(".").length-1]; // gets file type, such as png or jpeg
     if(fileType == "gif")return $channel.send("I can't accept gifs"); // literally, idk if it's cause of the site i'm using to program, or if JIMP just doesn't except gifs. But it doesn't work
-    if($cmnd === "image" || $cmnd === "image-data" || $cmnd === "data"){
+    if($cmnd === "image-data" || $cmnd === "data"){
       
       return $channel.send(Embed("Image Data","Width: "+Images().width+"px\nHeight: "+Images().height+"px\nSize: "+Images().size+" bytes")[1]); // some stuff built into the discord API 
     
@@ -1448,7 +1446,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if($cmnd === "contrast"){ 
+    }else if($cmnd === "contrast"){
       var intensity = Number(words[1]) || 50;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       if(intensity > 100)return $channel.send("Contrast can not be higher than 100");
@@ -1466,7 +1464,7 @@ bot.on("message", async recievedmessage => {
         if(err)throw err;
       });
 
-    }else if($cmnd === "brightness" || $cmnd === "light"){ 
+    }else if($cmnd === "brightness" || $cmnd === "light"){
       var intensity = Number(words[1]) || 50;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
       if(intensity > 100)return $channel.send("Brightness can not be higher than 100");
@@ -1533,7 +1531,9 @@ bot.on("message", async recievedmessage => {
     }else if($cmnd === "blur"){
       var intensity = Number(words[1]) || 5;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
-      
+      if(intensity > 100)return $channel.send("Blur can not be higher than 100");
+      if(intensity < 0) return $channel.send("Blur can not be lower than 0");
+
       JIMP.read(Images().url).then(file => {
         file
           .blur(intensity)
@@ -1554,7 +1554,7 @@ bot.on("message", async recievedmessage => {
 
       JIMP.read(Images().url).then(file => {
         file
-          .posterize(intensity)
+          .dither565(intensity)
           .write("image/image_manipulation."+fileType);
 
         return $channel.send(ImageEmbed("Posterized image"));
@@ -1565,6 +1565,8 @@ bot.on("message", async recievedmessage => {
     }else if($cmnd === "pixelate" || $cmnd === "pixel"){
       var intensity = Number(words[1]) || 3;
       if(intensity == "NaN" || intensity == NaN || typeof intensity == "NaN" || intensity.toString() == "NaN") return $channel.send("Please enter a valid number");
+      if(intensity > 200)return $channel.send("Brightness can not be higher than 200");
+      if(intensity < 0) return $channel.send("Brightness can not be lower than 0");
 
       JIMP.read(Images().url).then(file => {
         file

@@ -163,13 +163,12 @@
     "pt": "periodic"
   },
   "image": {
-    "image": {
+    "image-data": {
       "desc": "Get the width and height of image",
       "format": "image <image>",
       "alias": ["image-data","data"]
     },
-    "image-data": "image",
-    "data": "image",
+    "data": "image-data",
     "greyscale": {
       "desc": "Convert any image to only be on the white-black color scale",
       "format": "greyscale <image>",
