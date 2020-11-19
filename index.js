@@ -46,9 +46,8 @@ var Activity_Types = ["playing","watching","listening","streaming","custom"];
 
 var invitePermissions = "470019223"; // These are the permissions the bot asks for when you're inviting it
 var credits_desc = "Want to view the source code?: [Source Code](http://github.com/JesseBS2/The-Neural-Nutwork \"Github.com\")\n\nInvite the bot: [Invite Bot](https://discord.com/oauth2/authorize?client_id=661249786350927892&permissions="+invitePermissions+"&scope=bot \"Discord.com\")";
-var credits_testers = ["<@!617199190761537537>", "<@!654114500886396948>", "<@!650518503002210319>", "Ashley(Ash)", "<@!704036561439817760>", "Rajesh", "<@!667201563122466816>", "<@!628598017775108096>", "<@!262776330402267137>", "Elio", "Ender(Eli)"];
 var credits_sources = ["[Algebra.js](https://www.npmjs.com/package/algebra.js)","[Periodic Table of Elements](https://github.com/Bowserinator/Periodic-Table-JSON)","[Javascript Image Manipulation Program](https://www.npmjs.com/package/jimp)","[QR Codes](https://www.npmjs.com/package/qrcode)","[File System](https://www.npmjs.com/package/fs)"];
-var creditsMessage = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Credits").setDescription(credits_desc).setThumbnail(BotLogo).addField("Creator","<@"+Dev_IDs[0]+">").addField("External Sources", credits_sources).addField("Testers",credits_testers);
+var creditsMessage = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Credits").setDescription(credits_desc).setThumbnail(BotLogo).addField("Creator","<@"+Dev_IDs[0]+">").addField("External Sources", credits_sources);
 
 
 // This is used for getting the accurate amount of commands to display in $commands
@@ -1676,7 +1675,6 @@ function setToScale(number){
   if(number < 50) return (number-100)/100;
 }
 
-//
 function factorialize(num) {
   var result = num;
   if(num === 0 || num === 1)return 1; 
