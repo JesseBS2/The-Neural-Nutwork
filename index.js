@@ -15,7 +15,6 @@ const QRCode = require("qrcode"); // generates QR Codes from input right in a di
 
 bot.login(Fs.readFileSync("token.txt","utf8").toString());  // log into discord account
 
- 
 
 var BotLogo = "https://i.imgur.com/MStPhME.png";
 
@@ -80,8 +79,7 @@ bot.on("message", async recievedmessage => {
             "type": "disabled",
             "id": null
           },
-          "automath": "disabled",
-          "autoperiodic": "disabled",
+          "automagic": "disabled",
           "nickname": "enabled",
           "qr-codes": "enabled",
           "embeds": "enabled"
@@ -119,23 +117,6 @@ bot.on("message", async recievedmessage => {
   var self = recievedmessage.guild.me;
   var $pre = "$"
   var $member = recievedmessage.member;
-  isARealCommand_ThisVariableIsUsedOnce = false;
-
-  if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
-    Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
-    $pre = Configs[Guild.id]["prefix"];
-  }
-
-  if(words[0].startsWith("$") && words[0].length === 1){  // then word 0 is $ which means word 1 is the command
-    $cmnd = recievedmessage.content.split(" ")[1];
-    words.shift();
-    isARealCommand_ThisVariableIsUsedOnce = true;
-  }else if(words[0].startsWith("$")){
-    $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
-    isARealCommand_ThisVariableIsUsedOnce = true;
-  }
-
-  let firstWord = recievedmessage.content.split(" ")[0];  // the above variable only works if the prefix is present. So aliases like "√" aren't useable
 
   // when the bot is pinged/mentioned
   if(recievedmessage.content.split(" ")[0] === "<@!"+bot.user.id+">"){  // if the first word is the mentioned bot
@@ -144,42 +125,16 @@ bot.on("message", async recievedmessage => {
     }
     $cmnd = recievedmessage.content.split(" ")[1];
     words.shift();  // offset words by one, so all future uses of the words array are still right
-    isARealCommand_ThisVariableIsUsedOnce = true;
   }
 
-  if(isARealCommand_ThisVariableIsUsedOnce == false){
-    let words = recievedmessage.content.split(" ");
-    let AllowedSymbols = ["+","-","*","/","÷","x","^","\\","(",")","[","]","{","}"];  // included the backslash because in discord, multiple asterisks will result in italicized words 
-    let AllowedNumbers = ["0","1","2","3","4","5","6","7","8","9"];
 
-    let math = "";
-    let type = null
-    let other = {
-      value: null
-    }
+  if( $channel.id in Configs[recievedmessage.guild.id]["channels"]){}else{
+    Configs[recievedmessage.guild.id]["channels"][$channel.id] = {}; // turns out I need this instead of it just being happy and adding it when it needs it...
+    $pre = Configs[Guild.id]["prefix"];
+  }
 
-    let Characters = recievedmessage.content.split("");
-    let including = {number:false,symbols:false};  // it has to be an equation
-      
-    for( let j = 0; j < Characters.length; j++ ){  // loop through all words
-      let flag = false;
-      if( AllowedSymbols.includes(Characters[j]) || AllowedNumbers.includes(Characters[j]) ){ // if it is allowed then allow it
-        if(AllowedNumbers.includes(Characters[j])){including.number=true}
-        if(AllowedSymbols.includes(Characters[j])){including.symbols=true}
-        type = "math";
-        math += Characters[j];
-      }else{
-        type = null;
-        flag = true;  // the flag is used to break both loops
-        break;
-      }
-
-      if(flag === true){  // if one word is wrong, they all should be. So don't run it.
-        type = null;
-        break;
-      }
-    }
-
+  if(!words[0].startsWith(Configs[Guild.id]["prefix"]) && !words[1] && Configs[recievedmessage.guild.id]["config"]["automagic"] == "enabled"){
+    
     Request({
       url: "https://raw.githubusercontent.com/Bowserinator/Periodic-Table-JSON/master/PeriodicTableJSON.json",
       json: true
@@ -189,10 +144,8 @@ bot.on("message", async recievedmessage => {
         var PeriodicTable = body["elements"];
         for(let j = 0; j < PeriodicTable.length; j++){
           if(words[0].toLowerCase() === PeriodicTable[j]["name"].toLowerCase()){
-            // type = "periodic";
-            other.value = j;
-            console.log("Ran: autoperiodic - Server: "+Guild.name);
-            let element = new Discord.MessageEmbed().setColor("#7289d9").setTitle(PeriodicTable[other.value]["name"]+" - #"+other.value).setDescription("Symbol: "+PeriodicTable[other.value]["symbol"]+"\nAtomic Weight: "+PeriodicTable[other.value]["atomic_mass"]).addField("Discovery","Discovered by "+PeriodicTable[other.value]["discovered_by"]);
+            console.log("Ran: Automagic - Server: "+Guild.name);
+            let element = new Discord.MessageEmbed().setColor("#7289d9").setTitle(PeriodicTable[j]["name"]+" - #"+j).setDescription("Symbol: "+PeriodicTable[j]["symbol"]+"\nAtomic Weight: "+PeriodicTable[j]["atomic_mass"]).addField("Discovery","Discovered by "+PeriodicTable[j]["discovered_by"]);
             return $channel.send(element);
           }
         }
@@ -200,14 +153,29 @@ bot.on("message", async recievedmessage => {
       }
     });
 
-    if(type === null){return;}else if(type === "math" && Configs[recievedmessage.guild.id]["config"]["automath"] == "enabled" && including.number === true && including.symbols === true){
-      
-      console.log("Ran: automath - Server: "+Guild.name);
-      if(SolveEquation(math) === false) return $channel.send("Something went wrong!");
-      return $channel.send( "> "+ Number(SolveEquation(math)) ); 
-
+    words[0] = words[0].replace(/\\\*/g,"*");
+    
+    if(Algebra.parse(words[0]).constants[0].denom == 1){
+      return $channel.send("> "+Algebra.parse(words[0]).constants[0].numer);
+    }else{
+      return $channel.send("> "+Algebra.parse(words[0]).constants[0].numer/Algebra.parse(words[0]).constants[0].denom);
     }
+
+  }else if(!words[0].startsWith("$") && Configs[recievedmessage.guild.id]["config"]["automagic"] == "enabled"){
+    let output = EnglishToMath(message);
+    console.log(output)
+    if(output == false)return;
+    return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Automagic Math").setDescription("").addField("Input",output.input).addField("Interpretation",output.interpret).addField("Result",output.answer).setFooter("AI by JesseBS2, math processed by algebra.js"));
+  
+  }else if(words[0].startsWith(Configs[Guild.id]["prefix"]) && words[0].length === 1){  // then word 0 is $ which means word 1 is the command
+    $cmnd = recievedmessage.content.split(" ")[1];
+    words.shift();
+  
+  }else if(words[0].startsWith(Configs[Guild.id]["prefix"])){
+    $cmnd = recievedmessage.content.split(" ")[0].split(Configs[recievedmessage.guild.id].prefix)[1]; // remove the prefix an then return the first word. So only the command.
   }
+
+  let firstWord = recievedmessage.content.split(" ")[0];
 
 
   ////////////////////////////
@@ -215,6 +183,7 @@ bot.on("message", async recievedmessage => {
   ////  Uncategorized Commands
   ////////////////////////////
   ////////////////////////////
+
 
   if($cmnd === "ping"){
     const pingedMessage = await $channel.send("Loading...");
@@ -244,7 +213,7 @@ bot.on("message", async recievedmessage => {
     let group_arr = "";
     
     if($cmnd === "commands" || $cmnd === "help"){
-      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Algebra Commands","x"+commands_for["algebra"]+" Commands").addField(":test_tube: PToE Commands","x"+commands_for["ptoe"]+" Commands").addField(":lock: Mod Commands","x"+commands_for["mod"]+" Commands").addField(":smile: Fun Commands","x"+commands_for["fun"]+" Commands").addField(":frame_photo: Image Commands","x"+commands_for["image"]+" Commands").addField(":grey_question: Other Commands","x"+commands_for["other"]+" Commands").addField(":control_knobs: Server Commands","x"+commands_for["server"]+" Commands").addField("No category","Ping: "+$pre+"ping\nCredits: "+$pre+"credits").setFooter("$commands <category>").setThumbnail(BotLogo));
+      if(!words[1]) return $channel.send(new Discord.MessageEmbed().setColor("#7289d9").setTitle("Commands:").setDescription("Separated by category").addField(":abacus: Algebra Commands","x"+commands_for["algebra"]+" Commands").addField(":test_tube: PToE Commands","x"+commands_for["ptoe"]+" Commands").addField(":lock: Mod Commands","x"+commands_for["mod"]+" Commands").addField(":smile: Fun Commands","x"+commands_for["fun"]+" Commands").addField(":frame_photo: Image Commands","x"+commands_for["image"]+" Commands").addField(":grey_question: Other Commands","x"+commands_for["other"]+" Commands").addField(":control_knobs: Server Commands","x"+commands_for["server"]+" Commands").addField("No category","Ping: "+$pre+"ping\nCredits: "+$pre+"credits\nSettings:"+$pre+"settings").setFooter("$commands <category>").setThumbnail(BotLogo));
       
       if(words[1].toLowerCase() in $commands){
         for(let ex = 0; ex < Object.values($commands[words[1].toLowerCase()]).length; ex++){
@@ -759,13 +728,13 @@ bot.on("message", async recievedmessage => {
 
       return $channel.send("I could not find an active ban for this user");
 
-    }else if($cmnd === "config"){
+    }else if($cmnd === "settings"){
       if($member.hasPermission("ADMINISTRATOR") === false){
         return $channel.send("You do not have the necessary permissions for that!");
       }
 
       if(!words[1]){
-        let displayconfigures = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Configurable Settings").setDescription("Settings that can be changed for this server by the admins.\n"+$pre+"config <setting> <set>").addField("Autorole - "+RlConfig["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)").addField("Nickname - "+RlConfig["config"]["nickname"],"Allow people to change their own or other people's nicknames.\n(enable/disable)").addField("Embeds - "+RlConfig["config"]["embeds"],"Allow anyone to create an Rich Message Embed.\n(enable/disable)").addField("Automath - "+RlConfig["config"]["automath"],"Do simple math without the need of a command.\n(enable/disable)").addField("Autoperiodic - "+RlConfig["config"]["autoperiodic"],"The bot shows an element without the need of a command.\n(enable/disable)").addField("QR-Codes - "+RlConfig["config"]["qr-codes"],"Allow users to convert text and links into scanable QR codes.\n(enable/disable)").addField("Fun - "+RlConfig["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)").setThumbnail(Guild.iconURL);
+        let displayconfigures = new Discord.MessageEmbed().setColor("#7289d9").setTitle("Configurable Settings").setDescription("Settings that can be changed for this server by the admins.\n"+$pre+"settings <setting> <set>").addField("Autorole - "+RlConfig["config"]["autorole"]["type"],"Assigns a role to new users when they join.\n(mentioned role/disable)").addField("Nickname - "+RlConfig["config"]["nickname"],"Allow people to change their own or other people's nicknames.\n(enable/disable)").addField("Embeds - "+RlConfig["config"]["embeds"],"Allow anyone to create an Rich Message Embed.\n(enable/disable)").addField("Automagic - "+RlConfig["config"]["automagic"],"Do math, word problems, & show periodic table elements without the need of a command.\n(enable/disable)").addField("QR-Codes - "+RlConfig["config"]["qr-codes"],"Allow users to convert text and links into scanable QR codes.\n(enable/disable)").addField("Fun - "+RlConfig["categories"]["fun"],"Just fun-to-use commands.\n(enable/disable)").setThumbnail(Guild.iconURL);
         return $channel.send(displayconfigures);
       }
 
@@ -1020,6 +989,7 @@ bot.on("message", async recievedmessage => {
     console.log("Ran: Other - Server: "+Guild.name)
 
     if($cmnd === "profile"){
+      return $channel.send("> This command is broken right now");
       var username,disc,status,snow,pfp,account_age,accStatusColor,activity="",custom="";
 
       try{
@@ -1027,13 +997,12 @@ bot.on("message", async recievedmessage => {
           var GetUserAcc = bot.users.cache.get(words[1]); // by default try to get it based on numbers only
           if(words[1].startsWith("<@!"))GetUserAcc = bot.users.cache.get(words[1].split("<@!")[1].split(">")[0]); // if it didn't start with numbers then change it
         }else{
-          GetUserAcc = author;
+          GetUserAcc = bot.users.cache.get(author.id);
         }
       }catch(e){
         return $channel.send("Something went wrong!\nI'm either not in a server with that user, or you did not provide a valid snowflake");
       }
 
-      //console.log(GetUserAcc.presence)
 
       // Look all these beautiful settings!! :D
       try{
@@ -1044,7 +1013,9 @@ bot.on("message", async recievedmessage => {
         pfp = GetUserAcc.displayAvatarURL() || GetUserAcc.defaultAvatarURL();
         account_age = GetUserAcc.createdAt.toString().split(" ")[1]+" "+GetUserAcc.createdAt.toString().split(" ")[2]+" "+GetUserAcc.createdAt.toString().split(" ")[3];
         accStatusColor = {"online": "#00ff00","idle":"#ffcc00","dnd":"#ff0000","offline":"#919191"};
-        if(GetUserAcc.presence.activities.length == 1){ 
+
+
+        if(GetUserAcc.presence.activities.length == 1){
 
           if(GetUserAcc.presence.activities[0].type != null && GetUserAcc.presence.activities[0].name != null && GetUserAcc.presence.activities[0].type != "CUSTOM_STATUS"){
             activity = "\n**"+GetUserAcc.presence.activities[0].type.charAt(0).toUpperCase() + GetUserAcc.presence.activities[0].type.slice(1).toLowerCase()+"**: "+GetUserAcc.presence.activities[0].name.toString();
@@ -1063,11 +1034,11 @@ bot.on("message", async recievedmessage => {
           }
         }
 
-        var display = new Discord.MessageEmbed().setColor("#7289d9").setTitle(" ").setDescription("**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age).setColor(accStatusColor[GetUserAcc.presence.status]).setThumbnail(pfp).setFooter("Using discord for "+Object.keys(GetUserAcc.presence.clientStatus));
+        var display = new Discord.MessageEmbed().setColor("#7289d9").setTitle(" ").setDescription("**Username**: "+username+"\n**Discriminator**: "+disc+"\n**Snowflake**: "+snow+"\n**Status**: "+status+activity+custom+"\n**User Since**: "+account_age).setColor(accStatusColor[GetUserAcc.presence.status]).setThumbnail(pfp).setFooter("Using discord for "+GetUserAcc.presence.clientStatus);
 
         return $channel.send(display);
       }catch(err){
-        console.error(err);
+        
         return $channel.send("Sorry! I couldn't find that user, I may not be in a server with them.")
       }
     
@@ -1596,8 +1567,7 @@ bot.on("guildCreate", guild => {  // bot is added to a new server
         "type": "disabled",
         "id": null
       },
-      "automath": "disabled",
-      "autoperiodic": "disabled",
+      "automagic": "disabled",
       "nickname": "enabled",
       "qr-codes": "enabled",
       "embeds": "enabled"
@@ -1683,4 +1653,302 @@ function factorialize(num) {
       result *= num;
     }
   return result;
+}
+
+function EnglishToMath(input){
+  var output = input;
+
+  if(output.startsWith("<@!661249786350927892>"))output = output.replace(/\<\@\!661249786350927892\>/,"");
+  if(output.startsWith(" ")){
+    for(var e = 0; e < output.length; e++){
+      if(e !== " "){
+        output = output.substr(e+1);
+        break;
+      }
+    }
+  }
+
+  output = output.toLowerCase().replace(/\\\*/g,"*");
+  if(!output.includes("+") && !output.includes("-") && !output.includes("*") && !output.includes("/") && !output.includes("^") && !output.includes("%") && !output.includes("0") && !output.includes("1") && !output.includes("2") && !output.includes("3") && !output.includes("4") && !output.includes("5") && !output.includes("6") && !output.includes("7") && !output.includes("8") && !output.includes("9") && !output.includes("="))return;
+
+  if(output.startsWith("what is"))output = change(output,"what is","");
+
+  var variable_priority = "NXYZABCDEFGHIJKLMOPQRSTUVW".split(""); // the order in which unnamed variables should be named
+  output = change(output,"?","");
+  var toReturnList = {
+    input: output,
+    interpret: null,
+    answer: "unknown"
+  }
+  var solveBy;
+  var variable;
+  var splitter; // only used in ratio problems
+
+
+  /* Square roots like √(25) */
+  for(var e = 0; e < output.length; e++){
+    if(output[e] == "√" && output[e+1] == "("){
+      e++;
+      for(var j = e; j < output.length; j++){
+        if(output[j] == ")"){
+
+          let squarerooted = Algebra.parse(output.substr(e+1,j-1-e));
+          output = output.substr(0, e-1) + Math.sqrt(squarerooted.constants[0].numer/squarerooted.constants[0].denom) + output.substr(j+1);
+          
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  /* Detect if the answer is a variable */
+  // had to move this higher up in the function, messed things up when it had a lower priority
+  if(output.split(". ").includes("find the number") || output.split("; ").includes("find the number") || output.split(", ").includes("find the number") || output.split(". ").includes("what is the number") || output.split("; ").includes("what is the number") || output.split(", ").includes("what is the number")){
+    
+    solveBy = "variable";
+    output = change(output,[". what is the number.",". what is the number","; what is the number.","; what is the number",", what is the number.",", what is the number","what is the number.","what is the number",". find the number.",". find the number","find the number.","; find the number.","; find the number","find the number.",", find the number."," find the number","find the number.","find the number"],"");
+  
+  
+  }else if(output.startsWith("the ratio of")){
+    // This type of equation is solved in this `if` function and nothing external
+    // the ratio of x to y in z is number to number, if there were number x, how many y were there
+    
+    solveBy = "ratio";
+    if(output.split(" ").includes(splitter = "in") || output.split(" ").includes(splitter = "was")){ // variables in this if function prevents the need of more ifs later on
+      variable = {
+        variables: [{},{}] // the ratio variable names and values
+      }
+      variable["variables"][0][output.split("the ratio of ")[1].split(" to")[0].toString()] = output.split("the ratio of")[1].split(splitter)[1].split("to")[0]
+      variable["variables"][1][output.split("the ratio of ")[1].split(" to ")[1].split(" "+splitter)[0]] = output.split("the ratio of")[1].split(splitter)[1].split("to")[1].split(", ")[0] || output.split("the ratio of")[1].split(splitter)[1].split("to")[1].split("; ")[0] || output.split("the ratio of")[1].split(splitter)[1].split("to")[1].split(". ")[0]
+      let check = false;
+
+      if(input == output.replace(/ /g,""))return false;
+
+      if(output.split("how many ")[1].split(" ").includes(check = Object.keys(variable["variables"][0])[0]) || output.split("how many ")[1].split(" ").includes(check = Object.keys(variable["variables"][1])[0])){
+        if(Object.keys(variable["variables"][0])[0] == check){
+          toReturnList.interpret = change(Object.values(variable["variables"][0])[0]+"/"+Object.values(variable["variables"][1])[0]+"="+check.charAt(0)+"/"+output.split("if there were ")[1].split(" ")[0]," ","");
+          toReturnList.answer = check+" = "+Algebra.parse(Object.values(variable["variables"][0])[0]+"/"+Object.values(variable["variables"][1])[0]+"="+check.charAt(0)+"/"+output.split("if there were ")[1].split(" ")[0]).solveFor(check.charAt(0));
+        }else{
+          toReturnList.interpret = change(Object.values(variable["variables"][1])[0]+"/"+Object.values(variable["variables"][0])[0]+"="+check.charAt(0)+"/"+output.split("if there were ")[1].split(" ")[0]," ","");
+          toReturnList.answer = check+" = "+Algebra.parse(Object.values(variable["variables"][1])[0]+"/"+Object.values(variable["variables"][0])[0]+"="+check.charAt(0)+"/"+output.split("if there were ")[1].split(" ")[0]).solveFor(check.charAt(0));
+        }
+      }else{
+        toReturnList.answer = output.split("how many ")[1].split(" ")[0]+" was not included in the equation"; 
+      }
+    }
+
+    return toReturnList;
+
+  }else if(output.startsWith("evaluate")){
+    //evaluate [equation] if X is number and E is number
+
+    solveBy = "eval";
+    variable = {
+      variables: []
+    }
+
+    output = change(output,["equals","the result is","answers","is"],"=");
+    output = change(output," ","");
+
+    let temp,tempOutput;
+    if(output.split("evaluate")[1].split(temp = "if")[1].includes("and") || output.split("evaluate")[1].split(temp = "when")[1].includes("and")){
+      tempOutput = output.split("evaluate")[1].split(temp)[0]
+      for(var e = 0; e < output.split("evaluate")[1].split(temp)[1].split("and").length; e++){
+        variable.variables[e] = {};
+        variable.variables[e][output.split("evaluate")[1].split(temp)[1].split("and")[e].split("=")[0]] = Number(output.split("evaluate")[1].split(temp)[1].split("and")[e].split("=")[1]);
+      }
+    }else if(output.split("evaluate")[1].split(temp = "if")[1] || output.split("evaluate")[1].split(temp = "when")[1]){
+      tempOutput = output.split("evaluate")[1].split(temp)[0];
+      variable.variables[0] = {};
+      variable.variables[0][output.split("evaluate")[1].split(temp)[1].split("and")[0].split("=")[0]] = Number(output.split("evaluate")[1].split(temp)[1].split("and")[0].split("=")[1]);
+    }
+
+    output = tempOutput;
+  }else if(output.startsWith("if f(") || output.startsWith("f(")){
+    var variables = output.split("f(")[1].split(")")[0].replace(/ /g,"").split(",");
+    
+    output = change(output.split("=")[1].split(",")[0],variables,output.split("f(")[2].split(")")[0].replace(/ /g,"").split(","));
+    output = output.split(",")[0].split(";")[0].split("then")[0].split("when")[0].split("what is")[0]; // just covers all basis, if not "... x+2, ..." it'll get "... x+2; ..." then "... x+2 then what is ..." and finally "... x+2 what is ..."
+    output = change(output," ","");
+    toReturnList.interpret = output;
+
+    if(input == output.replace(/ /g,""))return false;
+
+    if(Algebra.parse(output).constants[0] == undefined){
+      toReturnList.answer = 0;
+    }else if(Algebra.parse(output).constants[0].denom == 1){
+      toReturnList.answer = Algebra.parse(output).constants[0].numer;
+    }else{
+      toReturnList.answer = Algebra.parse(output).constants[0].numer+"/"+Algebra.parse(output).constants[0].denom;
+    }
+    
+    return toReturnList;
+  }
+
+  output = change(output,["percent","%"],"*0.01");
+
+  if(output.startsWith("solve for")){
+    solveBy = "variable";
+    variable = output[10];
+    output = output.substr(14)
+    console.log(output);
+  }
+
+
+  /* Decides how the function will solve the equation at the end */
+  for(var e = 0; e < output.split("a number").length; e++){
+    output = output.replace("a number",variable_priority[e]); // only want to change the first accuorance
+    output = change(output,"the number",variable_priority[e]); // ^likewise
+    if(solveBy == "variable"){
+      variable = variable_priority[e];
+    }
+    output = change(output,"it's",variable_priority[e]);
+  }
+
+
+  let of_and = output.split(" ").indexOf("the");
+  if(of_and > -1 && output.split(" ")[of_and+2] == "of" && ["sum","product","difference","quotient"].includes(output.split(" ")[of_and+1])){
+    let operation;
+    let synonyms = {
+      "sum": "+",
+      "difference": "_",
+      "product": "*",
+      "quotient": "/"
+    }
+    operation = synonyms[output.split(" ")[of_and+1]];
+    let thisLongThing = output.split("the "+output.split(" ")[of_and+1]+" of")[1].split(" ");
+    thisLongThing[thisLongThing.indexOf("and")+1] += ")";
+    thisLongThing[thisLongThing.indexOf("and")] = operation;
+    output = output.split("the "+output.split(" ")[of_and+1]+" of")[0]+"("+change(thisLongThing.toString(),","," ");
+  }
+
+  let powered = output.split(" ").indexOf("to");
+  if(powered > -1 && output.split(" ")[powered+1] == "the" && output.split(" ")[powered+3] == "power"){
+    let operation;
+    
+    output = change(output.split("to the ")[0]+"^"+output.split("to the ")[1].split("power")[0],["st","nd","rd","th"],"");
+     
+  }
+
+  /* Converts words to operations and numbers */
+  output = change(output, ["increased by"],"+");
+  output = change(output, ["to the power of","**"],"^")
+  output = change(output, "twice","2 * ");
+  output = change(output, ["is doubled","doubled"],"*2"); // different order
+  output = change(output, ["plus"],"+");
+  output = change(output, ["minus","is decreased by","is reduced by","the opposite of","the opposite"],"-");
+  output = change(output, ["times","of","multiplied by"],"*");
+  output = change(output, ["divided by","over","÷"],"/");
+  output = change(output, ["result of",","],"");
+  output = change(output, ["equals","the result is","answers","is"],"=");
+
+
+  if(output.includes("less than")){
+    for(var j = output.indexOf("less than"); j > -1; j-=1){ 
+      if(["=","+","-","/","*"].includes(output[j]) || j <= 0){
+        console.log(output.substr(0,j)+"-"+output.substr(j+1,output.indexOf("less than")))
+        return {
+          input: input,
+          interpret: "testing",
+          answer: "check console"
+        };
+      }
+    }
+  }
+
+  /* Handles situations like "is multiplied by 2" */
+  for(var e = 0; e < output.length; e++){
+    if(output[e] == "="){ // searches for an equals sign
+      if(output[e+1] == "*" || output[e+1] == "/" || output[e+1] == "+" || output[e+1] == "-"){ // this is a check so it only finds the words "is [operation]" instead of EVERY equals sign
+        for(var j = e-1; j > -1; j-=1){ // go backwards until finding another equals sign(one half or side of the equation) or the beginning of the equation
+          if(output[j] == "=" || j <= 0){
+            output = output.substr(0, e) +")"+ output.substr(e+1);  // closes off the paranthesis, errors go brr
+            output = output.substr(0, j-1) +"("+ output.substr(j);
+            break;
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  output = change(output,[" ","if","what is","the"],"");
+
+  
+  for(var i = 0; i < output.length; i++){
+    if(variable_priority.includes(output[i])){
+      solveBy = "variable";
+      variable = variable_priority[0];
+      break;
+    }
+  }
+
+  output = output.replace(/\(\)/g,"");
+  if(input == output.replace(/ /g,""))return false;
+  toReturnList.interpret = output; // this is the interpretation; right here is the final step before finding the answer, where the input is converted to an equation.
+
+  /* Answers */
+  
+  if(solveBy === "variable"){
+
+    toReturnList.answer = variable+" = "+Algebra.parse(output).solveFor(variable);
+
+  }else if(solveBy === "eval"){
+
+    var expression = Algebra.parse(output);
+    for(var e = 0; e < variable.variables.length; e++){
+      expression = Algebra.parse(expression.toString()).eval(variable.variables[e]);  
+    }
+
+    // same as the thing below
+    if(expression.constants[0] == undefined){
+      toReturnList.answer = 0;
+    }else if(expression.constants[0].denom == 1){
+      toReturnList.answer = expression.constants[0].numer;
+    }else{
+      toReturnList.answer = expression.constants[0].numer+"/"+expression.constants[0].denom;
+    }
+
+  }else{
+    if(Algebra.parse(output).constants[0] == undefined){
+      toReturnList.answer = 0;
+    }else if(Algebra.parse(output).constants[0].denom == 1){
+      toReturnList.answer = Algebra.parse(output).constants[0].numer;
+    }else{
+      toReturnList.answer = Algebra.parse(output).constants[0].numer+"/"+Algebra.parse(output).constants[0].denom;
+    }
+
+  }
+
+  toReturnList.interpret = toReturnList.interpret.replace(/\*/g,"\*"); // Discord's fancy message thing but instead of "decoding" it i'm "incoding" it
+  return toReturnList;
+}
+
+
+function change(input,find,changeto){
+  if(typeof find == "string"){
+    if(typeof changeto == "string"){
+      for(var y = 0; y < input.length; y++){
+        input = input.replace(find,changeto);
+      }
+    }
+  }else if(typeof find == "object"){
+    if(typeof changeto == "string"){
+      for(var x = 0; x < find.length; x++){
+        for(var y = 0; y < input.length+1; y++){
+          input = input.replace(find[x],changeto);
+        }
+      }
+    }else if(typeof changeto == "object"){
+      for(var x = 0; x < find.length; x++){
+        if(x > changeto.length) return input;
+
+        for(var y = 0; y < input.length+1; y++){
+          input = input.replace(find[x],changeto[x]);
+        }
+      }
+    }
+  }
+  return input;
 }

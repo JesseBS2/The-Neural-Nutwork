@@ -147,9 +147,9 @@
       "alias": ["purge"]
     },
     "purge": "clear",
-    "config": {
+    "settings": {
       "desc": "Customizeable bot settings for your server",
-      "format": "config (option) (setting)",
+      "format": "settings (option) (setting)",
       "alias": ["none"]
     }
   },
